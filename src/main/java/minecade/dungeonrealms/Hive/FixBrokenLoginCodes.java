@@ -73,15 +73,24 @@ public class FixBrokenLoginCodes extends Thread {
 				Hive.log.log(Level.WARNING, ex.getMessage(), ex);
 			}
 		}
-		
-		File dir = new File(Hive.main_world_name + "/players/");
+
+		// folder is never found
+		File dir = new File(Hive.main_world_name + "/playerdata/");
 		for(File f : dir.listFiles()) {
 			String p_name = f.getName().replaceAll(".dat", "");
 			if(!(reported_online.contains(p_name))) {
 				reported_online.add(p_name);
 			}
 		}
-		
+
+//		File dir = new File(Hive.main_world_name + "/playerdata/");
+//		for(File f : dir.listFiles()) {
+//			String p_uuid = f.getName().replaceAll(".dat", "");
+//			if(!(reported_online.contains(p_uuid))) {
+//				reported_online.add(p_uuid);
+//			}
+//		}
+
 		List<String> actual_online = new ArrayList<String>();
 		for(Player pl : Bukkit.getOnlinePlayers()) {
 			if(pl.getPlayerListName().equalsIgnoreCase("")) {

@@ -129,10 +129,11 @@ public class Config {
     //public static int SQL_port = 7447;
     public static int SQL_port = 3306;
     //public static String sql_user = "slave_3XNZvi";
-    public static String sql_user = "dungeonrealms";
+    public static String sql_user = "root";
     //public static String sql_password = "SgUmxYSJSFmOdro3";
     public static String sql_password = "qcHqKGVdLXNXXN5j";
-    public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms";
+//    public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms";
+    public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
 
     public static int FTP_port = 21;
     public static String ftp_user = "agent";

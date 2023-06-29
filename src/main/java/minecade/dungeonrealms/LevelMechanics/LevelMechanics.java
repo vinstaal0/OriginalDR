@@ -510,7 +510,9 @@ public class LevelMechanics implements Listener {
     
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent e) {
-    	final PlayerLevel PLAYER_LEVEL = PlayerManager.getPlayerModel(e.getPlayer()).getPlayerLevel();
+
+        final PlayerLevel PLAYER_LEVEL = PlayerManager.getPlayerModel(e.getPlayer()).getPlayerLevel();
+
     	final Player p = e.getPlayer();
         PLAYER_LEVEL.setPlayer(e.getPlayer());
         new BukkitRunnable() {

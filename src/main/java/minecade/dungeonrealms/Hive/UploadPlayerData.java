@@ -45,7 +45,8 @@ public class UploadPlayerData extends Thread {
 		}
 		
 		try {
-			File data = new File(Hive.rootDir + "/" + Hive.main_world_name + "/players/" + p_name + ".dat");
+//			File data = new File(Hive.rootDir + "/" + Hive.main_world_name + "/player/" + p_name + ".dat");
+			File data = new File(Hive.rootDir + "/" + Hive.main_world_name + "/playerdata/" + p_name + ".dat");
 			if(!(Hive.no_upload.contains(p_name))) { // Don't upload data if they're in the no_upload list, just set them offline.
 			
 				Hive.uploadPlayerDatabaseData(p_name);

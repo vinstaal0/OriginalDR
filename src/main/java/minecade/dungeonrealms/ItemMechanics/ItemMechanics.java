@@ -446,7 +446,7 @@ public class ItemMechanics implements Listener {
 
                     gfind_data.put(p.getName(), new_gfind);
                     ifind_data.put(p.getName(), new_ifind);
-                    p.setWalkSpeed(getPlayerSpeed(p));
+//                    p.setWalkSpeed(getPlayerSpeed(p));
 
                     FatigueMechanics.updateEnergyRegenData(p, true);
                     HealthMechanics.generateHealthRegenAmount(p, true);

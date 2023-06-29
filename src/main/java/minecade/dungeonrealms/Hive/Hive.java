@@ -367,7 +367,8 @@ public class Hive implements Listener {
 	public void onEnable() {
 		instance = this;
 		log.info(TimeZone.getDefault().toString());
-		TimeZone.setDefault(TimeZone.getTimeZone("America/Chicago"));
+		// TimeZone.setDefault(TimeZone.getTimeZone("America/Chicago"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Netherlands/Amsterdam"));
 
 		Main.plugin.getCommand("benchmark").setExecutor(new CommandBenchmark());
 		Main.plugin.getCommand("bio").setExecutor(new CommandBio());
@@ -1096,6 +1097,7 @@ public class Hive implements Listener {
 							"CREATE TABLE IF NOT EXISTS "
 									+ "player_database"
 									+ "(p_name VARCHAR(18) PRIMARY KEY, location TEXT, inventory LONGTEXT, hp INT, food_level INT, level INT, guild_name VARCHAR(16), combat_log BIT, last_login_time LONG, rank TINYTEXT, server_num INT, align_status VARCHAR(16), align_time LONG, toggles TEXT, pets TEXT, buddy_list TEXT, ignore_list TEXT, realm_tier INT, realm_title TINYTEXT, realm_loaded TINYINT(1), noob_player TINYINT(1), last_server TINYTEXT, ecash INT, ip TEXT, portal_shards TEXT, saved_gear TEXT, mule_inventory TEXT) ENGINE=InnoDB;");
+
 			pst.executeUpdate();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
@@ -3015,11 +3017,11 @@ public class Hive implements Listener {
 				prefix = "US-YT";
 			}
 
-			e.setKickMessage(ChatColor.YELLOW.toString() + "The account " + ChatColor.BOLD.toString() + p_name + ChatColor.YELLOW.toString()
-					+ " is already logged in on " + ChatColor.UNDERLINE.toString() + prefix + server_num_on + "." + "\n\n" + ChatColor.GRAY.toString()
-					+ "If you have just recently changed servers, your character data is being synced -- " + ChatColor.UNDERLINE.toString()
-					+ "wait a few seconds" + ChatColor.GRAY.toString() + " before reconnecting.");
-			e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
+//			e.setKickMessage(ChatColor.YELLOW.toString() + "The account " + ChatColor.BOLD.toString() + p_name + ChatColor.YELLOW.toString()
+//					+ " is already logged in on " + ChatColor.UNDERLINE.toString() + prefix + server_num_on + "." + "\n\n" + ChatColor.GRAY.toString()
+//					+ "If you have just recently changed servers, your character data is being synced -- " + ChatColor.UNDERLINE.toString()
+//					+ "wait a few seconds" + ChatColor.GRAY.toString() + " before reconnecting.");
+//			e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
 			return;
 		}
 
@@ -3272,9 +3274,9 @@ public class Hive implements Listener {
 			 */
 			// ^
 		} else if (!(first_login.contains(p.getName()))) {
-			e.setResult(Result.KICK_OTHER);
-			e.setKickMessage(ChatColor.RED.toString() + "Failed to LOAD player data from database." + "\n" + ChatColor.GRAY.toString()
-					+ "Please try again later. " + "\n\n" + ChatColor.BOLD.toString() + "ERROR CODE: 065");
+//			e.setResult(Result.KICK_OTHER);
+//			e.setKickMessage(ChatColor.RED.toString() + "Failed to LOAD player data from database." + "\n" + ChatColor.GRAY.toString()
+//					+ "Please try again later. " + "\n\n" + ChatColor.BOLD.toString() + "ERROR CODE: 065");
 			return;
 		}
 

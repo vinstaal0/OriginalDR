@@ -13,17 +13,30 @@ public class ConnectionPool {
 	
 	public static boolean refresh = false;
 	
+//	public static Connection getConnection() {
+//		try {
+//			if(refresh || con == null || con.isClosed()) {
+//				refresh = false;
+//				if(con != null) con.close();
+//				con = DriverManager.getConnection(Config.sql_url, Config.sql_user, Config.sql_password);
+//			}
+//		} catch(Exception e) {
+//			Main.d("Couldn't connect to the database!", CC.RED);
+//		}
+//		return con;
+//	}
+
 	public static Connection getConnection() {
 		try {
-			if(refresh || con == null || con.isClosed()) {
+			if(refresh || con==null || con.isClosed()) {
 				refresh = false;
 				if(con != null) con.close();
 				con = DriverManager.getConnection(Config.sql_url, Config.sql_user, Config.sql_password);
 			}
 		} catch(Exception e) {
-			Main.d("Couldn't connect to the database!", CC.RED);
+			Main.d("Couldn't connect to the database!",CC.RED);
+			e.printStackTrace();
 		}
 		return con;
 	}
-	
 }
