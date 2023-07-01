@@ -15,10 +15,13 @@ public class ThreadPool extends Thread {
 			try {
 				Thread.sleep(250);
 			} catch(InterruptedException e) {}
+
 			for(String query : Hive.sql_query) {
 				Connection con = null;
 				PreparedStatement pst = null;
-				
+
+				System.out.println("Executed: " + query);
+
 				try {
 					pst = ConnectionPool.getConnection().prepareStatement(query);
 					pst.executeUpdate();

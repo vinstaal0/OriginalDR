@@ -45,10 +45,10 @@ public class UploadPlayerData extends Thread {
 		}
 		
 		try {
-//			File data = new File(Hive.rootDir + "/" + Hive.main_world_name + "/player/" + p_name + ".dat");
-			File data = new File(Hive.rootDir + "/" + Hive.main_world_name + "/playerdata/" + p_name + ".dat");
+			File data = new File(Hive.rootDir + "/" + Hive.main_world_name + "/player/" + p_name + ".dat");
+
 			if(!(Hive.no_upload.contains(p_name))) { // Don't upload data if they're in the no_upload list, just set them offline.
-			
+
 				Hive.uploadPlayerDatabaseData(p_name);
 				final int n_money = MoneyMechanics.bank_map.get(p_name) + RealmMechanics.getMoneyInInventory(Hive.player_inventory.get(p_name));
 				final int n_pdeaths = RecordMechanics.player_deaths.get(p_name);

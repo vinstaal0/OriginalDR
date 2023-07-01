@@ -11,11 +11,9 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +32,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.persistence.EntityManager;
+import javax.sql.rowset.serial.SerialBlob;
 
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.Utils;
@@ -1263,6 +1262,10 @@ public class Hive implements Listener {
 
 		String inventory = convertInventoryToString(p_name, inv, true);
 
+		// Storing inventory as blob in database
+		byte[] byteData = inventory.getBytes(StandardCharsets.UTF_8);
+		Blob inventoryBlob = new SerialBlob(byteData);
+
 		long align_time = 0;
 		String align_status = "good";
 
@@ -1377,7 +1380,8 @@ public class Hive implements Listener {
 								+ "', '"
 								+ location
 								+ "', '"
-								+ StringEscapeUtils.escapeSql(inventory)
+								+ inventoryBlob
+//								+ StringEscapeUtils.escapeSql(inventory)
 								+ "', '"
 								+ hp
 								+ "', '"
@@ -1622,7 +1626,12 @@ public class Hive implements Listener {
 				loc = convertStringToLocation(loc_s);
 			}
 
-			String inventory_s = rs.getString("inventory");
+//			String inventory_s = rs.getString("inventory");
+			// Change the database storage to a blob
+
+			Blob inventory_blob = rs.getBlob("inventory");
+			String inventory_s = inventory_blob.toString();
+
 			if (inventory_s == null) {
 				log.info("[HIVE (Slave Edition)] No INVENTORY data found for " + p_name + ", return null.");
 				return false;
@@ -1964,8 +1973,9 @@ public class Hive implements Listener {
 			if (s.length() <= 1 || s.equalsIgnoreCase("null")) {
 				continue;
 			}
-
+			System.out.println("String to inventory: S" + s);
 			int slot = Integer.parseInt(s.substring(0, s.indexOf(":")));
+			System.out.println("String to inventory: slot" + slot);
 
 			if (inventory_name != null && inventory_name.startsWith("Bank Chest")) {
 				if (slot > expected_item_size && (slot > (slots - 1))) { // slots - 1, 0 index = start

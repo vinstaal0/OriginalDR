@@ -1,10 +1,8 @@
 package minecade.dungeonrealms.MoneyMechanics;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,6 +65,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 public class MoneyMechanics implements Listener {
 
@@ -381,6 +381,8 @@ public class MoneyMechanics implements Listener {
 			int money = rs.getInt("money");
 			int level = rs.getInt("level");
 			String bank_content = rs.getString("content");
+//			Blob bank_content_blob = rs.getBlob("content");
+//			String bank_content = bank_content_blob.toString();
 
 			if(money < 0) {
 				// Negative balance?
@@ -473,6 +475,7 @@ public class MoneyMechanics implements Listener {
 						}
 					}
 				} else if(!(bank_content.contains("@page_break@"))) {
+					System.out.println("Bank content= " + bank_content);
 					Inventory inv_page = Hive.convertStringToInventory(null, bank_content, "Bank Chest (1/1)", getBankSlots(level));
 					bank_pages.add(inv_page);
 				}
@@ -570,9 +573,20 @@ public class MoneyMechanics implements Listener {
 
 		Connection con = null;
 		PreparedStatement pst = null;
+//		Blob final_bank_content_blob = null;
+//
+//		try {
+//			// Changed the storing and loading of the bank using LONGBLOB
+//			byte[] byteData = final_bank_content.getBytes(StandardCharsets.UTF_8);
+//			final_bank_content_blob = new SerialBlob(byteData);
+//		} catch (Exception err) {
+//			err.printStackTrace();
+//		}
+
 
 		try {
 			pst = ConnectionPool.getConnection().prepareStatement("INSERT INTO bank_database (p_name, content, money, level)" + " VALUES" + "('" + p_name + "', '" + StringEscapeUtils.escapeSql(final_bank_content) + "', '" + final_bank_net + "', '" + final_bank_level + "') ON DUPLICATE KEY UPDATE content = '" + StringEscapeUtils.escapeSql(final_bank_content) + "', money='" + final_bank_net + "', level='" + final_bank_level + "'");
+//			pst = ConnectionPool.getConnection().prepareStatement("INSERT INTO bank_database (p_name, content, money, level)" + " VALUES" + "('" + p_name + "', '" + final_bank_content_blob + "', '" + final_bank_net + "', '" + final_bank_level + "') ON DUPLICATE KEY UPDATE content = '" + StringEscapeUtils.escapeSql(final_bank_content) + "', money='" + final_bank_net + "', level='" + final_bank_level + "'");
 
 			pst.executeUpdate();
 
