@@ -1262,9 +1262,7 @@ public class Hive implements Listener {
 
 		String inventory = convertInventoryToString(p_name, inv, true);
 
-		// Storing inventory as blob in database
-		byte[] byteData = inventory.getBytes(StandardCharsets.UTF_8);
-		Blob inventoryBlob = new SerialBlob(byteData);
+		inventory = inventory.replace(ChatColor.COLOR_CHAR, '&');
 
 		long align_time = 0;
 		String align_status = "good";
@@ -1358,6 +1356,8 @@ public class Hive implements Listener {
 			}
 		}
 
+		mule_inventory_string = mule_inventory_string.replace(ChatColor.COLOR_CHAR, '&');
+
 		String achievments = "";
 		if (PlayerManager.getPlayerModel(p_name).getAchievements() != null) {
 			achievments = PlayerManager.getPlayerModel(p_name).getAchievements();
@@ -1366,6 +1366,7 @@ public class Hive implements Listener {
 		String ecash_storage = "";
 		if (EcashMechanics.ecash_storage_map.containsKey(p_name)) {
 			ecash_storage = StringEscapeUtils.escapeSql(EcashMechanics.ecash_storage_map.get(p_name));
+			ecash_storage = ecash_storage.replace(ChatColor.COLOR_CHAR, '&');
 		}
 
 		PreparedStatement pst = null;
@@ -1380,8 +1381,8 @@ public class Hive implements Listener {
 								+ "', '"
 								+ location
 								+ "', '"
-								+ inventoryBlob
-//								+ StringEscapeUtils.escapeSql(inventory)
+//								+ inventoryBlob
+								+ StringEscapeUtils.escapeSql(inventory)
 								+ "', '"
 								+ hp
 								+ "', '"
@@ -1626,11 +1627,10 @@ public class Hive implements Listener {
 				loc = convertStringToLocation(loc_s);
 			}
 
-//			String inventory_s = rs.getString("inventory");
-			// Change the database storage to a blob
-
-			Blob inventory_blob = rs.getBlob("inventory");
-			String inventory_s = inventory_blob.toString();
+			String inventory_s_raw = rs.getString("inventory");
+			inventory_s_raw = inventory_s_raw.replace('?','&');
+			inventory_s_raw = inventory_s_raw.replace(ChatColor.COLOR_CHAR,'&');
+			String inventory_s = ChatColor.translateAlternateColorCodes('&', inventory_s_raw);
 
 			if (inventory_s == null) {
 				log.info("[HIVE (Slave Edition)] No INVENTORY data found for " + p_name + ", return null.");
@@ -1700,6 +1700,12 @@ public class Hive implements Listener {
 			if (mule_inventory != null && mule_inventory.contains("@item@")) {
 				// We put the ItemStack list into a hashmap, when they OPEN the mule, it will generate the inventory and the slots based on the mule they're
 				// using.;
+
+				String mule_inventory_raw = rs.getString("inventory");
+				mule_inventory_raw = mule_inventory_raw.replace('?','&');
+				mule_inventory_raw = mule_inventory_raw.replace(ChatColor.COLOR_CHAR,'&');
+				mule_inventory = ChatColor.translateAlternateColorCodes('&', mule_inventory_raw);
+
 				MountMechanics.mule_itemlist_string.put(p_name, mule_inventory);
 			}
 
@@ -1711,6 +1717,12 @@ public class Hive implements Listener {
 
 			String ecash_storage = rs.getString("ecash_storage");
 			if (ecash_storage != null) {
+
+				String ecash_storage_raw = rs.getString("inventory");
+				ecash_storage_raw = ecash_storage_raw.replace('?','&');
+				ecash_storage_raw = ecash_storage_raw.replace(ChatColor.COLOR_CHAR,'&');
+				ecash_storage = ChatColor.translateAlternateColorCodes('&', ecash_storage_raw);
+
 				EcashMechanics.ecash_storage_map.put(p_name, ecash_storage);
 			}
 
@@ -1967,91 +1979,92 @@ public class Hive implements Listener {
 			// Using inventory.
 			inv = Bukkit.createInventory(null, slots, inventory_name);
 		}
+
 		for (String s : inventory_string.split("@item@")) {
 			// slot_cache++;
 
-			if (s.length() <= 1 || s.equalsIgnoreCase("null")) {
-				continue;
-			}
-			System.out.println("String to inventory: S" + s);
-			int slot = Integer.parseInt(s.substring(0, s.indexOf(":")));
-			System.out.println("String to inventory: slot" + slot);
-
-			if (inventory_name != null && inventory_name.startsWith("Bank Chest")) {
-				if (slot > expected_item_size && (slot > (slots - 1))) { // slots - 1, 0 index = start
-					slot = inv.firstEmpty();
+				if (s.length() <= 1 || s.equalsIgnoreCase("null")) {
+					continue;
 				}
-			}
 
-			if (s.length() <= 1) {
-				continue;
-			}
+				int slot = Integer.parseInt(s.substring(0, s.indexOf(":")));
 
-			int item_id = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf("-")));
-			int amount = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.indexOf(".")));
-			short durability = Short.parseShort(s.substring(s.indexOf(".") + 1, s.indexOf("#")));
+				if (inventory_name != null && inventory_name.startsWith("Bank Chest")) {
+					if (slot > expected_item_size && (slot > (slots - 1))) { // slots - 1, 0 index = start
+						slot = inv.firstEmpty();
+					}
+				}
 
-			String i_name = s.substring(s.indexOf("#") + 1, s.lastIndexOf("#"));
-			String i_lore = s.substring(s.indexOf("$") + 1, s.lastIndexOf("$"));
+				if (s.length() <= 1) {
+					continue;
+				}
 
-			Color leather_armor_color = null;
-			if (s.contains("[lam1]")) {
-				leather_armor_color = Color.fromBGR(Integer.parseInt(s.substring(s.indexOf("[lam1]") + 6, s.lastIndexOf("[lam2]"))));
-			}
+				int item_id = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf("-")));
+				int amount = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.indexOf(".")));
+				short durability = Short.parseShort(s.substring(s.indexOf(".") + 1, s.indexOf("#")));
 
-			ItemStack is = new ItemStack(Material.getMaterial(item_id), amount, durability);
+				String i_name = s.substring(s.indexOf("#") + 1, s.lastIndexOf("#"));
+				String i_lore = s.substring(s.indexOf("$") + 1, s.lastIndexOf("$"));
 
-			List<String> splitlore = new ArrayList<String>(new LinkedHashSet<String>(Arrays.asList(i_lore.split(","))));
-			i_lore = Joiner.on(',').join(splitlore);
+				Color leather_armor_color = null;
+				if (s.contains("[lam1]")) {
+					leather_armor_color = Color.fromBGR(Integer.parseInt(s.substring(s.indexOf("[lam1]") + 6, s.lastIndexOf("[lam2]"))));
+				}
 
-			if (is.getType() == Material.POTION && is.getDurability() > 0) {
-				// Renames potion to Instant Heal.
+				ItemStack is = new ItemStack(Material.getMaterial(item_id), amount, durability);
 
-				is = ItemMechanics.signNewCustomItem(Material.getMaterial(item_id), durability, i_name, i_lore);
+				List<String> splitlore = new ArrayList<String>(new LinkedHashSet<String>(Arrays.asList(i_lore.split(","))));
+				i_lore = Joiner.on(',').join(splitlore);
+
+				if (is.getType() == Material.POTION && is.getDurability() > 0) {
+					// Renames potion to Instant Heal.
+
+					is = ItemMechanics.signNewCustomItem(Material.getMaterial(item_id), durability, i_name, i_lore);
+					if (pl != null) {
+						pl.getInventory().setItem(slot, is);
+					} else if (inv != null) {
+						inv.setItem(slot, is);
+					}
+					continue;
+				}
+
+				if (is.getType() == Material.WRITTEN_BOOK) {
+					continue; // TODO: Code book loading.
+				}
+
+				ItemMeta im = is.getItemMeta();
+
+				if (!(i_name.equalsIgnoreCase("null"))) {
+					// Custom name!
+					im.setDisplayName(i_name);
+				}
+
+				if (!(i_lore.equalsIgnoreCase("null"))) {
+					// Lore!
+					List<String> all_lore = new ArrayList<String>();
+
+					for (String lore : i_lore.split(",")) {
+						if (lore.length() > 1) {
+							all_lore.add(lore);
+						}
+					}
+					im.setLore(all_lore);
+				}
+
+				if (!(leather_armor_color == null)) {
+					((LeatherArmorMeta) im).setColor(leather_armor_color);
+				}
+
+				if (!(i_name.equalsIgnoreCase("null")) || !(i_lore.equalsIgnoreCase("null"))) {
+					is.setItemMeta(im);
+				}
+
 				if (pl != null) {
 					pl.getInventory().setItem(slot, is);
 				} else if (inv != null) {
 					inv.setItem(slot, is);
 				}
-				continue;
-			}
 
-			if (is.getType() == Material.WRITTEN_BOOK) {
-				continue; // TODO: Code book loading.
-			}
-
-			ItemMeta im = is.getItemMeta();
-
-			if (!(i_name.equalsIgnoreCase("null"))) {
-				// Custom name!
-				im.setDisplayName(i_name);
-			}
-
-			if (!(i_lore.equalsIgnoreCase("null"))) {
-				// Lore!
-				List<String> all_lore = new ArrayList<String>();
-
-				for (String lore : i_lore.split(",")) {
-					if (lore.length() > 1) {
-						all_lore.add(lore);
-					}
-				}
-				im.setLore(all_lore);
-			}
-
-			if (!(leather_armor_color == null)) {
-				((LeatherArmorMeta) im).setColor(leather_armor_color);
-			}
-
-			if (!(i_name.equalsIgnoreCase("null")) || !(i_lore.equalsIgnoreCase("null"))) {
-				is.setItemMeta(im);
-			}
-
-			if (pl != null) {
-				pl.getInventory().setItem(slot, is);
-			} else if (inv != null) {
-				inv.setItem(slot, is);
-			}
 		}
 
 		if (inv != null) {

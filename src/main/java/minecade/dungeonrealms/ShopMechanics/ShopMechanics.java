@@ -642,7 +642,11 @@ public class ShopMechanics implements Listener {
 		if(!(collection_bin.containsKey(p_name))) { return; // No one cares.
 		}
 
-		String collection_bin_s = Hive.convertInventoryToString(null, collection_bin.get(p_name), false);
+		String collection_bin_s_raw = Hive.convertInventoryToString(null, collection_bin.get(p_name), false);
+
+		collection_bin_s_raw = collection_bin_s_raw.replace('?', '&');
+		collection_bin_s_raw = collection_bin_s_raw.replace(ChatColor.COLOR_CHAR, '&');
+		String collection_bin_s = ChatColor.translateAlternateColorCodes('&', collection_bin_s_raw);
 
 		if(collection_bin_s.length() <= 0) {
 			collection_bin_s = "null";

@@ -1,0 +1,13 @@
+Zombie: Doh... Wha...? Whaaasss goin' on?
+Zombie: Meat? Fresh meat?
+Zombie: You 'dere, come 'ere im 'ungry.
+Zombie Grunt: Why we be summoned here?
+Zombie Grunt: Mmmm.... brains....
+Zombie: Ahhhhhh....
+Zombie: Brains brains 'dey good for your brains, 'de more you eat, 'de more you eat brains...
+Zombie Grunt: Uh.. he got too much armor on, he not gona' be tasty.
+Zombie: Mmm.... fast food.
+Zombie: I miss Maltai, all 'de brain you can imagine.
+Zombie: Wha' brings you to these parts? Well it's good you came, we're just having lunch.
+Zombie Grunt: Mmmm... Pizza Delivery....
+Zombie: The Lord will be pleased! A new offering approaches us.

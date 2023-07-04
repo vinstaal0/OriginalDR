@@ -78,12 +78,15 @@ public class EnchantMechanics implements Listener {
 	public static ItemStack t4_white_scroll = ItemMechanics.signNewCustomItem(Material.EMPTY_MAP, (short) 1, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "White Scroll:" + ChatColor.LIGHT_PURPLE.toString() + " Protect Diamond Equipment", ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Apply to any T4 item to " + ChatColor.UNDERLINE + "prevent" + ChatColor.GRAY.toString() + " it" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "from being destroyed if the next" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "enchantment scroll (up to +8) fails.");
 	
 	public static ItemStack t5_white_scroll = ItemMechanics.signNewCustomItem(Material.EMPTY_MAP, (short) 1, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "White Scroll:" + ChatColor.YELLOW.toString() + " Protect Gold Equipment", ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Apply to any T5 item to " + ChatColor.UNDERLINE + "prevent" + ChatColor.GRAY.toString() + " it" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "from being destroyed if the next" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "enchantment scroll (up to +8) fails.");
-	
+
 	public void onEnable() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.plugin);
 		
 		Main.plugin.getCommand("drenchant").setExecutor(new CommandDREnchant());
 		registerEnchant();
+
+		t1_wep_scroll.setDurability((short)0);
+
 		log.info("[EnchantMechanics] V1.0 has been enabled.");
 	}
 	

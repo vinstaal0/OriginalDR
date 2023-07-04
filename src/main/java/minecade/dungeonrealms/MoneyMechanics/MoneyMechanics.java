@@ -32,6 +32,7 @@ import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.LogModel;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -365,6 +366,8 @@ public class MoneyMechanics implements Listener {
 		 * bank_map.remove(p_name); bank_level.remove(p_name); bank_contents.remove(p_name);
 		 */
 
+		System.out.println("[Moneymechanics] loading bank from: " + p_name);
+
 		try {
 			pst = ConnectionPool.getConnection().prepareStatement("SELECT money, level, content FROM bank_database WHERE p_name = '" + p_name + "'");
 
@@ -380,9 +383,18 @@ public class MoneyMechanics implements Listener {
 
 			int money = rs.getInt("money");
 			int level = rs.getInt("level");
-			String bank_content = rs.getString("content");
-//			Blob bank_content_blob = rs.getBlob("content");
-//			String bank_content = bank_content_blob.toString();
+			String bank_content_raw = rs.getString("content");
+
+			String bank_content = null;
+
+			try {
+				bank_content_raw = bank_content_raw.replace('?','&');
+				bank_content_raw = bank_content_raw.replace(ChatColor.COLOR_CHAR, '&');
+				bank_content = ChatColor.translateAlternateColorCodes('&', bank_content_raw);
+			} catch (NullPointerException ignored) {
+				// Bank is empty, just ignore
+			}
+
 
 			if(money < 0) {
 				// Negative balance?
@@ -475,7 +487,6 @@ public class MoneyMechanics implements Listener {
 						}
 					}
 				} else if(!(bank_content.contains("@page_break@"))) {
-					System.out.println("Bank content= " + bank_content);
 					Inventory inv_page = Hive.convertStringToInventory(null, bank_content, "Bank Chest (1/1)", getBankSlots(level));
 					bank_pages.add(inv_page);
 				}
@@ -546,6 +557,9 @@ public class MoneyMechanics implements Listener {
 		if(bank_contents.containsKey(p_name)) {
 			for(Inventory inv : bank_contents.get(p_name)) {
 				String local_inv = Hive.convertInventoryToString(p_name, inv, false);
+
+				local_inv = local_inv.replace(ChatColor.COLOR_CHAR, '&');
+
 				final_bank_content += local_inv + "@page_break@"; // TODO: Randomize
 			}
 
@@ -1413,10 +1427,17 @@ public class MoneyMechanics implements Listener {
 
 			updateStaticCashStack(p);
 
-			if(!(bank_contents.containsKey(p.getName()) || !(bank_map.containsKey(p.getName()))) || bank_contents.get(p.getName()).get(0) == null) {
+			try {
+				if(!(bank_contents.containsKey(p.getName()) || !(bank_map.containsKey(p.getName()))) || bank_contents.get(p.getName()).get(0) == null) {
+					log.info("[MoneyMechanics] Failed to load bank data for " + p.getName() + ".");
+					return;
+				}
+			} catch (NullPointerException ex) {
+				ex.printStackTrace();
 				log.info("[MoneyMechanics] Failed to load bank data for " + p.getName() + ".");
 				return;
 			}
+
 
 			Inventory echest = bank_contents.get(p.getName()).get(0);
 			if(echest == null){

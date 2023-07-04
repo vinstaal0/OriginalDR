@@ -579,3 +579,6 @@ commands:
   sethealth:
     description: Set a users health
     usage: /<command>
+  FixMissingTexture:
+    description: removes an items NBT data
+    usage: /<command>

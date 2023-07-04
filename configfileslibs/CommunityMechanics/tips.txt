@@ -1,0 +1,66 @@
+Don't swing like a wildman! If Stamina is used up, you won't be able to deal damage!
+To make your realm a safezone, use an orb of peace. They can be bought from the Item Vendor.
+Build a sense of community and create a guild by speaking to the Guild Registrar in Cyrennica.
+Find a bug or see a rule-breaker? Type "/report" and tell us what is wrong.
+Have a question? Ask in Global Chat! "/gl <message>" or type a message and hit tab. Global can be toggled: /toggleglobal
+Got something to sell? Make a shop. Sneak left click with your character journal in hand at the ground.
+Need more room in your bank? Sneak right click it to upgrade the slots.
+Out growing your realm? Sneak right click with the realm star in hand to upgrade it!
+Have a lot of items to sell, but not enough room? Sneak right click your shop with the journal in hand to upgrade!
+Check the forums for events that might be happening on Dungeon Realms!
+If you're chaotic, you can check how long you are chaotic for by opening your character journal.
+Did you know? Flying is possible in realms. Buy an Orb of Flight from the Item Vendor. To activate it, you'll need an active orb of peace however.
+Feeling weak? Go out and slay some bandits to get better tiered equipment! You don't want to be left in the dust.
+The economy is a huge part of Dungeon Realms. Open up a shop and sell some wares to strike it rich!
+Tired going solo? Join a guild! Guilds are a great way to play Dungeon Realms, if you work as a team, you can overcome huge obstacles.
+Looking for food? Grab a fishing rod from the Skill Trainer and get fishing! Not only will it satisfy your hunger, it'll put some extra gems in your pocket.
+Dungeon Realms is loaded with exciting areas for you to explore, and new ones are being added all the time. Get exploring!
+If you kill a non-chaotic player, you might get chaotic yourself! If you die and you are chaotic, you will lose all your items.
+If you are of the Lawful alignment and you die, your armor will lose 30% of its durability, and if it is below 30%, then it will disappear on death.
+To activate the toggle menu, do /toggle.
+Need to see a map? minemap.net/DungeonRealms/
+Want to trade? Use a trade prefix in global: Trading, Buying, Selling, and many more!
+Place a weapon in your first slot to have it act like armor on death.
+Need to report a troublesome player? Create a thread in the Bans and Suspensions section on the forums following the correct format.
+Follow us on Twitter! https://twitter.com/dungeonrealms
+Start engaging with the community on our forums to get involved! http://dungeonrealms.net/forum
+You can like us on our facebook, http://www.fb.com/pages/DungeonRealms/446604418717929
+Both pickaxes and ores have tiers that associate with them, you can mine ores and obtain scraps which will repair your armor, and also make some money in the process!
+Don't be afraid to sell your junk- like they say: One man's junk is another man's treasure! If you have some low tiered equipment, someone might be looking for it!
+There are many spots around Andalucia where you can fish, you'll see a fishing spot when there are particles floating above it. 
+If you're neutral alignment and you are killed by a player in a chaotic zone, you have a low percentage chance you might lose a weapon or some of your armor, so be careful!
+The toggle menu allows you to toggle all adjustable features of Dungeon Realms at once. Type /toggles to see what you can toggle!
+If you've traveled Andalucia enough, you have likely ran into a dungeon. Dungeons have the potential to give you some rare exclusive equipment.
+Monsters that deal elemental damage will ignore 80% of your armor, so watch yourself!
+The Strength attribute on equipment will add Armor, Block, and Axe bonuses!
+The Dexterity attribute on equipment will add Dodge, Bow Damage, Critical hit, and Armor Penetration bonuses!
+The Vitality attribute on equipment will add Health and Sword Damage bonuses!
+Portal Key Shards are obtained from completing Dungeons, and they can be spent at the Dungeoneer in Cyrennica for great rewards such as an additional mule storage chest.
+You can purchase a Storage Mule from the Animal Tamer, and he can store additional items!
+Elite mobs will be much more powerful then your average mob, and they might have a special attack that will cause massive damage, so be careful when taking on elites!
+You can use a realm storage chest to store miscellaenous items inside your realm, such as Teleportation blocks, scraps, and building blocks. Use a bank for storing important items!
+If a mob performs a "Power Strike" move, the attack will be delayed, but if it lands it will deal 3x damage!
+If an archer performs a Triple Shot, the archer will release three arrows but the shot will be delayed. 
+A whirlwind attack can only be performed by an elite mob. It will hit players around a 3 block radius, and the mob will turn itself around.
+Mobs with Pure Damage (an exclusive elemental power) ignore all armor and the attack cannot be resisted, thus making it a very powerful move. Whither Skeletons and Tripoli Soldiers can perform this attack.
+Low on Gems but stacked with E-CASH? You can purchase realm building blocks for your realm with E-CASH to expand your realm!
+You can't switch between shards when you're in a wilderness or chaotic zone for 5 minutes.
+If your armor has a high block percent, you'll be able to reduce the amount of damage you take, making you a tank! Try using an Orb of Alteration to customize the attributes on your equipment!
+Fishes can have Damage, Night-Vision, and many more attributes to them. They can sway the tide in battle if used correctly, so they are an item you should look into.
+If you have the height advantage on a mob, he might teleport to you prevent you from picking him off!
+There are so many outlets for you to share your Dungeon Realms media. If you're a youtuber, create a thread in the Media section on the forums with your series, people will check it out!
+If you're into role-playing, there's a shard for that, just hop on US-11.
+Players might activate a Global Loot or Profession item from the E-CASH store, and it will raise all of those mechanics by 20%, on all shards, for all players!
+Check the forums for important announcements on Dungeon Realms. Often times we have competitions and events that we will announce on our media outlets, so its suggested you follow us!
+Have a taste for some extra cash, or just want to try your luck? Either open a Casino or gamble at one yourself in realms. **Please consult the rules for Casinos and Gambling first. 
+Harrisons Fields is a great place to trade, and also PvP in the outside battlegrounds. Be careful, as there will be PKers (Player Killers) waiting for the unexpected!
+Upgrade your horse by purchasing the tiered upgrades and applying them in order by tier at the Animal Tamer.
+Try out the Horse Racing Track and practice with your horse outside the Walls of Cyrennica. Whenever there is a race, you want to be ready.
+You can purchase an Item Lore Book from the E-CASH Vendor for 99 E-CASH to apply a unique line of lore to your equipment.
+Fancy a duel? The Cyrennica Arena is a great place to practice dueling with your friends.
+Connect to our Teamspeak and chat with some of the players! IP: minecade.enjinvoice.com
+Tune into our livestreams to gain exclusive information about future patches or updates! twitch.tv/dungeonrealms
+You don't need to be a PMOD or a GM to host an event - design up an event in your realm, then maybe you can create a forum thread about it!
+Use /reboot to view how long until the next scheduled server restart!
+You can generate a signature that automatically updates! You can generate one now at: http://brad.friendsoverlay.com/dr/signature_generator.php
+Did you know that you can view the top 100 players on the highscores? Check it out: http://brad.friendsoverlay.com/dr/highscore_viewer.php

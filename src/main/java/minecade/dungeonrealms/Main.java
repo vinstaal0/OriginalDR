@@ -55,6 +55,7 @@ import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
+import nl.vinstaal0.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -107,6 +108,8 @@ public class Main extends JavaPlugin implements Listener {
 
     private static BetaNPC betaNPC;
     private static FoodVendor foodVendor;
+
+    private static Utils utils;
 
     /**
      * Holds the <code>JavaPlugin</code> instance of the DungeonRealms plugin once enabled.
@@ -178,6 +181,7 @@ public class Main extends JavaPlugin implements Listener {
         hiveServer = new HiveServer();
         betaNPC = new BetaNPC();
         foodVendor = new FoodVendor();
+        utils = new Utils();
 
         hive.onEnable();
         hearthstoneMechanics.onEnable();
@@ -221,6 +225,7 @@ public class Main extends JavaPlugin implements Listener {
         betaNPC.onEnable();
         levelMechanics.onEnable();
         foodVendor.onEnable();
+        utils.onEnable();
         
         ItemGenerator.loadModifiers();
 

@@ -6481,6 +6481,10 @@ public class ItemMechanics implements Listener {
         im.setDisplayName(name);
 
         iss.setItemMeta(im);
+
+        // Fix for missing textures
+        iss.setDurability((short)0);
+
         removeAttributes(iss);
         return iss;
     }

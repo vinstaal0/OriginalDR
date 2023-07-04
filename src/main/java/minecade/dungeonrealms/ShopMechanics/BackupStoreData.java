@@ -8,6 +8,7 @@ import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.database.ConnectionPool;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BackupStoreData extends BukkitRunnable {
@@ -33,6 +34,8 @@ public class BackupStoreData extends BukkitRunnable {
                 } else if (ShopMechanics.shop_stock.containsKey(shop_owner)) {
                     shop_contents = Hive.convertInventoryToString(shop_owner, ShopMechanics.shop_stock.get(shop_owner), false);
                 }
+
+                shop_contents = shop_contents.replace(ChatColor.COLOR_CHAR, '&');
 
                 /*
                  * if(shop_contents.equalsIgnoreCase("")){ shop_contents = "null"; }

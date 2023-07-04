@@ -58,6 +58,7 @@ import net.minecraft.server.v1_8_R1.EntityPlayer;
 import net.minecraft.server.v1_8_R1.GenericAttributes;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import io.netty.util.internal.ConcurrentSet;
+import nl.vinstaal0.Config;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bukkit.Bukkit;

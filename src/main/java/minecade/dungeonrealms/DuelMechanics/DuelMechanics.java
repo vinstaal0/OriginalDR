@@ -1881,6 +1881,7 @@ public class DuelMechanics implements Listener {
                         .containsKey(DefaultFlag.PVP)) {
                     State pvp_flag = (State) wg.getGlobalRegionManager().get(p.getWorld()).getRegion(region).getFlags()
                             .get(DefaultFlag.PVP);
+                    System.out.println("Pvp flag " + pvp_flag);
                     int region_priority = wg.getGlobalRegionManager().get(p.getWorld()).getRegion(region).getPriority();
 
                     if (return_priority == -1) {

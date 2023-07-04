@@ -1,5 +1,6 @@
 package minecade.dungeonrealms.HealthMechanics;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,8 @@ import minecade.dungeonrealms.SpawnMechanics.SpawnMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
 import net.citizensnpcs.api.npc.NPC;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R1.EntityLiving;
 
 import org.bukkit.Bukkit;
@@ -444,9 +447,13 @@ public class HealthMechanics implements Listener {
 
 				String dash = ChatColor.BLACK.toString() + ChatColor.BOLD + " - ";
 
-//				BarAPI.setMessage(pl, levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, (float) (health_percent * 100F));
+				String actionBarMsg = levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData;
+
+//				InfoHUD.setActionBar(pl, actionBarMsg);
+
+				BarAPI.setMessage(pl, levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, (float) (health_percent * 100F));
 			}else{
-//				BarAPI.setMessage(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (float) (health_percent * 100F));
+				BarAPI.setMessage(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (float) (health_percent * 100F));
 			}
 			//FakeDragon.setStatus(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (int)(health_percent * 100));
 			//PacketUtils.displayTextBar(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), pl);

@@ -529,180 +529,185 @@ public class LootMechanics implements Listener {
 				}*/
 				
 				List<String> loot_template = loot_templates.get(loot_template_s);
-				
-				for(String s : loot_template) {
-					if(s.contains(" ")) {
-						s = s.substring(0, s.indexOf(" "));
-						if(s.equalsIgnoreCase("")) {
+
+				if (loot_template != null) {
+
+					for (String s : loot_template) {
+
+						if (s.contains(" ")) {
+							s = s.substring(0, s.indexOf(" "));
+							if (s.equalsIgnoreCase("")) {
+								continue;
+							}
+						}
+
+						// s = 297:1-2%50
+						String item_id_s = s.substring(0, s.indexOf(":"));
+						int item_id = 0;
+						int item_tier = -1;
+						short item_meta = 0;
+						if (item_id_s.startsWith("T")) {
+							item_id = -1;
+							item_tier = Integer.parseInt(item_id_s.substring(1, item_id_s.length())); // Skip the 'T'.
+						} else if (item_id_s.startsWith("*")) {
+							item_id = -1;
+							item_tier = -1;
+						} else {
+							if (item_id_s.contains(",")) {
+								item_meta = Short.parseShort(item_id_s.split(",")[1]);
+								item_id = Integer.parseInt(item_id_s.split(",")[0]);
+							} else if (!(item_id_s.contains(","))) {
+								item_meta = 0;
+								item_id = Integer.parseInt(item_id_s);
+							}
+						}
+
+						if (item_id != -1) { // Spawn given item.
+							double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
+							double do_i_spawn = new Random().nextInt(1000);
+
+							//spawn_chance = spawn_chance * 10; // It's a decimal, so we * it by 10.
+
+							if (spawn_chance < 1) {
+								spawn_chance = 1;
+							}
+
+							if (spawn_chance > do_i_spawn) {
+								int min_amount = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf("-")));
+								int max_amount = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.indexOf("%")));
+								Material m = Material.getMaterial(item_id);
+								int amount_to_spawn = 0;
+								if (max_amount - min_amount > 0) {
+									amount_to_spawn = new Random().nextInt((max_amount - min_amount)) + min_amount;
+								} else if (max_amount - min_amount <= 0) {
+									amount_to_spawn = max_amount; // They're the same value.
+								}
+
+								if (m == Material.EMERALD) {
+									if (amount_to_spawn > 64) {
+										short real_id = 777;
+										ItemStack money = new ItemStack(Material.PAPER, 1, real_id);
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+									} else if (amount_to_spawn <= 64) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.makeGems(amount_to_spawn));
+									}
+								} else if (m == Material.POTION) {
+									if (item_meta == 1) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 1, ChatColor.WHITE.toString() + "Minor Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.WHITE.toString() + "15HP"));
+									}
+									if (item_meta == 5) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 5, ChatColor.GREEN.toString() + "Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.GREEN.toString() + "75HP"));
+									}
+									if (item_meta == 9) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 9, ChatColor.AQUA.toString() + "Major Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.AQUA.toString() + "300HP"));
+									}
+									if (item_meta == 12) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 12, ChatColor.LIGHT_PURPLE.toString() + "Superior Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.LIGHT_PURPLE.toString() + "750HP"));
+									}
+									if (item_meta == 3) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 3, ChatColor.YELLOW.toString() + "Legendary Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.YELLOW.toString() + "1800HP"));
+									}
+
+									if (item_meta == 16385) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16385, ChatColor.WHITE.toString() + "Minor Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.WHITE.toString() + "15HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+									}
+									if (item_meta == 16389) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16389, ChatColor.GREEN.toString() + "Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.GREEN.toString() + "40HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+									}
+									if (item_meta == 16393) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16393, ChatColor.AQUA.toString() + "Major Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.AQUA.toString() + "150HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+									}
+									if (item_meta == 16396) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16396, ChatColor.LIGHT_PURPLE.toString() + "Superior Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.LIGHT_PURPLE.toString() + "375HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+									}
+									if (item_meta == 16387) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16387, ChatColor.YELLOW.toString() + "Legendary Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.YELLOW.toString() + "900HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+									}
+								} else if (m == Material.MAGMA_CREAM) {
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
+								} else if (m == Material.EMPTY_MAP) {
+									if (item_meta == 1) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Cyrennica_scroll));
+									}
+									if (item_meta == 2) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Harrison_scroll));
+									}
+									if (item_meta == 3) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Dark_Oak_Tavern_scroll));
+									}
+									if (item_meta == 4) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll));
+									}
+									if (item_meta == 11) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));
+									}
+									if (item_meta == 12) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t2_wep_scroll));
+									}
+									if (item_meta == 13) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t3_wep_scroll));
+									}
+									if (item_meta == 14) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t4_wep_scroll));
+									}
+									if (item_meta == 15) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t5_wep_scroll));
+									}
+									if (item_meta == 21) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_armor_scroll));
+									}
+									if (item_meta == 22) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t2_armor_scroll));
+									}
+									if (item_meta == 23) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t3_armor_scroll));
+									}
+									if (item_meta == 24) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t4_armor_scroll));
+									}
+									if (item_meta == 25) {
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t5_armor_scroll));
+									}
+								} else {
+									loot_chest_inventory.addItem(new ItemStack(m, amount_to_spawn, item_meta));
+								}
+
+								continue;
+							}
+
+						}
+
+						if (item_tier != -1) { // Spawn random tier weapon.
+							double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
+							double do_i_spawn = new Random().nextInt(1000);
+
+							if (spawn_chance > do_i_spawn) {
+								ItemStack i = ItemMechanics.generateRandomTierItem(item_tier);
+								int random_dur = new Random().nextInt(i.getType().getMaxDurability()) + (i.getType().getMaxDurability() / 10);
+								if (random_dur > i.getType().getMaxDurability()) {
+									random_dur = i.getType().getMaxDurability();
+								}
+								i.setDurability((short) random_dur);
+								loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), i); // quantity ALWAYS = 1x.
+							}
+
+							continue;
+						}
+
+						if (item_id_s.startsWith("*")) {
+							String template_name = item_id_s.substring(1, item_id_s.indexOf(":"));
+							double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
+							double do_i_spawn = new Random().nextInt(1000);
+
+							if (spawn_chance > do_i_spawn) {
+								ItemStack i = ItemGenerators.customGenerator(template_name);
+								loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), i); // quantity ALWAYS = 1x.
+							}
+
 							continue;
 						}
 					}
-					
-					// s = 297:1-2%50
-					String item_id_s = s.substring(0, s.indexOf(":"));
-					int item_id = 0;
-					int item_tier = -1;
-					short item_meta = 0;
-					if(item_id_s.startsWith("T")) {
-						item_id = -1;
-						item_tier = Integer.parseInt(item_id_s.substring(1, item_id_s.length())); // Skip the 'T'.
-					} else if(item_id_s.startsWith("*")) {
-						item_id = -1;
-						item_tier = -1;
-					} else {
-						if(item_id_s.contains(",")) {
-							item_meta = Short.parseShort(item_id_s.split(",")[1]);
-							item_id = Integer.parseInt(item_id_s.split(",")[0]);
-						} else if(!(item_id_s.contains(","))) {
-							item_meta = 0;
-							item_id = Integer.parseInt(item_id_s);
-						}
-					}
-					
-					if(item_id != -1) { // Spawn given item.
-						double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
-						double do_i_spawn = new Random().nextInt(1000);
-						
-						//spawn_chance = spawn_chance * 10; // It's a decimal, so we * it by 10.
-						
-						if(spawn_chance < 1) {
-							spawn_chance = 1;
-						}
-						
-						if(spawn_chance > do_i_spawn) {
-							int min_amount = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf("-")));
-							int max_amount = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.indexOf("%")));
-							Material m = Material.getMaterial(item_id);
-							int amount_to_spawn = 0;
-							if(max_amount - min_amount > 0) {
-								amount_to_spawn = new Random().nextInt((max_amount - min_amount)) + min_amount;
-							} else if(max_amount - min_amount <= 0) {
-								amount_to_spawn = max_amount; // They're the same value.
-							}
-							
-							if(m == Material.EMERALD) {
-								if(amount_to_spawn > 64) {
-									short real_id = 777;
-									ItemStack money = new ItemStack(Material.PAPER, 1, real_id);
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
-								} else if(amount_to_spawn <= 64) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.makeGems(amount_to_spawn));
-								}
-							} else if(m == Material.POTION) {
-								if(item_meta == 1) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 1, ChatColor.WHITE.toString() + "Minor Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.WHITE.toString() + "15HP"));
-								}
-								if(item_meta == 5) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 5, ChatColor.GREEN.toString() + "Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.GREEN.toString() + "75HP"));
-								}
-								if(item_meta == 9) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 9, ChatColor.AQUA.toString() + "Major Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.AQUA.toString() + "300HP"));
-								}
-								if(item_meta == 12) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 12, ChatColor.LIGHT_PURPLE.toString() + "Superior Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.LIGHT_PURPLE.toString() + "750HP"));
-								}
-								if(item_meta == 3) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 3, ChatColor.YELLOW.toString() + "Legendary Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.YELLOW.toString() + "1800HP"));
-								}
-								
-								if(item_meta == 16385) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16385, ChatColor.WHITE.toString() + "Minor Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.WHITE.toString() + "15HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
-								}
-								if(item_meta == 16389) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16389, ChatColor.GREEN.toString() + "Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.GREEN.toString() + "40HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
-								}
-								if(item_meta == 16393) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16393, ChatColor.AQUA.toString() + "Major Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.AQUA.toString() + "150HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
-								}
-								if(item_meta == 16396) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16396, ChatColor.LIGHT_PURPLE.toString() + "Superior Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.LIGHT_PURPLE.toString() + "375HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
-								}
-								if(item_meta == 16387) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.POTION, (short) 16387, ChatColor.YELLOW.toString() + "Legendary Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.YELLOW.toString() + "900HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
-								}
-							} else if(m == Material.MAGMA_CREAM) {
-								loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
-							} else if(m == Material.EMPTY_MAP) {
-								if(item_meta == 1) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Cyrennica_scroll));
-								}
-								if(item_meta == 2) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Harrison_scroll));
-								}
-								if(item_meta == 3) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Dark_Oak_Tavern_scroll));
-								}
-								if(item_meta == 4) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll));
-								}
-								if(item_meta == 11) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));
-								}
-								if(item_meta == 12) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t2_wep_scroll));
-								}
-								if(item_meta == 13) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t3_wep_scroll));
-								}
-								if(item_meta == 14) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t4_wep_scroll));
-								}
-								if(item_meta == 15) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t5_wep_scroll));
-								}
-								if(item_meta == 21) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_armor_scroll));
-								}
-								if(item_meta == 22) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t2_armor_scroll));
-								}
-								if(item_meta == 23) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t3_armor_scroll));
-								}
-								if(item_meta == 24) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t4_armor_scroll));
-								}
-								if(item_meta == 25) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t5_armor_scroll));
-								}
-							} else {
-								loot_chest_inventory.addItem(new ItemStack(m, amount_to_spawn, item_meta));
-							}
-							
-							continue;
-						}
-						
-					}
-					
-					if(item_tier != -1) { // Spawn random tier weapon.
-						double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
-						double do_i_spawn = new Random().nextInt(1000);
-						
-						if(spawn_chance > do_i_spawn) {
-							ItemStack i = ItemMechanics.generateRandomTierItem(item_tier);
-							int random_dur = new Random().nextInt(i.getType().getMaxDurability()) + (i.getType().getMaxDurability() / 10);
-							if(random_dur > i.getType().getMaxDurability()) {
-								random_dur = i.getType().getMaxDurability();
-							}
-							i.setDurability((short) random_dur);
-							loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), i); // quantity ALWAYS = 1x.
-						}
-						
-						continue;
-					}
-					
-					if(item_id_s.startsWith("*")) {
-						String template_name = item_id_s.substring(1, item_id_s.indexOf(":"));
-						double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
-						double do_i_spawn = new Random().nextInt(1000);
-						
-						if(spawn_chance > do_i_spawn) {
-							ItemStack i = ItemGenerators.customGenerator(template_name);
-							loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), i); // quantity ALWAYS = 1x.
-						}
-						
-						continue;
-					}
+
 				}
 				
 				int count = 0;

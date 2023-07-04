@@ -1,0 +1,94 @@
+# Citizens Configuration
+
+npc:
+  chat:
+    options:
+      bystanders-hear-targeted-chat: false
+      max-number-of-targets-to-show: 2
+      multiple-targets-format: <target>|, <target>| & <target>| & others
+      range: 5
+      max-text-range: 500
+    format:
+      no-targets: '&7<npc>: &f<text>'
+      with-target-to-bystanders: '&7<npc>: &f<text>'
+      to-target: '&7<npc>: &f<text>'
+      with-targets-to-bystanders: '&7<npc>: &f<text>'
+  default:
+    lookclose: {}
+    pathfinding:
+      range: 25.0
+    talkclose: {}
+    look-close:
+      enabled: true
+      range: 5
+    random-talker: false
+    realistic-looking: false
+    stationary-ticks: -1
+    talk-close:
+      enabled: false
+      range: 3
+    text:
+      '0': Hello!
+  limits:
+    default-limit: 20
+    max-permission-checks: 10
+    max-speed: 100
+    max-packet-entries: 15
+  chunks:
+    always-keep-loaded: false
+  selection:
+    quick-select: true
+    item: '280'
+    message: <b>You selected <a><npc><b>!
+  player:
+    remove-from-list: true
+  text:
+    max-talk-cooldown: 180
+    min-talk-cooldown: 60
+    talk-item: '*'
+  pathfinding:
+    use-new-finder: false
+    attack-range: 3.0625
+    new-finder-open-doors: false
+    default-distance-margin: 2
+    update-path-rate: 20
+  server-ownership: false
+  controllable:
+    use-boat-controls: true
+  packets:
+    update-delay: 30
+  tablist:
+    disable: true
+  skins:
+    max-retries: -1
+    retry-delay: 120
+    rotation-update-degrees: 90.0
+    use-latest: true
+    view-distance: 100.0
+storage:
+  database:
+    driver: ''
+    password: ''
+    url: ''
+    username: ''
+  savetask: {}
+  save-task:
+    delay: 72000
+  file: saves.yml
+  type: yaml
+general:
+  colorscheme: {}
+  translation:
+    locale: ''
+  debug-mode: false
+  color-scheme:
+    message-highlight: <e>
+    message: <a>
+  debug-pathfinding: false
+economy:
+  npc:
+    cost: 100.0
+subplugins:
+  folder: plugins
+advanced:
+  check-minecraft-version: false

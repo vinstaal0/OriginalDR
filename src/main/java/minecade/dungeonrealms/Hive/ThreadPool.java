@@ -1,5 +1,6 @@
 package minecade.dungeonrealms.Hive;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -59,7 +60,7 @@ public class ThreadPool extends Thread {
 					pst.setString(1, log.type.name());
 					pst.setString(2, log.player);
 					pst.setLong(3, log.time);
-					pst.setString(4, (log.data != null) ? log.data.toString() : "");
+					pst.setString(4, (log.data != null) ? log.data.toString().getBytes(StandardCharsets.UTF_8).toString() : "");
 					pst.executeUpdate();
 				} catch(SQLException ex) {
 					Hive.log.log(Level.SEVERE, ex.getMessage(), ex);
