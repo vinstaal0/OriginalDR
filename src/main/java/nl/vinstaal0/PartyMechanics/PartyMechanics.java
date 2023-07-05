@@ -1,12 +1,11 @@
-package nl.vinstaal0.partyMechanics;
+package nl.vinstaal0.PartyMechanics;
 
 import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Main;
-import minecade.dungeonrealms.managers.PlayerManager;
 import nl.vinstaal0.ScoreBoardHandler;
-import nl.vinstaal0.partyMechanics.commands.CommandPAccept;
-import nl.vinstaal0.partyMechanics.commands.CommandPInvite;
+import nl.vinstaal0.PartyMechanics.Commands.CommandPAccept;
+import nl.vinstaal0.PartyMechanics.Commands.CommandPInvite;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

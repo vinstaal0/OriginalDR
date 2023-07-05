@@ -1,9 +1,6 @@
-package nl.vinstaal0.partyMechanics.commands;
+package nl.vinstaal0.PartyMechanics.Commands;
 
-import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
-import minecade.dungeonrealms.Main;
-import nl.vinstaal0.partyMechanics.PartyMechanics;
-import org.bukkit.Bukkit;
+import nl.vinstaal0.PartyMechanics.PartyMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -1,4 +1,4 @@
-package nl.vinstaal0.partyMechanics;
+package nl.vinstaal0.PartyMechanics;
 
 import nl.vinstaal0.ScoreBoardHandler;
 import org.bukkit.Bukkit;

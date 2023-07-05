@@ -56,7 +56,7 @@ import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
 import nl.vinstaal0.Utils;
-import nl.vinstaal0.partyMechanics.PartyMechanics;
+import nl.vinstaal0.PartyMechanics.PartyMechanics;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -163,7 +163,7 @@ public class Main extends JavaPlugin implements Listener {
         monsterMechanics = new MonsterMechanics();
         mountMechanics = new MountMechanics();
 //        partyMechanics = new PartyMechanics();
-        partyMechanics = new nl.vinstaal0.partyMechanics.PartyMechanics();
+        partyMechanics = new nl.vinstaal0.PartyMechanics.PartyMechanics();
         permissionMechanics = new PermissionMechanics();
         petMechanics = new PetMechanics();
         powerupMechanics = new PowerupMechanics();

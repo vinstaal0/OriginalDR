@@ -1,10 +1,9 @@
-package nl.vinstaal0.partyMechanics.commands;
+package nl.vinstaal0.PartyMechanics.Commands;
 
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
-import nl.vinstaal0.partyMechanics.PartyMechanics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
