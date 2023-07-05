@@ -230,6 +230,12 @@ public class ItemMechanics implements Listener {
         Main.plugin.getCommand("addweaponnew").setExecutor(new CommandAddWeaponNew());
         Main.plugin.getCommand("addweaponnewnew").setExecutor(new CommandAddWeaponNewNew());
 
+//        t1_arrow.setDurability((short)0);
+//        t2_arrow.setDurability((short)0);
+//        t3_arrow.setDurability((short)0);
+//        t4_arrow.setDurability((short)0);
+//        t5_arrow.setDurability((short)0);
+
         File home_dir = new File("plugins/ItemMechanics");
 
         if (!(home_dir.exists())) {

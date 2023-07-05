@@ -33,7 +33,7 @@ import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.MountMechanics.MountMechanics;
-import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
+//import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
@@ -56,6 +56,7 @@ import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
 import nl.vinstaal0.Utils;
+import nl.vinstaal0.partyMechanics.PartyMechanics;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -161,7 +162,8 @@ public class Main extends JavaPlugin implements Listener {
         moneyMechanics = new MoneyMechanics();
         monsterMechanics = new MonsterMechanics();
         mountMechanics = new MountMechanics();
-        partyMechanics = new PartyMechanics();
+//        partyMechanics = new PartyMechanics();
+        partyMechanics = new nl.vinstaal0.partyMechanics.PartyMechanics();
         permissionMechanics = new PermissionMechanics();
         petMechanics = new PetMechanics();
         powerupMechanics = new PowerupMechanics();
@@ -170,6 +172,7 @@ public class Main extends JavaPlugin implements Listener {
         recordMechanics = new RecordMechanics();
         repairMechanics = new RepairMechanics();
         restrictionMechanics = new RestrictionMechanics();
+
         shopMechanics = new ShopMechanics();
         spawnMechanics = new SpawnMechanics();
         subscriberMechanics = new SubscriberMechanics();

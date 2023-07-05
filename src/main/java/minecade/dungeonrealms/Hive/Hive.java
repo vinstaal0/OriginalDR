@@ -3899,6 +3899,10 @@ public class Hive implements Listener {
 
 		}
 
+		if (Main.getPartyMechanics().isInParty(p)) {
+			Main.getPartyMechanics().removeMember(p, false);
+		}
+
 		safe_logout.remove(p.getName());
 		safe_logout_location.remove(p.getName());
 

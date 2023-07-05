@@ -2,6 +2,7 @@ package minecade.dungeonrealms.ScoreboardMechanics;
 
 import java.util.HashMap;
 
+import nl.vinstaal0.ScoreBoardHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -13,15 +14,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class ScoreboardMechanics implements Listener {
 	
 	private static HashMap<Player, Scoreboard> boards = new HashMap<Player, Scoreboard>();
-	private static Scoreboard main;
+
+	public static Scoreboard main;
+	public static ScoreboardManager instance;
 	
 	public ScoreboardMechanics() {
-		main = Bukkit.getScoreboardManager().getNewScoreboard();
+		instance = Bukkit.getScoreboardManager();
+		main = instance.getNewScoreboard();
+
+		ScoreBoardHandler handler = new ScoreBoardHandler(instance, main);
 		
 		Objective objective = main.registerNewObjective("hpdisplay", "dummy");
 		objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
@@ -29,7 +36,7 @@ public class ScoreboardMechanics implements Listener {
 		
 		Team green = main.registerNewTeam("green");
 		green.setPrefix(ChatColor.GREEN.toString());
-		
+
 		Team dark_green = main.registerNewTeam("dark_green");
 		dark_green.setPrefix(ChatColor.DARK_GREEN.toString());
 		

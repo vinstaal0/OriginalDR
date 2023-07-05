@@ -74,7 +74,7 @@ public class PartyMechanics implements Listener {
 	public void onEnable() {
 		Main.plugin.getServer().getPluginManager().registerEvents(this, Main.plugin);
 		manager = Bukkit.getScoreboardManager();
-		
+
 		Main.plugin.getCommand("p").setExecutor(new CommandP());
 		Main.plugin.getCommand("paccept").setExecutor(new CommandPAccept());
 		Main.plugin.getCommand("party").setExecutor(new CommandParty());
@@ -84,13 +84,13 @@ public class PartyMechanics implements Listener {
 		Main.plugin.getCommand("ploot").setExecutor(new CommandPLoot());
 		// Main.plugin.getCommand("ppromote").setExecutor(new CommandPPromote());
 		Main.plugin.getCommand("pquit").setExecutor(new CommandPQuit());
-		
+
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
 				for(Entry<String, Long> data : party_invite_time.entrySet()) {
 					String p_name = data.getKey();
 					long time = data.getValue();
-					
+
 					if((System.currentTimeMillis() - time) >= (30 * 1000)) {
 						// 30s invite timeout.
 						String party_owner = party_invite.get(p_name);
@@ -108,9 +108,9 @@ public class PartyMechanics implements Listener {
 				}
 			}
 		}, 5 * 20L, 20L);
-		
+
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				for(String p_name : party_map.keySet()) {
@@ -210,25 +210,25 @@ public class PartyMechanics implements Listener {
 	
 	public static void sendPartyColor(Player p_to_send, Player p_viewer, boolean in_party) {
 		if(p_to_send.getName().equalsIgnoreCase(p_viewer.getName())) { return; }
-		
+
 		ChatColor c = null;
 		c = ChatColor.LIGHT_PURPLE;
-		
+
 		if(in_party == false) {
 			c = ChatColor.WHITE;
 		}
-		
+
 		if(p_to_send.isOp()) {
 			c = ChatColor.AQUA;
 			CommunityMechanics.setColor(p_to_send, c);
 			return;
 		}
-		
+
 		String r_name = p_to_send.getName();
-		
+
 		EntityPlayer ent_p_edited = ((CraftPlayer) p_to_send).getHandle();
 		net.minecraft.server.v1_8_R1.ItemStack boots = null, legs = null, chest = null, head = null;
-		
+
 		try {
 			if(ent_p_edited.getEquipment(1) != null) {
 				boots = ent_p_edited.getEquipment(1);
@@ -245,16 +245,16 @@ public class PartyMechanics implements Listener {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if(c == ChatColor.WHITE) {
 			ent_p_edited.displayName = ChatColor.stripColor(p_to_send.getName());
 			// No color.
 		} else {
 			ent_p_edited.displayName = c.toString() + ChatColor.stripColor(p_to_send.getName());
 		}
-		
+
 		((CraftPlayer) p_viewer).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(ent_p_edited));
-		
+
 		List<Packet> pack_list = new ArrayList<Packet>();
 		if(boots != null) {
 			pack_list.add(new PacketPlayOutEntityEquipment(ent_p_edited.getId(), 1, boots));
@@ -268,11 +268,11 @@ public class PartyMechanics implements Listener {
 		if(head != null) {
 			pack_list.add(new PacketPlayOutEntityEquipment(ent_p_edited.getId(), 4, head));
 		}
-		
+
 		for(Packet pa : pack_list) {
 			((CraftPlayer) p_viewer).getHandle().playerConnection.sendPacket(pa);
 		}
-		
+
 		ent_p_edited.displayName = ChatColor.stripColor(r_name);
 	}
 	
@@ -346,6 +346,7 @@ public class PartyMechanics implements Listener {
 						String p_name = pl.getName();
 						if(p_name.length() > 14) {
 							p_name = p_name.substring(0, 14);
+							
 						}
 						
 						//hp = obj.getScore(Bukkit.getOfflinePlayer(p_name));

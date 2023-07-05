@@ -86,6 +86,22 @@ public class EnchantMechanics implements Listener {
 		registerEnchant();
 
 		t1_wep_scroll.setDurability((short)0);
+		t2_wep_scroll.setDurability((short)0);
+		t3_wep_scroll.setDurability((short)0);
+		t4_wep_scroll.setDurability((short)0);
+		t5_wep_scroll.setDurability((short)0);
+
+		t1_armor_scroll.setDurability((short)0);
+		t2_armor_scroll.setDurability((short)0);
+		t3_armor_scroll.setDurability((short)0);
+		t4_armor_scroll.setDurability((short)0);
+		t5_armor_scroll.setDurability((short)0);
+
+		t1_white_scroll.setDurability((short)0);
+		t2_white_scroll.setDurability((short)0);
+		t3_white_scroll.setDurability((short)0);
+		t4_white_scroll.setDurability((short)0);
+		t5_white_scroll.setDurability((short)0);
 
 		log.info("[EnchantMechanics] V1.0 has been enabled.");
 	}

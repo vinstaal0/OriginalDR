@@ -7,11 +7,11 @@ public class Config {
     public static boolean enableLevelRestrictions = true;
 
     // Set's droprate in percentages
-    public static double tier1Droprate = 1;
-    public static double tier2Droprate = 1;
-    public static double tier3Droprate = 1;
-    public static double tier4Droprate = 1;
-    public static double tier5Droprate = 1;
+    public static int tier1Droprate = 12; // default 12
+    public static int tier2Droprate = 5; // default 5
+    public static int tier3Droprate = 3; // default 3
+    public static int tier4Droprate = 1; // default 1
+    public static int tier5Droprate = 1; // default 1
 
     // Modifier if mob is elite
     // Default = 1.5

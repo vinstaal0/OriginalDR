@@ -447,10 +447,6 @@ public class HealthMechanics implements Listener {
 
 				String dash = ChatColor.BLACK.toString() + ChatColor.BOLD + " - ";
 
-				String actionBarMsg = levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData;
-
-//				InfoHUD.setActionBar(pl, actionBarMsg);
-
 				BarAPI.setMessage(pl, levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, (float) (health_percent * 100F));
 			}else{
 				BarAPI.setMessage(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (float) (health_percent * 100F));

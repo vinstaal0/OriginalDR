@@ -305,9 +305,6 @@ commands:
   report:
     description: Report a player.
     usage: /<command>
-  check:
-    description: Check active reports.
-    usage: /<command>
   stuck:
     description: Unstucks your character.
     usage: /<command>
@@ -399,9 +396,6 @@ commands:
     usage: /<command>
   pet:
     description: Root command.
-    usage: /<command>
-  addpet:
-    description: Console command to add pet to player.
     usage: /<command>
   powerup:
     description: Root command.
@@ -581,4 +575,7 @@ commands:
     usage: /<command>
   FixMissingTexture:
     description: removes an items NBT data
+    usage: /<command>
+  activateLootbuff:
+    description: activates the loot buff
     usage: /<command>

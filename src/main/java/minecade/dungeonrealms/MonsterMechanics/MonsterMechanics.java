@@ -5270,7 +5270,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.WOOD_AXE || weapon.getType() == Material.WOOD_SWORD || weapon.getType() == Material.WOOD_SPADE
                             || weapon.getType() == Material.WOOD_HOE || getItemTier(weapon) == 1) { // T1
                         scroll_drop_chance = 2;
-                        drop_chance = 12;
+                        drop_chance = Config.tier1Droprate;
                         if (gem_drop_chance <= ((50 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(3 - 1) + 1) * gold_drop_multiplier;
                         }
@@ -5291,7 +5291,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.STONE_AXE || weapon.getType() == Material.STONE_SWORD || weapon.getType() == Material.STONE_SPADE
                             || weapon.getType() == Material.STONE_HOE || getItemTier(weapon) == 2) { // T2
                         scroll_drop_chance = 2;
-                        drop_chance = 5;
+                        drop_chance = Config.tier2Droprate;
                         if (gem_drop_chance <= ((40 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(12 - 2) + 2) * gold_drop_multiplier;
                         }
@@ -5324,7 +5324,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.IRON_AXE || weapon.getType() == Material.IRON_SWORD || weapon.getType() == Material.IRON_SPADE
                             || weapon.getType() == Material.IRON_HOE || getItemTier(weapon) == 3) { // T3
                         scroll_drop_chance = 2;
-                        drop_chance = 3;
+                        drop_chance = Config.tier3Droprate;
                         if (gem_drop_chance <= ((30 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(30 - 10) + 10) * gold_drop_multiplier;
                         }
@@ -5357,7 +5357,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.DIAMOND_AXE || weapon.getType() == Material.DIAMOND_SWORD || weapon.getType() == Material.DIAMOND_HOE
                             || weapon.getType() == Material.DIAMOND_SPADE || getItemTier(weapon) == 4) { // T4
                         scroll_drop_chance = 1;
-                        drop_chance = 1;
+                        drop_chance = Config.tier4Droprate;
                         if (gem_drop_chance <= ((20 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(50 - 20) + 20) * gold_drop_multiplier;
                         }
@@ -5379,7 +5379,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.GOLD_AXE || weapon.getType() == Material.GOLD_SWORD || weapon.getType() == Material.GOLD_HOE
                             || weapon.getType() == Material.GOLD_SPADE || getItemTier(weapon) == 5) { // T5
                         scroll_drop_chance = 1;
-                        drop_chance = 1;
+                        drop_chance = Config.tier5Droprate;
                         if (gem_drop_chance <= ((35 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(200 - 75) + 75) * gold_drop_multiplier;
                         }

@@ -3458,17 +3458,20 @@ public class ProfessionMechanics implements Listener {
                     if (diff == 0) {
                         // Lvl 2 debuff
                         if (pickaxe_tier == 2) {
-                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
+                            pl.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 0));
+//                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                             // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                         } else {
-                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 2));
+                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 0));
+//                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 2));
                             // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 2));
                         }
                         slow_mining.put(pl.getName(), 2);
                     }
                     if (diff == 1) {
                         // Lvl 1 debuff
-                        pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
+                        pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 0));
+//                        pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                         // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                         slow_mining.put(pl.getName(), 1);
                     }
