@@ -106,18 +106,18 @@ public class FatigueMechanics implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					if(p.isSprinting()) {
-						if(DuelMechanics.isDamageDisabled(p.getLocation()) && !(DuelMechanics.duel_map.containsKey(p.getName())) && !(TutorialMechanics.onIsland.contains(p.getName()))) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.isSprinting()) {
+						if (DuelMechanics.isDamageDisabled(p.getLocation()) && !(DuelMechanics.duel_map.containsKey(p.getName())) && !(TutorialMechanics.onIsland.contains(p.getName()))) {
 							continue;
 						}
-						    removeEnergy(p, 0.15F); // ORIGINAL: 0.15F
+						removeEnergy(p, 0.15F); // ORIGINAL: 0.15F
 					}
-					
+
 				}
-				for(Player p : starving) {
+				for (Player p : starving) {
 					p.removePotionEffect(PotionEffectType.HUNGER);
-					if(p.getFoodLevel() <= 0) {
+					if (p.getFoodLevel() <= 0) {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 0)); // 80
 					} else {
 						starving.remove(p.getName());
@@ -126,6 +126,7 @@ public class FatigueMechanics implements Listener {
 				}
 			}
 		}.runTaskTimerAsynchronously(Main.plugin, 2 * 20L, 10L);
+//		}.runTaskLater(Main.plugin, 2*20L);
 		
 		log.info("[FatigueMechanics] V1.0 has been enabled.");
 	}

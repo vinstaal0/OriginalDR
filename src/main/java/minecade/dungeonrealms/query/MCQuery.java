@@ -17,7 +17,7 @@ public class MCQuery {
 	final static byte HANDSHAKE = 9;
 	final static byte STAT = 0;
 	
-	String serverAddress = "localhost";
+	String serverAddress = "127.0.0.1";
 	int queryPort = 25565; // the default minecraft query port
 	
 	int localPort = 25566; // the local port we're connected to the server on
@@ -124,8 +124,9 @@ public class MCQuery {
 		} catch(SocketException e) {
 			e.printStackTrace();
 		} catch(SocketTimeoutException e) {
-			//System.err.println("Socket Timeout! Is the server offline?");
-			//System.exit(1);
+			System.err.println("Socket Timeout! Is the server offline?");
+//			System.exit(1);
+			e.printStackTrace();
 			// throw exception
 		} catch(UnknownHostException e) {
 			System.err.println("Unknown host!");

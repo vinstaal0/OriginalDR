@@ -38,9 +38,12 @@ public class DonationMechanics implements Listener {
 	
 	static Logger log = Logger.getLogger("Minecraft");
 	
-	public final static String sql_url = "jdbc:mysql://72.20.40.38:7447/dungeonrealms";
-	public final static String sql_user = "slave_3XNZvi";
-	public final static String sql_password = "SgUmxYSJSFmOdro3";
+//	public final static String sql_url = "jdbc:mysql://72.20.40.38:7447/dungeonrealms";
+//	public final static String sql_user = "slave_3XNZvi";
+//	public final static String sql_password = "SgUmxYSJSFmOdro3";
+public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
+	public final static String sql_user = "root";
+	public final static String sql_password = "qcHqKGVdLXNXXN5j";
 	
 	public final static int transfer_port = 6427;
 	
@@ -74,9 +77,9 @@ public class DonationMechanics implements Listener {
 		RankThread = new RankThread();
 		RankThread.start();
 		
-		server_list.put(0, "72.8.157.66:32777");
-		server_list.put(1, "72.20.37.210:10001");
-		server_list.put(2, "72.20.37.210:10002");
+		server_list.put(0, "127.0.0.1:25565");
+		server_list.put(1, "127.0.0.1:25566");
+		server_list.put(2, "127.0.0.1:25567");
 		server_list.put(3, "72.20.37.210:10003");
 		server_list.put(4, "72.20.37.210:10004"); 
 		server_list.put(5, "72.20.37.210:10005");

@@ -3432,24 +3432,28 @@ public class ProfessionMechanics implements Listener {
                 if (pickaxe_tier == 4 || pickaxe_tier == 5) {
                     if (pickaxe_tier == 4) {
                         if (diff == 0) { // Diamond ore.
-                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
+//                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
+                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                             // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
                             slow_mining.put(pl.getName(), 3);
                         }
                         if (diff == 1) { // Iron ore.
-                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
+//                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
+                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                             // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
                             slow_mining.put(pl.getName(), 3);
                         }
                     }
                     if (pickaxe_tier == 5) {
                         if (diff == 0) { // Gold ore.
-                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
+//                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
+                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1));
                             // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 3));
                             slow_mining.put(pl.getName(), 3);
                         }
                         if (diff == 1) { // Diamond ore.
-                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 2));
+//                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 2));
+                            pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 0));
                             // sendPotionPacket(pl, new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 2));
                             slow_mining.put(pl.getName(), 1);
                         }

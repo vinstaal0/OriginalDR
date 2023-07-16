@@ -63,6 +63,7 @@ public class RepairMechanics implements Listener {
 	public static int attempts_per_pickaxe = 1000;
 	public static int hits_per_weapon = 1500;
 	public static int blocks_per_armor = 1500;
+
 	//private static HashMap<Player, HashMap<ArmorPosition, ItemStack>> playerArmor = new HashMap<Player, HashMap<ArmorPosition, ItemStack>>();
 	
 	static RepairMechanics instance = null;

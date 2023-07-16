@@ -678,7 +678,8 @@ public class TeleportationMechanics implements Listener {
 			}
 		}
 	}
-	
+
+	// TODO make unstackable in a different way
 	public static ItemStack makeUnstackable(ItemStack is) {
 		short ran_dur = (short) (new Random().nextInt(32768)); // -32768 to 32768
 		is.setDurability(ran_dur);

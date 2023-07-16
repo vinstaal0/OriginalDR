@@ -3144,7 +3144,6 @@ public class ItemMechanics implements Listener {
 
                     le.setVelocity(unitVector.multiply(0.10D));
                 }
-
             }
         }, 1L);
     }

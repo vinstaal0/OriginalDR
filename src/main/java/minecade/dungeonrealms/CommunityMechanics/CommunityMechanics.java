@@ -189,50 +189,27 @@ public class CommunityMechanics implements Listener {
 			}
 		}, 400 * 20L, 300 * 20L);
 
-		server_list.put(0, "72.8.157.66");
+		server_list.put(0, "127.0.0.1");
 		
 		// the following ports are listen ports, not the minecraft ports the servers are actually running on!
-        server_list.put(1, "72.20.37.210:6427");
-        server_list.put(2, "72.20.37.210:6428");
-        server_list.put(3, "72.20.37.210:6429");
+        server_list.put(1, "127.0.0.1:6427");
+        server_list.put(2, "127.0.0.1:6428");
+        server_list.put(3, "127.0.0.1:6429");
         server_list.put(4, "72.20.37.210:6430"); 
         server_list.put(5, "72.20.37.210:6431");
         
         server_list.put(100, "72.20.55.80");
-        
-		/* moved to new server boxes on 7/2/14
-		server_list.put(1, "72.20.38.165"); // 74..63.245.13 US-1
-		server_list.put(2, "72.20.38.166"); // 74..63.245.14 US-2
-		server_list.put(3, "72.8.134.149"); // US-3
-		server_list.put(4, "72.8.134.150"); // US-4
-		// server_list.put(5, "72.8.157.57"); // US-5
-		// server_list.put(6, "72.8.157.58"); // US-6
-		// server_list.put(7, "69.197.61.57"); // US-7
-		// server_list.put(8, "69.197.61.58"); // US-8
-		server_list.put(9, "72.20.33.81"); // US-9 (VIP)
-		server_list.put(10, "72.20.33.82"); // US-10 (VIP)
-		server_list.put(11, "72.20.42.197"); // US-11 (RP)
-		server_list.put(100, "72.20.55.80"); // US-100
 
-		server_list.put(2001, "72.20.42.198"); // BR-1
-		*/
 
 		for (String s : server_list.values()) {
 			ip_whitelist.add(s);
 		}
 		
-		ip_whitelist.add("72.20.37.210"); //Live Shards
+		ip_whitelist.add("localhost"); //Live Shards
 		ip_whitelist.add(Config.Hive_IP);
-		ip_whitelist.add("72.8.157.66"); // Donation Back-end Server AND US-0
-		ip_whitelist.add("72.20.9.154");
-		ip_whitelist.add("72.20.9.158");
-		ip_whitelist.add("72.8.172.242");
-		ip_whitelist.add("69.197.57.158");
-		ip_whitelist.add("72.20.30.14");
-		ip_whitelist.add("72.8.172.254");
-		ip_whitelist.add("74.63.199.162");
-		ip_whitelist.add("80.192.218.84"); // Testing packet connection for bradez
-		ip_whitelist.add("85.25.47.171"); // GM Tool Packet Manager
+		ip_whitelist.add("127.0.0.1"); // Donation Back-end Server AND US-0
+		ip_whitelist.add("192.168.0.130");
+		ip_whitelist.add("192.168.0.202");
 
 		toggle_map.add("toggledebug");
 		toggle_map.add("toggleff");

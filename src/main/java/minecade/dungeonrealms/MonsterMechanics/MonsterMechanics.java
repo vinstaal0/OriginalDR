@@ -7,16 +7,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
@@ -58,7 +50,8 @@ import net.minecraft.server.v1_8_R1.EntityPlayer;
 import net.minecraft.server.v1_8_R1.GenericAttributes;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import io.netty.util.internal.ConcurrentSet;
-import nl.vinstaal0.Config;
+import nl.vinstaal0.Dungeonrealms.Config;
+import nl.vinstaal0.Dungeonrealms.PartyMechanics.Party;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -5627,7 +5620,19 @@ public class MonsterMechanics implements Listener {
                         Player target = Bukkit.getPlayer(mob_target.get(ent));
                         if (LevelMechanics.getPlayerTier(target) + 1 >= getMobTier(ent)) {
                             if (i_gear.getType() != Material.AIR) {
-                                ent.getWorld().dropItemNaturally(ent.getLocation(), i_gear);
+
+                                if (Main.getPartyMechanics().isInParty(p)) {
+
+                                    Optional<Party> optionalParty = Main.getPartyMechanics().getParty(p);
+
+                                    if (optionalParty.isPresent()) {
+                                        Party party = optionalParty.get();
+                                        party.dropItemtoParty(p, ent.getLocation(), i_gear, ent);
+                                    }
+
+                                } else {
+                                    ent.getWorld().dropItemNaturally(ent.getLocation(), i_gear);
+                                }
                             }
                         }
                     }

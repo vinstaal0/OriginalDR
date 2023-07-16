@@ -26,7 +26,6 @@ import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
 import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.MonsterMechanics.Hologram;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
-import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 import minecade.dungeonrealms.database.ConnectionPool;
@@ -34,6 +33,7 @@ import minecade.dungeonrealms.jsonlib.JSONMessage;
 import minecade.dungeonrealms.managers.PlayerManager;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
 
+import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -876,9 +876,16 @@ public class ChatMechanics implements Listener {
             return;
         }
 
-        if (PartyMechanics.party_only.contains(p.getName())) {
-            p.performCommand("p " + msg);
+//        if (PartyMechanics.party_only.contains(p.getName())) {
+//            p.performCommand("p " + msg);
+//
+//            return;
+//        }
 
+        PartyMechanics partyMechanics = Main.getPartyMechanics();
+
+        if (partyMechanics.partyOnlyChat.contains(p)) {
+            p.performCommand("p " + msg);
             return;
         }
 

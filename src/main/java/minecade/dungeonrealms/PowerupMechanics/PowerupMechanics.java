@@ -397,6 +397,9 @@ public class PowerupMechanics implements Listener {
 				EntityDamageByEntityEvent edee = (EntityDamageByEntityEvent) e;
 				if(edee.getDamager() instanceof Player) {
 					Player pl = (Player) edee.getDamager();
+
+					pl.sendMessage(" You broke this BEACON!");
+
 					if(TutorialMechanics.onTutorialIsland(pl)) { return; // Do nothing.
 					}
 					Block b = e.getEntity().getLocation().subtract(0, 1, 0).getBlock();

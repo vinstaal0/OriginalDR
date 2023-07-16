@@ -2,7 +2,7 @@ package minecade.dungeonrealms.ScoreboardMechanics;
 
 import java.util.HashMap;
 
-import nl.vinstaal0.ScoreBoardHandler;
+import nl.vinstaal0.Dungeonrealms.ScoreBoardHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

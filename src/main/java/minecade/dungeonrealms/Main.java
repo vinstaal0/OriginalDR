@@ -55,8 +55,9 @@ import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
-import nl.vinstaal0.Utils;
-import nl.vinstaal0.PartyMechanics.PartyMechanics;
+import nl.vinstaal0.Dungeonrealms.BungeeConnector;
+import nl.vinstaal0.Dungeonrealms.Utils;
+import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -111,6 +112,7 @@ public class Main extends JavaPlugin implements Listener {
     private static FoodVendor foodVendor;
 
     private static Utils utils;
+    private static BungeeConnector bungeeConnector;
 
     /**
      * Holds the <code>JavaPlugin</code> instance of the DungeonRealms plugin once enabled.
@@ -163,7 +165,7 @@ public class Main extends JavaPlugin implements Listener {
         monsterMechanics = new MonsterMechanics();
         mountMechanics = new MountMechanics();
 //        partyMechanics = new PartyMechanics();
-        partyMechanics = new nl.vinstaal0.PartyMechanics.PartyMechanics();
+        partyMechanics = new nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics();
         permissionMechanics = new PermissionMechanics();
         petMechanics = new PetMechanics();
         powerupMechanics = new PowerupMechanics();
@@ -184,7 +186,9 @@ public class Main extends JavaPlugin implements Listener {
         hiveServer = new HiveServer();
         betaNPC = new BetaNPC();
         foodVendor = new FoodVendor();
+
         utils = new Utils();
+        bungeeConnector = new BungeeConnector();
 
         hive.onEnable();
         hearthstoneMechanics.onEnable();
@@ -229,6 +233,7 @@ public class Main extends JavaPlugin implements Listener {
         levelMechanics.onEnable();
         foodVendor.onEnable();
         utils.onEnable();
+        bungeeConnector.onEnable();
         
         ItemGenerator.loadModifiers();
 
@@ -700,6 +705,18 @@ public class Main extends JavaPlugin implements Listener {
 
     public static List<String> getMasters() {
         return masters;
+    }
+
+    public static FoodVendor getFoodVendor() {
+        return foodVendor;
+    }
+
+    public static Utils getUtils() {
+        return utils;
+    }
+
+    public static BungeeConnector getBungeeConnector() {
+        return bungeeConnector;
     }
 
 }

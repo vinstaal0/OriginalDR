@@ -136,6 +136,10 @@ public class UploadPlayerData extends Thread {
 				//CommunityMechanics.sendPacketCrossServer("@server_num@" + p_name + ":" + Hive.getServerNumFromPrefix(server_prefix), -1, true);
 				PlayerManager.getPlayerModel(p_name).setServerNum(Hive.getServerNumFromPrefix(server_prefix));
 				Thread.sleep(50);
+
+				/*
+				* Code used to send player to another shard/server using Bungeecord's sub channel
+				* */
 				
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
 				DataOutputStream out = new DataOutputStream(b);
@@ -143,12 +147,14 @@ public class UploadPlayerData extends Thread {
 					out.writeUTF("Connect");
 					out.writeUTF(server_prefix);
 				} catch(IOException eee) {
+					eee.printStackTrace();
 					Bukkit.getLogger().info("You'll never see me!");
 				}
-				
+
 				pl.sendPluginMessage(Main.plugin, "BungeeCord", b.toByteArray());
-				//CommunityMechanics.sendPacketCrossServer("@server_num@" + p_name + ":" + -1, -1, true);
+//				CommunityMechanics.sendPacketCrossServer("@server_num@" + p_name + ":" + -1, -1, true);
 				// Tells players the user has left the old server.
+
 			}
 			
 			if(!(Hive.server_swap.containsKey(p_name))) {

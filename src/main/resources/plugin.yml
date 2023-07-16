@@ -564,7 +564,7 @@ commands:
   ppromote:
     description: Promote player to party leader.
     usage: /<command>
-  ploot:
+  ptype:
     description: Change loot distribution type.
     usage: /<command>
   isunomadyet:

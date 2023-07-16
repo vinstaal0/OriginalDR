@@ -122,7 +122,7 @@ public class Config {
     public static List<String> us_private_servers = new ArrayList<String>(Arrays.asList("US-5"));
 
     
-    public static int transfer_port = 6427;
+    public static int transfer_port = 25565;
     //public static String Hive_IP = "72.20.40.38";
     public static String Hive_IP = "localhost";
 

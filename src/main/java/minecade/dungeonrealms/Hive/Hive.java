@@ -1095,7 +1095,13 @@ public class Hive implements Listener {
 					.prepareStatement(
 							"CREATE TABLE IF NOT EXISTS "
 									+ "player_database"
-									+ "(p_name VARCHAR(18) PRIMARY KEY, location TEXT, inventory LONGTEXT, hp INT, food_level INT, level INT, guild_name VARCHAR(16), combat_log BIT, last_login_time LONG, rank TINYTEXT, server_num INT, align_status VARCHAR(16), align_time LONG, toggles TEXT, pets TEXT, buddy_list TEXT, ignore_list TEXT, realm_tier INT, realm_title TINYTEXT, realm_loaded TINYINT(1), noob_player TINYINT(1), last_server TINYTEXT, ecash INT, ip TEXT, portal_shards TEXT, saved_gear TEXT, mule_inventory TEXT) ENGINE=InnoDB;");
+									+ "(p_name VARCHAR(18) PRIMARY KEY, location TEXT, inventory LONGBLOB, hp INT, food_level INT, level INT, "
+									+ "guild_name VARCHAR(16), combat_log BIT, last_login_time LONG, rank TINYTEXT, server_num INT, align_status VARCHAR(16), "
+									+ "align_time LONG, toggles TEXT, pets TEXT, buddy_list TEXT, ignore_list TEXT, realm_tier INT, realm_title TINYTEXT,"
+									+ "realm_loaded TINYINT(1), noob_player TINYINT(1), last_server TINYTEXT, ecash INT, ip TEXT, portal_shards TEXT, "
+									+ "saved_gear TEXT, mule_inventory LONGBLOB, player_level INT, first_login LONG, sdays_left INT, player_xp INT, lost_gear LONGBLOB, "
+									+ "allocated_str INT, allocated_dex INT, allocated_vit INT, allocated_int INT, achievments VARCHAR(MAX), "
+									+ "online_today VARCHAR, resets VARCHAR, ecash_storage LONGBLOB, placercode VARCHAR, login_delay VARCHAR) ENGINE=InnoDB;");
 
 			pst.executeUpdate();
 
@@ -1108,7 +1114,8 @@ public class Hive implements Listener {
 					.prepareStatement(
 							"CREATE TABLE IF NOT EXISTS "
 									+ "guilds"
-									+ "(guild_name VARCHAR(16) PRIMARY KEY, guild_handle VARCHAR(3), guild_color INT, guild_server_num INT, members LONGTEXT, motd LONGTEXT) ENGINE=InnoDB;");
+									+ "(guild_name VARCHAR(16) PRIMARY KEY, guild_handle VARCHAR(3), guild_color INT, guild_server_num INT, members LONGTEXT, " +
+									"biography VARCHAR(MAX), motd LONGTEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
 
 			pst = ConnectionPool
@@ -1121,7 +1128,7 @@ public class Hive implements Listener {
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"CREATE TABLE IF NOT EXISTS " + "statistics"
-							+ "(pname CHAR(18) PRIMARY KEY, unlawful_kills INT, lawful_kills INT, deaths INT, mob_kills INT, money INT) ENGINE=InnoDB;");
+							+ "(pname CHAR(18) PRIMARY KEY, unlawful_kills INT, lawful_kills INT, deaths INT, mob_kills INT, money INT, duel_wins INT, duel_lose INT) ENGINE=InnoDB;");
 			pst.executeUpdate();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
@@ -1140,6 +1147,20 @@ public class Hive implements Listener {
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"CREATE TABLE IF NOT EXISTS " + "mute_map" + "(pname CHAR(18) PRIMARY KEY, unmute LONG, who_muted CHAR(18)) ENGINE=InnoDB;");
 			pst.executeUpdate();
+
+			pst = ConnectionPool.getConnection().prepareStatement(
+					"CREATE TABLE IF NOT EXISTS " + "server" +
+							"(id VARCHAR PRIMARY KEY, online_players INT) ENGINE=InnoDB;");
+			pst.executeUpdate();
+
+			pst = ConnectionPool.getConnection().prepareStatement(
+					"CREATE TABLE IF NOT EXISTS " + "logs" +
+							"(type VARCHAR, player VARCHAR, time VARCHAR, date VARCHAR, date LONGTEXT) ENGINE=InnoDB;");
+			pst.executeUpdate();
+
+			pst = ConnectionPool.getConnection().prepareStatement(
+					"CREATE TABLE IF NOT EXISTS " + "hearthstone" +
+					"(p_name VARCHAR, location_name VARCHAR, timer VARCHAR) Engine=InnoDB;");
 
 		} catch (SQLException ex) {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
@@ -4607,31 +4628,31 @@ public class Hive implements Listener {
 							/*
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0.5, 0.5, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 0.5, 0.5), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 0.75, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0.25, 0.75, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 1, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0.25, 1, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 1.50, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0.25, 1.50, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 2, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().add(0.25, 2, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0.5, -0.5, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0, -0.5, 0.5), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0, -0.75, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0.25, -0.75, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0, -1, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0.25, -1, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0, -1.50, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0.25, -1.50, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
+							 *
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0, -2, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 * pl.getWorld().spawnParticle(pl.getLocation().subtract(0.25, -2, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
 							 */
