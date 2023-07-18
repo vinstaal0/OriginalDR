@@ -124,14 +124,19 @@ public class Config {
     
     public static int transfer_port = 25565;
     //public static String Hive_IP = "72.20.40.38";
-    public static String Hive_IP = "localhost";
+//    public static String Hive_IP = "localhost";
+    public static String Hive_IP = "192.168.0.106";
+//    public static String Hive_IP = "172.17.17.108";
 
     //public static int SQL_port = 7447;
     public static int SQL_port = 3306;
     //public static String sql_user = "slave_3XNZvi";
-    public static String sql_user = "root";
-    //public static String sql_password = "SgUmxYSJSFmOdro3";
-    public static String sql_password = "qcHqKGVdLXNXXN5j";
+//    public static String sql_user = "root";
+    public static String sql_user = "dungeonrealms";
+//    public static String sql_password = "SgUmxYSJSFmOdro3";
+//    public static String sql_password = "qcHqKGVdLXNXXN5j";
+//    public static String sql_password = "l8d8X7BRWY4$YXL";
+    public static String sql_password = "dungeonrealms";
 //    public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms";
     public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
 

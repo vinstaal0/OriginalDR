@@ -1100,8 +1100,8 @@ public class Hive implements Listener {
 									+ "align_time LONG, toggles TEXT, pets TEXT, buddy_list TEXT, ignore_list TEXT, realm_tier INT, realm_title TINYTEXT,"
 									+ "realm_loaded TINYINT(1), noob_player TINYINT(1), last_server TINYTEXT, ecash INT, ip TEXT, portal_shards TEXT, "
 									+ "saved_gear TEXT, mule_inventory LONGBLOB, player_level INT, first_login LONG, sdays_left INT, player_xp INT, lost_gear LONGBLOB, "
-									+ "allocated_str INT, allocated_dex INT, allocated_vit INT, allocated_int INT, achievments VARCHAR(MAX), "
-									+ "online_today VARCHAR, resets VARCHAR, ecash_storage LONGBLOB, placercode VARCHAR, login_delay VARCHAR) ENGINE=InnoDB;");
+									+ "allocated_str INT, allocated_dex INT, allocated_vit INT, allocated_int INT, achievments VARCHAR(9999), "
+									+ "online_today INT, resets INT, ecash_storage LONGBLOB, placercode VARCHAR(36), login_delay VARCHAR(16)) ENGINE=InnoDB;");
 
 			pst.executeUpdate();
 
@@ -1115,7 +1115,7 @@ public class Hive implements Listener {
 							"CREATE TABLE IF NOT EXISTS "
 									+ "guilds"
 									+ "(guild_name VARCHAR(16) PRIMARY KEY, guild_handle VARCHAR(3), guild_color INT, guild_server_num INT, members LONGTEXT, " +
-									"biography VARCHAR(MAX), motd LONGTEXT) ENGINE=InnoDB;");
+									"biography VARCHAR(9999), motd LONGTEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
 
 			pst = ConnectionPool
@@ -1150,17 +1150,19 @@ public class Hive implements Listener {
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"CREATE TABLE IF NOT EXISTS " + "server" +
-							"(id VARCHAR PRIMARY KEY, online_players INT) ENGINE=InnoDB;");
+							"(id VARCHAR(18) PRIMARY KEY, online_players INT) ENGINE=InnoDB;");
 			pst.executeUpdate();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"CREATE TABLE IF NOT EXISTS " + "logs" +
-							"(type VARCHAR, player VARCHAR, time VARCHAR, date VARCHAR, date LONGTEXT) ENGINE=InnoDB;");
+							"(type VARCHAR(18), player VARCHAR(18), time VARCHAR(40), date DATE, data LONGTEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"CREATE TABLE IF NOT EXISTS " + "hearthstone" +
-					"(p_name VARCHAR, location_name VARCHAR, timer VARCHAR) Engine=InnoDB;");
+					"(p_name VARCHAR(18), location_name VARCHAR(40), timer VARCHAR(18)) Engine=InnoDB;");
+
+			pst.executeUpdate();
 
 		} catch (SQLException ex) {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
