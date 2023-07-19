@@ -124,7 +124,7 @@ public class Config {
     
     public static int transfer_port = 25565;
     //public static String Hive_IP = "72.20.40.38";
-//    public static String Hive_IP = "localhost";
+    public static String Hive_IP_backup = "localhost";
     public static String Hive_IP = "192.168.0.106";
 //    public static String Hive_IP = "172.17.17.108";
 
@@ -139,12 +139,13 @@ public class Config {
     public static String sql_password = "dungeonrealms";
 //    public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms";
     public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
+    public static String sql_url_backup = "jdbc:mysql://" + Hive_IP_backup + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
 
     public static int FTP_port = 21;
     public static String ftp_user = "agent";
     public static String ftp_pass = "9bgsMKsknkJ6OY"; 
     
-    public static String version = "1.9.1";
+    public static String version = "1.9.2";
     
     public static String local_IP = Bukkit.getIp();
     

@@ -295,7 +295,7 @@ public class MonsterMechanics implements Listener {
         loadCustomMobDrops();
 
         main_world_name = Bukkit.getWorlds().get(0).getName();
-        new File("MonsterMechaniccs/custom_mobs").mkdirs();
+//        new File("MonsterMechaniccs/custom_mobs").mkdirs();
 
         Bukkit.getWorlds().get(0).setAutoSave(false);
         Bukkit.getWorlds().get(0).setKeepSpawnInMemory(false);

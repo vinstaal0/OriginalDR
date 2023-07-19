@@ -246,7 +246,7 @@ public class RealmMechanics implements Listener {
 
 	public static List<Material> containers = Arrays.asList(Material.CHEST, Material.FURNACE, Material.DISPENSER, Material.DROPPER, Material.HOPPER);
 	// A list of items to be blocked from opening in other people's realms
-	
+
 	public static HashMap<String, Long> player_god_mode = new HashMap<String, Long>();
 	// The player is in god mode, the time they were set to godmode.
 
@@ -1382,7 +1382,7 @@ public class RealmMechanics implements Listener {
 
 	/**
 	 * Is the player in a realm?
-	 * 
+	 *
 	 * @param pl The player
 	 * @return boolean True/False in realm
 	 */
@@ -2087,10 +2087,10 @@ public class RealmMechanics implements Listener {
 		Packet particles = new PacketPlayOutWorldEvent(2001, new BlockPosition((int) Math.round(b.getLocation().getX()), (int) Math.round(b.getLocation().getY()),
 				(int) Math.round(b.getLocation().getZ())), b.getTypeId(), false);
 		((CraftServer) Main.plugin.getServer())
-		.getServer()
-		.getPlayerList()
-		.sendPacketNearby(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
-				((CraftWorld) b.getWorld()).getHandle().dimension, particles);
+				.getServer()
+				.getPlayerList()
+				.sendPacketNearby(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
+						((CraftWorld) b.getWorld()).getHandle().dimension, particles);
 
 		b.setType(Material.AIR);
 
@@ -2139,28 +2139,28 @@ public class RealmMechanics implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onContainerInteract(PlayerInteractEvent e) {
 		final Player pl = e.getPlayer();
 		String pl_name = pl.getName();
 		String r_name = pl.getWorld().getName();
-		
-		if (r_name.equalsIgnoreCase(main_world_name) || r_name.contains("Dungeon")) 
+
+		if (r_name.equalsIgnoreCase(main_world_name) || r_name.contains("Dungeon"))
 			return;
-		
+
 		if (r_name.equalsIgnoreCase(pl_name) || PermissionMechanics.isGM(pl_name) || pl.isOp())
 			return;
-		
+
 		if (build_list.containsKey(r_name) && !build_list.get(r_name).isEmpty() && build_list.get(r_name).contains(pl_name))
 			return;
-		
+
 		if (e.hasBlock() && !e.isCancelled() && containers.contains(e.getClickedBlock().getType())) {
 			e.setCancelled(true);
 			pl.sendMessage(ChatColor.RED + "That container is locked.");
 			return;
 		}
- 	}
+	}
 
 	@EventHandler
 	public void onOrbUse(PlayerInteractEvent e) {
@@ -2351,10 +2351,10 @@ public class RealmMechanics implements Listener {
 				Packet particles = new PacketPlayOutWorldEvent(2001, new BlockPosition((int) Math.round(portal.getLocation().getX()), (int) Math.round(portal.getLocation()
 						.getY()), (int) Math.round(portal.getLocation().getZ())), 90, false);
 				((CraftServer) Main.plugin.getServer())
-				.getServer()
-				.getPlayerList()
-				.sendPacketNearby(portal.getLocation().getX(), portal.getLocation().getY(), portal.getLocation().getZ(), 24,
-						((CraftWorld) portal.getWorld()).getHandle().dimension, particles);
+						.getServer()
+						.getPlayerList()
+						.sendPacketNearby(portal.getLocation().getX(), portal.getLocation().getY(), portal.getLocation().getZ(), 24,
+								((CraftWorld) portal.getWorld()).getHandle().dimension, particles);
 				return;
 			}
 
@@ -2596,7 +2596,7 @@ public class RealmMechanics implements Listener {
 
 			if (!(block_world_name.equalsIgnoreCase(p.getName()))
 					&& (isTherePortalLocationNear(e.getClickedBlock().getLocation().add(0, 1, 0), 5) || isThereAPortalNear(e.getClickedBlock().getLocation()
-							.add(0, 1, 0).getBlock(), 5))) {
+					.add(0, 1, 0).getBlock(), 5))) {
 				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open a realm portal so close to another."); // Too
 				// close
 				// to
@@ -4798,8 +4798,8 @@ public class RealmMechanics implements Listener {
 	}
 
 	/**
-	 * Is the user the current realms owner? 
-	 * 
+	 * Is the user the current realms owner?
+	 *
 	 * @param p The player to check
 	 * @return boolean Is the player the current realms owner
 	 */
