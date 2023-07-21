@@ -42,6 +42,7 @@ public class ConnectionPool {
 					refresh = false;
 					if(con != null) con.close();
 					con = DriverManager.getConnection(Config.sql_url_backup, Config.sql_user, Config.sql_password);
+					Config.Hive_IP = Config.Hive_IP_backup; // Make it so
 				}
 			}catch (Exception ex) {
 				Main.d("Couldn't connect to the main database!",CC.RED);

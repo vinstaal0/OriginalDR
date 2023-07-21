@@ -69,6 +69,7 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -129,6 +130,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import static org.bukkit.Material.getMaterial;
+
 public class RealmMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
 
@@ -139,14 +142,14 @@ public class RealmMechanics implements Listener {
 	public static ItemStack divider = ItemMechanics.signCustomItem(Material.THIN_GLASS, (short) 0, " ", "");
 
 	public static ItemStack next_page_1 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
-			ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->", ChatColor.GRAY.toString() + "Page 2/3");
+			ChatColor.YELLOW + "Next Page " + ChatColor.BOLD + "->", ChatColor.GRAY + "Page 2/3");
 	public static ItemStack next_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
-			ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->", ChatColor.GRAY.toString() + "Page 3/3");
+			ChatColor.YELLOW + "Next Page " + ChatColor.BOLD + "->", ChatColor.GRAY + "Page 3/3");
 
 	public static ItemStack previous_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0, ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-"
-			+ ChatColor.YELLOW.toString() + " Previous Page ", ChatColor.GRAY.toString() + "Page 1/3");
+			+ ChatColor.YELLOW + " Previous Page ", ChatColor.GRAY + "Page 1/3");
 	public static ItemStack previous_page_3 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0, ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-"
-			+ ChatColor.YELLOW.toString() + " Previous Page ", ChatColor.GRAY.toString() + "Page 2/3");
+			+ ChatColor.YELLOW + " Previous Page ", ChatColor.GRAY + "Page 2/3");
 	// }
 
 	public static String rootDir = "";
@@ -246,7 +249,7 @@ public class RealmMechanics implements Listener {
 
 	public static List<Material> containers = Arrays.asList(Material.CHEST, Material.FURNACE, Material.DISPENSER, Material.DROPPER, Material.HOPPER);
 	// A list of items to be blocked from opening in other people's realms
-
+	
 	public static HashMap<String, Long> player_god_mode = new HashMap<String, Long>();
 	// The player is in god mode, the time they were set to godmode.
 
@@ -813,55 +816,51 @@ public class RealmMechanics implements Listener {
 		mat_shop_1.setItem(6, new ItemStack(Material.SANDSTONE, 10));
 		mat_shop_1.setItem(7, new ItemStack(Material.SANDSTONE, 15, (short) 1));
 		mat_shop_1.setItem(8, new ItemStack(Material.SANDSTONE, 25, (short) 2));
+
 		mat_shop_1.setItem(9, new ItemStack(Material.WOOL, 3));
 		mat_shop_1.setItem(10, new ItemStack(Material.WOOL, 6, (short) 1));
 		mat_shop_1.setItem(11, new ItemStack(Material.WOOL, 6, (short) 2));
-		mat_shop_1.setItem(12, new ItemStack(Material.GLASS, 5));
+		mat_shop_1.setItem(12, new ItemStack(Material.WOOL, 6, (short) 3));
 		mat_shop_1.setItem(13, new ItemStack(Material.GLOWSTONE, 10));
 		mat_shop_1.setItem(14, new ItemStack(Material.REDSTONE, 10));
 		mat_shop_1.setItem(15, new ItemStack(Material.COAL, 2));
 		mat_shop_1.setItem(16, new ItemStack(Material.IRON_INGOT, 10));
 		mat_shop_1.setItem(17, new ItemStack(Material.CLAY, 15));
 
-		mat_shop_1.setItem(18, new ItemStack(Material.WOOL, 6, (short) 3));
-		mat_shop_1.setItem(19, new ItemStack(Material.WOOL, 6, (short) 4));
-		mat_shop_1.setItem(20, new ItemStack(Material.WOOL, 6, (short) 5));
-
-		mat_shop_1.setItem(21, new ItemStack(Material.WATER, 5));
-		mat_shop_1.setItem(30, new ItemStack(Material.LAVA, 15));
-
+		mat_shop_1.setItem(18, new ItemStack(Material.WOOL, 6, (short) 4));
+		mat_shop_1.setItem(19, new ItemStack(Material.WOOL, 6, (short) 5));
+		mat_shop_1.setItem(20, new ItemStack(Material.WOOL, 6, (short) 6));
+		mat_shop_1.setItem(21, new ItemStack(Material.WOOL, 6, (short) 7));
 		mat_shop_1.setItem(22, new ItemStack(Material.ICE, 3));
 		mat_shop_1.setItem(23, new ItemStack(Material.OBSIDIAN, 55));
 		mat_shop_1.setItem(24, new ItemStack(Material.LAPIS_BLOCK, 40));
-		// mat_shop_1.setItem(25, new ItemStack(Material.QUARTZ, 50));
-		mat_shop_1.setItem(26, new ItemStack(Material.FIRE, 10));
+		mat_shop_1.setItem(25, new ItemStack(Material.GLASS, 5));
+		mat_shop_1.setItem(26, new ItemStack(Material.WEB, 20));
 
-		mat_shop_1.setItem(27, new ItemStack(Material.WOOL, 6, (short) 6));
-		mat_shop_1.setItem(28, new ItemStack(Material.WOOL, 6, (short) 7));
-		mat_shop_1.setItem(29, new ItemStack(Material.WOOL, 6, (short) 8));
-
+		mat_shop_1.setItem(27, new ItemStack(Material.WOOL, 6, (short) 8));
+		mat_shop_1.setItem(28, new ItemStack(Material.WOOL, 6, (short) 9));
+		mat_shop_1.setItem(29, new ItemStack(Material.WOOL, 6, (short) 10));
+		mat_shop_1.setItem(30, new ItemStack(Material.WOOL, 6, (short) 11));
 		mat_shop_1.setItem(31, new ItemStack(Material.MOSSY_COBBLESTONE, 10));
 		mat_shop_1.setItem(32, new ItemStack(Material.COBBLESTONE, 3));
 		mat_shop_1.setItem(33, new ItemStack(Material.SMOOTH_BRICK, 8));
 		mat_shop_1.setItem(34, new ItemStack(Material.SMOOTH_BRICK, 7, (short) 1));
 		mat_shop_1.setItem(35, new ItemStack(Material.LEAVES, 2));
 
-		mat_shop_1.setItem(36, new ItemStack(Material.WOOL, 6, (short) 9));
-		mat_shop_1.setItem(37, new ItemStack(Material.WOOL, 6, (short) 10));
-		mat_shop_1.setItem(38, new ItemStack(Material.WOOL, 6, (short) 11));
-
-		mat_shop_1.setItem(39, new ItemStack(Material.WEB, 20));
+		mat_shop_1.setItem(36, new ItemStack(Material.WOOL, 6, (short) 12));
+		mat_shop_1.setItem(37, new ItemStack(Material.WOOL, 6, (short) 13));
+		mat_shop_1.setItem(38, new ItemStack(Material.WOOL, 6, (short) 14));
+		mat_shop_1.setItem(39, new ItemStack(Material.WOOL, 6, (short) 15));
 		mat_shop_1.setItem(40, new ItemStack(Material.SNOW_BLOCK, 10));
 		mat_shop_1.setItem(41, new ItemStack(Material.SMOOTH_BRICK, 12, (short) 2));
 		mat_shop_1.setItem(42, new ItemStack(Material.SMOOTH_BRICK, 12, (short) 3));
 		mat_shop_1.setItem(43, new ItemStack(Material.NETHER_BRICK, 60));
-		mat_shop_1.setItem(44, new ItemStack(Material.INK_SACK, 10, (short) 15));
+		mat_shop_1.setItem(44, new ItemStack(Material.INK_SACK, 10, (short) 0));
 
-		mat_shop_1.setItem(45, new ItemStack(Material.WOOL, 6, (short) 12));
-		mat_shop_1.setItem(46, new ItemStack(Material.WOOL, 6, (short) 13));
-		mat_shop_1.setItem(47, new ItemStack(Material.WOOL, 6, (short) 14));
-		// mat_shop_1.setItem(48, new ItemStack(Material.PUMPKIN, 25));
-
+		mat_shop_1.setItem(45, new ItemStack(9, 5));
+		mat_shop_1.setItem(46, new ItemStack(11, 15));
+		mat_shop_1.setItem(47, new ItemStack(51, 10));
+		// 48
 		mat_shop_1.setItem(49, new ItemStack(Material.GRASS, 2));
 		mat_shop_1.setItem(50, new ItemStack(Material.MYCEL, 35));
 		mat_shop_1.setItem(51, new ItemStack(Material.SOUL_SAND, 55));
@@ -881,42 +880,33 @@ public class RealmMechanics implements Listener {
 		mat_shop_2.setItem(9, new ItemStack(Material.DISPENSER, 64, (short) 100));
 		mat_shop_2.setItem(10, new ItemStack(Material.HOPPER, 64, (short) 150));
 		mat_shop_2.setItem(11, new ItemStack(Material.DROPPER, 64, (short) 120));
-		mat_shop_2.setItem(12, new ItemStack(Material.MINECART, 64, (short) 500));
+		mat_shop_2.setItem(12, new ItemStack(Material.MINECART, 64));
 		mat_shop_2.setItem(13, new ItemStack(Material.BOOKSHELF, 50, (short) 0));
 		mat_shop_2.setItem(14, new ItemStack(Material.RAILS, 20));
 		mat_shop_2.setItem(15, new ItemStack(Material.POWERED_RAIL, 20));
 		mat_shop_2.setItem(16, new ItemStack(Material.ACTIVATOR_RAIL, 20));
 		mat_shop_2.setItem(17, new ItemStack(111, 15));
 
-		/*
-		 * mat_shop_2.setItem(18, new ItemStack(Material.JUKEBOX, 64, (short)1200)); mat_shop_2.setItem(19, new ItemStack(Material.RECORD_3, 64, (short)500));
-		 * mat_shop_2.setItem(20, new ItemStack(Material.RECORD_4, 64, (short)500)); mat_shop_2.setItem(21, new ItemStack(Material.RECORD_5, 64, (short)500));
-		 */
-
 		mat_shop_2.setItem(18, new ItemStack(Material.STAINED_CLAY, 8, (short) 11));
 		mat_shop_2.setItem(19, new ItemStack(Material.STAINED_CLAY, 8, (short) 12));
 		mat_shop_2.setItem(20, new ItemStack(Material.STAINED_CLAY, 8, (short) 13));
 		mat_shop_2.setItem(21, new ItemStack(Material.STAINED_CLAY, 8, (short) 14));
-
-		// mat_shop_2.setItem(22, new ItemStack(Material.PISTON_BASE, 64, (short)80));
-		// mat_shop_2.setItem(23, new ItemStack(Material.PISTON_STICKY_BASE, 64, (short)120));
 		mat_shop_2.setItem(22, new ItemStack(Material.SAPLING, 15, (short) 1));
 		mat_shop_2.setItem(23, new ItemStack(Material.SAPLING, 15, (short) 2));
 		mat_shop_2.setItem(24, new ItemStack(Material.SAPLING, 15, (short) 3));
-
 		mat_shop_2.setItem(25, new ItemStack(Material.QUARTZ_BLOCK, 50, (short) 0));
 		mat_shop_2.setItem(26, new ItemStack(Material.QUARTZ_BLOCK, 55, (short) 1));
+
 		mat_shop_2.setItem(27, new ItemStack(Material.QUARTZ_BLOCK, 60, (short) 2));
-		mat_shop_2.setItem(28, new ItemStack(Material.QUARTZ_BLOCK, 60, (short) 3));
-		mat_shop_2.setItem(29, new ItemStack(Material.QUARTZ_BLOCK, 60, (short) 4));
-
-		mat_shop_2.setItem(30, new ItemStack(397, 50, (short) 0));
-		mat_shop_2.setItem(31, new ItemStack(397, 50, (short) 1));
-		mat_shop_2.setItem(32, new ItemStack(397, 50, (short) 2));
-		mat_shop_2.setItem(33, new ItemStack(397, 50, (short) 4));
-
+		// 28
+		// 29
+		mat_shop_2.setItem(30, new ItemStack(getMaterial(397), 50, (short) 0));
+		mat_shop_2.setItem(31, new ItemStack(getMaterial(397), 50, (short) 1));
+		mat_shop_2.setItem(32, new ItemStack(getMaterial(397), 50, (short) 2));
+		mat_shop_2.setItem(33, new ItemStack(getMaterial(397), 50, (short) 4));
 		mat_shop_2.setItem(34, new ItemStack(Material.HAY_BLOCK, 30, (short) 0));
 		mat_shop_2.setItem(35, new ItemStack(Material.CARPET, 30, (short) 0));
+
 		mat_shop_2.setItem(36, new ItemStack(Material.HARD_CLAY, 55, (short) 0));
 		mat_shop_2.setItem(37, new ItemStack(Material.COAL_BLOCK, 45, (short) 0));
 		mat_shop_2.setItem(38, new ItemStack(Material.DAYLIGHT_DETECTOR, 200, (short) 0));
@@ -924,9 +914,9 @@ public class RealmMechanics implements Listener {
 		mat_shop_2.setItem(40, new ItemStack(Material.REDSTONE_LAMP_OFF, 55, (short) 0));
 		mat_shop_2.setItem(41, new ItemStack(Material.VINE, 50, (short) 0));
 		mat_shop_2.setItem(42, new ItemStack(Material.STAINED_CLAY, 8, (short) 0));
-
 		mat_shop_2.setItem(43, new ItemStack(Material.STAINED_CLAY, 8, (short) 1));
 		mat_shop_2.setItem(44, new ItemStack(Material.STAINED_CLAY, 8, (short) 2));
+
 		mat_shop_2.setItem(45, new ItemStack(Material.STAINED_CLAY, 8, (short) 3));
 		mat_shop_2.setItem(46, new ItemStack(Material.STAINED_CLAY, 8, (short) 4));
 		mat_shop_2.setItem(47, new ItemStack(Material.STAINED_CLAY, 8, (short) 5));
@@ -935,27 +925,28 @@ public class RealmMechanics implements Listener {
 		mat_shop_2.setItem(50, new ItemStack(Material.STAINED_CLAY, 8, (short) 8));
 		mat_shop_2.setItem(51, new ItemStack(Material.STAINED_CLAY, 8, (short) 9));
 		mat_shop_2.setItem(52, new ItemStack(Material.STAINED_CLAY, 8, (short) 10));
-		mat_shop_2.setItem(53, new ItemStack(Material.getMaterial(100), 15, (short) 14));
+		mat_shop_2.setItem(53, new ItemStack(getMaterial(100), 15, (short) 14));
 
 		mat_shop_3.setItem(0, new ItemStack(Material.STAINED_CLAY, 8, (short) 11));
 		mat_shop_3.setItem(1, new ItemStack(Material.STAINED_CLAY, 8, (short) 12));
 		mat_shop_3.setItem(2, new ItemStack(Material.STAINED_CLAY, 8, (short) 13));
 		mat_shop_3.setItem(3, new ItemStack(Material.STAINED_CLAY, 8, (short) 14));
 		mat_shop_3.setItem(4, new ItemStack(Material.STAINED_CLAY, 8, (short) 15));
-
 		mat_shop_3.setItem(5, new ItemStack(Material.REDSTONE_ORE, 20, (short) 0));
 		mat_shop_3.setItem(6, new ItemStack(Material.BEDROCK, 60, (short) 0));
 		mat_shop_3.setItem(7, new ItemStack(Material.GRAVEL, 4, (short) 0));
-		mat_shop_3.setItem(8, new ItemStack(Material.getMaterial(99), 15, (short) 0));
-		mat_shop_3.setItem(9, new ItemStack(Material.getMaterial(99), 15, (short) 15));
-		mat_shop_3.setItem(10, new ItemStack(Material.getMaterial(99), 15, (short) 14));
-		mat_shop_3.setItem(11, new ItemStack(Material.getMaterial(162), 8, (short) 0));
+		mat_shop_3.setItem(8, new ItemStack(getMaterial(99), 15, (short) 0));
+
+//		mat_shop_3.setItem(9, new ItemStack(getMaterial(99), 15, (short) 15));
+//		mat_shop_3.setItem(10, new ItemStack(getMaterial(99), 15, (short) 14));
+		mat_shop_3.setItem(11, new ItemStack(getMaterial(162), 8, (short) 0));
 		mat_shop_3.setItem(12, new ItemStack(Material.SAND, 4, (short) 1));
 		mat_shop_3.setItem(13, new ItemStack(Material.STAINED_GLASS, 6, (short) 0));
 		mat_shop_3.setItem(14, new ItemStack(Material.STAINED_GLASS, 6, (short) 1));
 		mat_shop_3.setItem(15, new ItemStack(Material.STAINED_GLASS, 6, (short) 2));
 		mat_shop_3.setItem(16, new ItemStack(Material.STAINED_GLASS, 6, (short) 3));
 		mat_shop_3.setItem(17, new ItemStack(Material.STAINED_GLASS, 6, (short) 4));
+
 		mat_shop_3.setItem(18, new ItemStack(Material.STAINED_GLASS, 6, (short) 5));
 		mat_shop_3.setItem(19, new ItemStack(Material.STAINED_GLASS, 6, (short) 6));
 		mat_shop_3.setItem(20, new ItemStack(Material.STAINED_GLASS, 6, (short) 7));
@@ -965,19 +956,24 @@ public class RealmMechanics implements Listener {
 		mat_shop_3.setItem(24, new ItemStack(Material.STAINED_GLASS, 6, (short) 11));
 		mat_shop_3.setItem(25, new ItemStack(Material.STAINED_GLASS, 6, (short) 12));
 		mat_shop_3.setItem(26, new ItemStack(Material.STAINED_GLASS, 6, (short) 13));
+
 		mat_shop_3.setItem(27, new ItemStack(Material.STAINED_GLASS, 6, (short) 14));
 		mat_shop_3.setItem(28, new ItemStack(Material.STAINED_GLASS, 6, (short) 15));
 		mat_shop_3.setItem(29, new ItemStack(Material.PACKED_ICE, 4, (short) 0));
-		mat_shop_3.setItem(30, new ItemStack(Material.getMaterial(3), 8, (short) 2));
+		mat_shop_3.setItem(30, new ItemStack(getMaterial(3), 8, (short) 2));
 		mat_shop_3.setItem(31, new ItemStack(Material.PISTON_BASE, 64, (short)80));
 		mat_shop_3.setItem(32, new ItemStack(Material.PISTON_STICKY_BASE, 64, (short)120));
-		// mat_shop_3.setItem(8, new ItemStack(Material.COAL_ORE, 10, (short)0));
-		// mat_shop_3.setItem(9, new ItemStack(Material.IRON_ORE, 15, (short)0));
-		// mat_shop_3.setItem(10, new ItemStack(Material.EMERALD_ORE, 20, (short)0));
-		// mat_shop_3.setItem(11, new ItemStack(Material.DIAMOND_ORE, 30, (short)0));
-		// mat_shop_3.setItem(12, new ItemStack(Material.GOLD_ORE, 50, (short)0));
-		// mat_shop_3.setItem(13, new ItemStack(Material.REDSTONE_ORE, 20, (short)0));
-		// mat_shop_3.setItem(14, new ItemStack(Material.BEDROCK, 60, (short)0));
+		mat_shop_3.setItem(33, new ItemStack(Material.STONE, 4, (short) 1));
+		mat_shop_3.setItem(34, new ItemStack(Material.STONE, 4, (short) 2));
+		mat_shop_3.setItem(35, new ItemStack(Material.STONE, 4, (short) 3));
+
+		mat_shop_3.setItem(36, new ItemStack(Material.STONE, 4, (short) 4));
+		mat_shop_3.setItem(37, new ItemStack(Material.STONE, 4, (short) 5));
+		mat_shop_3.setItem(38, new ItemStack(Material.STONE, 4, (short) 6));
+		mat_shop_3.setItem(39, new ItemStack(Material.PRISMARINE, 10, (short) 0));
+		mat_shop_3.setItem(40, new ItemStack(Material.PRISMARINE, 10, (short) 1));
+		mat_shop_3.setItem(41,new ItemStack(Material.PRISMARINE, 10, (short) 2));
+		mat_shop_3.setItem(42, new ItemStack(Material.SEA_LANTERN, 10, (short) 0));
 	}
 
 	public void convertMatShop() {
@@ -1204,31 +1200,31 @@ public class RealmMechanics implements Listener {
 			if (!f.getName().endsWith(".zip")) {
 				continue;
 			}
-			try {
-				String realm_name = f.getName().replaceAll(".zip", "");
-				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + realm_name + ".zip");
-				URLConnection urlc;
-
-				urlc = url.openConnection();
-
-				OutputStream out = urlc.getOutputStream();
-				InputStream is = new FileInputStream(rootDir + "/realms/backup/" + realm_name + ".zip");
-
-				byte buf[] = new byte[1024];
-				int len;
-
-				while ((len = is.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-
-				out.close();
-				is.close();
-
-				log.info("[RealmMechanics] Realm data for realm: " + realm_name + " uploaded.");
-				f.delete();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				String realm_name = f.getName().replaceAll(".zip", "");
+//				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + realm_name + ".zip");
+//				URLConnection urlc;
+//
+//				urlc = url.openConnection();
+//
+//				OutputStream out = urlc.getOutputStream();
+//				InputStream is = new FileInputStream(rootDir + "/realms/backup/" + realm_name + ".zip");
+//
+//				byte buf[] = new byte[1024];
+//				int len;
+//
+//				while ((len = is.read(buf)) > 0) {
+//					out.write(buf, 0, len);
+//				}
+//
+//				out.close();
+//				is.close();
+//
+//				log.info("[RealmMechanics] Realm data for realm: " + realm_name + " uploaded.");
+//				f.delete();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 
@@ -1382,7 +1378,7 @@ public class RealmMechanics implements Listener {
 
 	/**
 	 * Is the player in a realm?
-	 *
+	 * 
 	 * @param pl The player
 	 * @return boolean True/False in realm
 	 */
@@ -1484,43 +1480,43 @@ public class RealmMechanics implements Listener {
 	}
 
 	public static void uploadWorld(String world_name) {
-		try {
-			World w = Bukkit.getWorld(world_name);
-
-			safe_realms.remove(world_name);
-			flying_realms.remove(world_name);
-			build_list.remove(world_name);
-
-			Bukkit.unloadWorld(w, true);
-
-			zipDirectory(new File(world_name), new File(rootDir + "/realms/up/" + world_name + ".zip"));
-			log.info("[RealmMechanics] " + world_name + "'s realm is now uploading...");
-
-			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + world_name + ".zip");
-			URLConnection urlc = url.openConnection();
-			OutputStream out = urlc.getOutputStream();
-
-			InputStream is = new FileInputStream(rootDir + "/realms/up/" + world_name + ".zip");
-
-			byte buf[] = new byte[1024];
-			int len;
-
-			while ((len = is.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-
-			out.close();
-			is.close();
-
-			new File(rootDir + "/realms/down/" + world_name + ".zip").delete();
-
-			log.info("[RealmMechanics] Uploaded realm for " + world_name);
-			uploading_realms.remove(world_name);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			log.info("[RealmMechanics] Fatal error. Major shit went wrong.");
-		}
+//		try {
+//			World w = Bukkit.getWorld(world_name);
+//
+//			safe_realms.remove(world_name);
+//			flying_realms.remove(world_name);
+//			build_list.remove(world_name);
+//
+//			Bukkit.unloadWorld(w, true);
+//
+//			zipDirectory(new File(world_name), new File(rootDir + "/realms/up/" + world_name + ".zip"));
+//			log.info("[RealmMechanics] " + world_name + "'s realm is now uploading...");
+//
+//			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + world_name + ".zip");
+//			URLConnection urlc = url.openConnection();
+//			OutputStream out = urlc.getOutputStream();
+//
+//			InputStream is = new FileInputStream(rootDir + "/realms/up/" + world_name + ".zip");
+//
+//			byte buf[] = new byte[1024];
+//			int len;
+//
+//			while ((len = is.read(buf)) > 0) {
+//				out.write(buf, 0, len);
+//			}
+//
+//			out.close();
+//			is.close();
+//
+//			new File(rootDir + "/realms/down/" + world_name + ".zip").delete();
+//
+//			log.info("[RealmMechanics] Uploaded realm for " + world_name);
+//			uploading_realms.remove(world_name);
+//
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			log.info("[RealmMechanics] Fatal error. Major shit went wrong.");
+//		}
 
 		setRealmLoadStatusSQL(world_name, false);
 	}
@@ -1562,70 +1558,70 @@ public class RealmMechanics implements Listener {
 		locked_realms.remove(p_name);
 
 		if (shutting_down == false) {
-			try {
-				// Thread.sleep(1000);
-				zipDirectory(new File(rootDir + "/" + p_safe_realm_name), new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
-				log.info("[RealmMechanics] " + p_safe_realm_name + "'s realm is now uploading...");
-
-				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + p_safe_realm_name + ".zip");
-				URLConnection urlc = url.openConnection();
-				OutputStream out = urlc.getOutputStream();
-
-				InputStream is = new FileInputStream(rootDir + "/realms/up/" + p_safe_realm_name + ".zip");
-
-				byte buf[] = new byte[1024];
-				int len;
-
-				while ((len = is.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-
-				out.close();
-				is.close();
-
-				new File(rootDir + "/realms/down/" + p_safe_realm_name + ".zip").delete();
-				// We can delete this if the server isn't offline, cause it will have been uploaded.
-
-				log.info("[RealmMechanics] Uploaded realm for " + p_safe_realm_name);
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				log.info("[RealmMechanics] Fatal error. Major shit went wrong.");
-			}
+//			try {
+//				// Thread.sleep(1000);
+//				zipDirectory(new File(rootDir + "/" + p_safe_realm_name), new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
+//				log.info("[RealmMechanics] " + p_safe_realm_name + "'s realm is now uploading...");
+//
+//				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + p_safe_realm_name + ".zip");
+//				URLConnection urlc = url.openConnection();
+//				OutputStream out = urlc.getOutputStream();
+//
+//				InputStream is = new FileInputStream(rootDir + "/realms/up/" + p_safe_realm_name + ".zip");
+//
+//				byte buf[] = new byte[1024];
+//				int len;
+//
+//				while ((len = is.read(buf)) > 0) {
+//					out.write(buf, 0, len);
+//				}
+//
+//				out.close();
+//				is.close();
+//
+//				new File(rootDir + "/realms/down/" + p_safe_realm_name + ".zip").delete();
+//				// We can delete this if the server isn't offline, cause it will have been uploaded.
+//
+//				log.info("[RealmMechanics] Uploaded realm for " + p_safe_realm_name);
+//
+//			} catch (Exception ex) {
+//				ex.printStackTrace();
+//				log.info("[RealmMechanics] Fatal error. Major shit went wrong.");
+//			}
 
 			uploading_realms.remove(p_safe_realm_name);
 		}
 
 		if (shutting_down == true) {
-			try {
-				zipDirectory(new File(rootDir + "/" + p_safe_realm_name), new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
-				log.info("[RealmMechanics] " + p_safe_realm_name + "'s realm is now uploading...");
-
-				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + p_safe_realm_name + ".zip");
-				URLConnection urlc = url.openConnection();
-				OutputStream out = urlc.getOutputStream();
-
-				InputStream is = new FileInputStream(rootDir + "/realms/up/" + p_safe_realm_name + ".zip");
-
-				byte buf[] = new byte[1024];
-				int len;
-
-				while ((len = is.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-
-				out.close();
-				is.close();
-
-				new File(rootDir + "/realms/down/" + p_safe_realm_name + ".zip").delete();
-				// Delete download copy. We'll delete /up/ on next login.
-
-				log.info("[RealmMechanics] Uploaded realm for " + p_safe_realm_name);
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				log.info("[RealmMechanics] Fatal error. Major shit went wrong.");
-			}
+//			try {
+//				zipDirectory(new File(rootDir + "/" + p_safe_realm_name), new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
+//				log.info("[RealmMechanics] " + p_safe_realm_name + "'s realm is now uploading...");
+//
+//				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + p_safe_realm_name + ".zip");
+//				URLConnection urlc = url.openConnection();
+//				OutputStream out = urlc.getOutputStream();
+//
+//				InputStream is = new FileInputStream(rootDir + "/realms/up/" + p_safe_realm_name + ".zip");
+//
+//				byte buf[] = new byte[1024];
+//				int len;
+//
+//				while ((len = is.read(buf)) > 0) {
+//					out.write(buf, 0, len);
+//				}
+//
+//				out.close();
+//				is.close();
+//
+//				new File(rootDir + "/realms/down/" + p_safe_realm_name + ".zip").delete();
+//				// Delete download copy. We'll delete /up/ on next login.
+//
+//				log.info("[RealmMechanics] Uploaded realm for " + p_safe_realm_name);
+//
+//			} catch (Exception ex) {
+//				ex.printStackTrace();
+//				log.info("[RealmMechanics] Fatal error. Major shit went wrong.");
+//			}
 
 			uploading_realms.remove(p_safe_realm_name);
 		}
@@ -1633,9 +1629,21 @@ public class RealmMechanics implements Listener {
 		return;
 	}
 
-	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e) {
+		if(e.isCancelled()) {
+			System.out.println("trigger");
+		}
+
+
+	}
+
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlaceEvent(BlockPlaceEvent e) {
+
+		e.setCancelled(false);
+
 		Player p = e.getPlayer();
 		if (p.getGameMode() == GameMode.CREATIVE) {
 			return;
@@ -1651,6 +1659,7 @@ public class RealmMechanics implements Listener {
 				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place this "
 						+ e.getBlock().getType().name().toUpperCase() + " as it is an illegal item.");
 			}
+
 			p.updateInventory();
 			e.setCancelled(true);
 			return;
@@ -1667,11 +1676,13 @@ public class RealmMechanics implements Listener {
 		String realm_owner = block_world_name;
 		if (block_world_name.equalsIgnoreCase(p.getName()) || (build_list.containsKey(realm_owner) && build_list.get(realm_owner).contains(p.getName()))) {
 			if (upgrading_realms.contains(block_world_name)) {
+
 				e.setCancelled(true);
 				p.updateInventory();
 				p.sendMessage(ChatColor.YELLOW + "Block events are disabled while your realm upgrades.");
 				return;
 			}
+
 			// Their own realm.
 			int realm_tier = getRealmTier(block_world_name);
 			int max_size = getRealmSizeDimensions(realm_tier) + 16; // Add 16, because the default chunk (0,0) is never used, and 16 is lowest you can be.
@@ -2087,10 +2098,10 @@ public class RealmMechanics implements Listener {
 		Packet particles = new PacketPlayOutWorldEvent(2001, new BlockPosition((int) Math.round(b.getLocation().getX()), (int) Math.round(b.getLocation().getY()),
 				(int) Math.round(b.getLocation().getZ())), b.getTypeId(), false);
 		((CraftServer) Main.plugin.getServer())
-				.getServer()
-				.getPlayerList()
-				.sendPacketNearby(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
-						((CraftWorld) b.getWorld()).getHandle().dimension, particles);
+		.getServer()
+		.getPlayerList()
+		.sendPacketNearby(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
+				((CraftWorld) b.getWorld()).getHandle().dimension, particles);
 
 		b.setType(Material.AIR);
 
@@ -2139,28 +2150,28 @@ public class RealmMechanics implements Listener {
 			e.setCancelled(true);
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onContainerInteract(PlayerInteractEvent e) {
 		final Player pl = e.getPlayer();
 		String pl_name = pl.getName();
 		String r_name = pl.getWorld().getName();
-
-		if (r_name.equalsIgnoreCase(main_world_name) || r_name.contains("Dungeon"))
+		
+		if (r_name.equalsIgnoreCase(main_world_name) || r_name.contains("Dungeon")) 
 			return;
-
+		
 		if (r_name.equalsIgnoreCase(pl_name) || PermissionMechanics.isGM(pl_name) || pl.isOp())
 			return;
-
+		
 		if (build_list.containsKey(r_name) && !build_list.get(r_name).isEmpty() && build_list.get(r_name).contains(pl_name))
 			return;
-
+		
 		if (e.hasBlock() && !e.isCancelled() && containers.contains(e.getClickedBlock().getType())) {
 			e.setCancelled(true);
 			pl.sendMessage(ChatColor.RED + "That container is locked.");
 			return;
 		}
-	}
+ 	}
 
 	@EventHandler
 	public void onOrbUse(PlayerInteractEvent e) {
@@ -2351,10 +2362,10 @@ public class RealmMechanics implements Listener {
 				Packet particles = new PacketPlayOutWorldEvent(2001, new BlockPosition((int) Math.round(portal.getLocation().getX()), (int) Math.round(portal.getLocation()
 						.getY()), (int) Math.round(portal.getLocation().getZ())), 90, false);
 				((CraftServer) Main.plugin.getServer())
-						.getServer()
-						.getPlayerList()
-						.sendPacketNearby(portal.getLocation().getX(), portal.getLocation().getY(), portal.getLocation().getZ(), 24,
-								((CraftWorld) portal.getWorld()).getHandle().dimension, particles);
+				.getServer()
+				.getPlayerList()
+				.sendPacketNearby(portal.getLocation().getX(), portal.getLocation().getY(), portal.getLocation().getZ(), 24,
+						((CraftWorld) portal.getWorld()).getHandle().dimension, particles);
 				return;
 			}
 
@@ -2596,7 +2607,7 @@ public class RealmMechanics implements Listener {
 
 			if (!(block_world_name.equalsIgnoreCase(p.getName()))
 					&& (isTherePortalLocationNear(e.getClickedBlock().getLocation().add(0, 1, 0), 5) || isThereAPortalNear(e.getClickedBlock().getLocation()
-					.add(0, 1, 0).getBlock(), 5))) {
+							.add(0, 1, 0).getBlock(), 5))) {
 				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open a realm portal so close to another."); // Too
 				// close
 				// to
@@ -4094,12 +4105,12 @@ public class RealmMechanics implements Listener {
 			if (!(p.getName().equalsIgnoreCase(to_realm.getName()))) {
 				p.sendMessage(ChatColor.LIGHT_PURPLE + "You have entered " + ChatColor.BOLD + ChatMechanics.getPlayerPrefix(to_realm.getName(), true)
 						+ to_realm.getName() + "'s" + ChatColor.LIGHT_PURPLE + " realm.");
-				if (realm_title.containsKey(to_realm.getName()) && realm_title.get(to_realm.getName()) != null) {
+				if (realm_title.containsKey(to_realm.getName()) && (realm_title.get(to_realm.getName()) != null)) {
 					p.sendMessage(ChatColor.GRAY + realm_title.get(to_realm.getName()));
 				}
 			} else {
 				p.sendMessage(ChatColor.LIGHT_PURPLE + "You have returned to " + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE + " realm.");
-				if (realm_title.containsKey(to_realm.getName()) && realm_title.get(to_realm.getName()) != null) {
+				if (realm_title.containsKey(to_realm.getName()) && (realm_title.get(to_realm.getName()) != null)) {
 					p.sendMessage(ChatColor.GRAY + realm_title.get(to_realm.getName()));
 				}
 			}
@@ -4180,18 +4191,18 @@ public class RealmMechanics implements Listener {
 		return realm_owner;
 	}
 
-	public static void deleteFolder(File folder) {
-		File[] files = folder.listFiles();
-		if (files != null) { // some JVMs return null for empty dirs
-			for (File f : files) {
-				if (f.isDirectory()) {
-					deleteFolder(f);
-				} else {
-					f.delete();
-				}
-			}
-		}
-		folder.delete();
+	public static void deleteFolder(File folder) { // TODO
+//		File[] files = folder.listFiles();
+//		if (files != null) { // some JVMs return null for empty dirs
+//			for (File f : files) {
+//				if (f.isDirectory()) {
+//					deleteFolder(f);
+//				} else {
+//					f.delete();
+//				}
+//			}
+//		}
+//		folder.delete();
 	}
 
 	public void fixChunks(final World w) {
@@ -4265,16 +4276,16 @@ public class RealmMechanics implements Listener {
 	}
 
 	public static boolean doesWorldExistGlobal(String wname) {
-		try {
-			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + wname + ".zip");
-			URLConnection urlc;
-			urlc = url.openConnection();
-			InputStream is = urlc.getInputStream();
-			is.close();
-		} catch (IOException first_login) {
-			log.info("[RealmMechanics -> Hive] Realm '" + wname + "' does not exist.");
-			return false;
-		}
+//		try {
+//			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + wname + ".zip");
+//			URLConnection urlc;
+//			urlc = url.openConnection();
+//			InputStream is = urlc.getInputStream();
+//			is.close();
+//		} catch (IOException first_login) {
+//			log.info("[RealmMechanics -> Hive] Realm '" + wname + "' does not exist.");
+//			return false;
+//		}
 		return true;
 	}
 
@@ -4638,7 +4649,14 @@ public class RealmMechanics implements Listener {
 					corrupt_world.add(p.getName());
 					Bukkit.unloadWorld(w, false);
 					File world_root = new File(rootDir + "/" + p.getName());
-					deleteFolder(world_root);
+
+					try {
+						FileUtils.deleteDirectory(world_root);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+
+//					deleteFolder(world_root);
 					realmHandler(p, realm_name);
 				} else if (corrupt_world.contains(p.getName())) {
 					// World is corrupt on the HIVE.
@@ -4765,30 +4783,30 @@ public class RealmMechanics implements Listener {
 	}
 
 	public static void downloadRealm(String realm_name, Player p) {
-		new File(rootDir + "/realms/down/" + p.getName() + ".zip").delete();
-		try {
-			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + realm_name + ".zip");
-			URLConnection urlc;
-
-			urlc = url.openConnection();
-
-			InputStream is = urlc.getInputStream();
-			OutputStream out = new FileOutputStream(rootDir + "/realms/down/" + realm_name + ".zip");
-
-			byte buf[] = new byte[1024];
-			int len;
-
-			while ((len = is.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-
-			out.close();
-			is.close();
-
-		} catch (IOException first_login) {
-			log.info("[RealmMechanics] Fatal error occured, realm " + realm_name + " does not exist when it said it did!");
-			return;
-		}
+//		new File(rootDir + "/realms/down/" + p.getName() + ".zip").delete();
+//		try {
+//			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + realm_name + ".zip");
+//			URLConnection urlc;
+//
+//			urlc = url.openConnection();
+//
+//			InputStream is = urlc.getInputStream();
+//			OutputStream out = new FileOutputStream(rootDir + "/realms/down/" + realm_name + ".zip");
+//
+//			byte buf[] = new byte[1024];
+//			int len;
+//
+//			while ((len = is.read(buf)) > 0) {
+//				out.write(buf, 0, len);
+//			}
+//
+//			out.close();
+//			is.close();
+//
+//		} catch (IOException first_login) {
+//			log.info("[RealmMechanics] Fatal error occured, realm " + realm_name + " does not exist when it said it did!");
+//			return;
+//		}
 
 		File world_root = new File(rootDir + "/" + p.getName());
 		deleteFolder(world_root);
@@ -4798,8 +4816,8 @@ public class RealmMechanics implements Listener {
 	}
 
 	/**
-	 * Is the user the current realms owner?
-	 *
+	 * Is the user the current realms owner? 
+	 * 
 	 * @param p The player to check
 	 * @return boolean Is the player the current realms owner
 	 */
@@ -4836,8 +4854,6 @@ public class RealmMechanics implements Listener {
 		int x = 0, y = 128, z = 0;
 		Vector s = new Vector(16, 128, 16);
 
-		log.info("d1");
-
 		// GRASS
 		for (x = s.getBlockX(); x < 32; x++) {
 			for (z = s.getBlockZ(); z < 32; z++) {
@@ -4860,8 +4876,6 @@ public class RealmMechanics implements Listener {
 				w.getBlockAt(new Location(w, x, y, z)).setType(Material.BEDROCK);
 			}
 		}
-
-		log.info("d2");
 
 		// Grass @ y:128
 		// Dirt @ y:127 - y:112
@@ -4894,6 +4908,14 @@ public class RealmMechanics implements Listener {
 			Main.plugin.getServer().unloadWorld(p.getName(), true);
 		}
 		File world_root = new File(p.getName());
+
+		try {
+			FileUtils.deleteDirectory(world_root);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Main.log.info("Tried deleting a folder that doesn't exist!");
+		}
+
 		deleteFolder(world_root);
 		// Deleted messed up realm. Now generating a new one.
 		generateBlankRealm(p, p.getName());

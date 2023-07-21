@@ -55,7 +55,6 @@ import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
-import nl.vinstaal0.Dungeonrealms.BungeeConnector;
 import nl.vinstaal0.Dungeonrealms.Utils;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
 import org.bukkit.event.EventHandler;
@@ -112,7 +111,6 @@ public class Main extends JavaPlugin implements Listener {
     private static FoodVendor foodVendor;
 
     private static Utils utils;
-    private static BungeeConnector bungeeConnector;
 
     /**
      * Holds the <code>JavaPlugin</code> instance of the DungeonRealms plugin once enabled.
@@ -189,7 +187,6 @@ public class Main extends JavaPlugin implements Listener {
         foodVendor = new FoodVendor();
 
         utils = new Utils();
-        bungeeConnector = new BungeeConnector();
 
         hive.onEnable();
         hearthstoneMechanics.onEnable();
@@ -234,7 +231,6 @@ public class Main extends JavaPlugin implements Listener {
         levelMechanics.onEnable();
         foodVendor.onEnable();
         utils.onEnable();
-        bungeeConnector.onEnable();
         
         ItemGenerator.loadModifiers();
 
@@ -714,10 +710,6 @@ public class Main extends JavaPlugin implements Listener {
 
     public static Utils getUtils() {
         return utils;
-    }
-
-    public static BungeeConnector getBungeeConnector() {
-        return bungeeConnector;
     }
 
 }

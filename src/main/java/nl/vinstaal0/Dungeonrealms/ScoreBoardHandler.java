@@ -1,10 +1,7 @@
 package nl.vinstaal0.Dungeonrealms;
 
-import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
 
 public class ScoreBoardHandler {
 
@@ -27,21 +24,12 @@ public class ScoreBoardHandler {
     }
 
     public void registerHealth(Scoreboard scoreBoard) {
-        Objective objective = null;
 
         if (scoreBoard.getObjective("playerScoreBoard") != null) {
             scoreBoard.getObjective("playerScoreBoard");
         } else {
             scoreBoard.registerNewObjective("playerScoreBoard", "dummy");
         }
-    }
-
-    public Team getPlayerTeam(Scoreboard scoreBoard, Player player) {
-        if (scoreBoard.getTeam(player.getName()) == null) {
-            Team team = scoreBoard.registerNewTeam(player.getName());
-            return team;
-        }
-        return scoreBoard.getTeam(player.getName());
     }
 
 }
