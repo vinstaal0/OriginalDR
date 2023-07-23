@@ -11,6 +11,10 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import de.Herbystar.TTA.BossBar.NMS_BossBar;
+import de.Herbystar.TTA.BossBar.NMS_BossBarDragon;
+import de.Herbystar.TTA.BossBar.TTA_BossBar;
+import de.Herbystar.TTA.TTA_Methods;
 import me.confuser.barapi.BarAPI;
 import me.vilsol.foodvendor.DynamicFoodVendor;
 import me.vilsol.foodvendor.MenuFoodVendor;
@@ -449,6 +453,7 @@ public class HealthMechanics implements Listener {
 
 				BarAPI.setMessage(pl, levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, (float) (health_percent * 100F));
 			}else{
+
 				BarAPI.setMessage(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (float) (health_percent * 100F));
 			}
 			//FakeDragon.setStatus(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (int)(health_percent * 100));

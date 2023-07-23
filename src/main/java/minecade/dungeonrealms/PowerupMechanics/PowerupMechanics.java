@@ -177,6 +177,7 @@ public class PowerupMechanics implements Listener {
 						location = bedrock.getLocation();
 						location.setX(location.getX() + 0.5D);
 						location.setZ(location.getZ() + 0.5D);
+						location.setY(location.getY() + 1D);
 						EnderCrystal enderCrystal = (EnderCrystal) location.getWorld().spawn(location, EnderCrystal.class);
 						ender_crystals.add((Entity) enderCrystal);
 						
@@ -398,14 +399,17 @@ public class PowerupMechanics implements Listener {
 				if(edee.getDamager() instanceof Player) {
 					Player pl = (Player) edee.getDamager();
 
-					pl.sendMessage(" You broke this BEACON!");
+//					if(TutorialMechanics.onTutorialIsland(pl)) { // TODO everything is tutorial island
+//						return; // Do nothing.
+//					}
 
-					if(TutorialMechanics.onTutorialIsland(pl)) { return; // Do nothing.
-					}
 					Block b = e.getEntity().getLocation().subtract(0, 1, 0).getBlock();
-					if(b.getType() == Material.BEDROCK) {
+//					if(b.getType() == Material.BEDROCK) { // TODO doesn't trigger, most likely because beacon spawning was/is broken?
 						powerup_map.remove(b);
-						b.setType(Material.AIR);
+
+						if (b.getType() == Material.BEDROCK) {
+							b.setType(Material.AIR);
+						}
 						beacons.remove(b.getLocation());
 						LootMechanics.last_loot_spawn_tick.put(b.getLocation(), Long.valueOf(System.currentTimeMillis()));
 						b.getLocation().add(0, 1, 0).getBlock().setType(Material.AIR);
@@ -418,7 +422,7 @@ public class PowerupMechanics implements Listener {
 						//b.getWorld().spawnParticle(b.getLocation().add(0, 1, 0), Particle.MAGIC_CRIT, 1F, 50);
 						
 						handleBeaconEffect(pl, -1);
-					}
+//					}
 					
 					ender_crystals.remove(e.getEntity());
 					e.getEntity().remove();
