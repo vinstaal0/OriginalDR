@@ -156,7 +156,7 @@ public class Party {
 
         switch (this.lootType) {
 
-            case ROUNDROBIN -> {
+            case ROUNDROBIN : {
 
                 // TODO deal with players who aren't nearby
 
@@ -182,7 +182,8 @@ public class Party {
                 before = ChatColor.GREEN + receiver + " has received ";
                 after = ChatColor.GREEN + " as a drop.";
             }
-            case RANDOM -> {
+
+            case RANDOM : {
 
                 Random rand = new Random();
                 Player randomMember = newMembers.get(rand.nextInt(newMembers.size()));
@@ -200,12 +201,12 @@ public class Party {
                 before = ChatColor.GREEN + receiver + " has received ";
                 after = ChatColor.GREEN + " as a drop.";
             }
-            case HIDDEN -> {
+            case HIDDEN : {
 
                 dropLocation = loc;
                 return;
             }
-            case NONE -> {
+            case NONE : {
 
                 before = ChatColor.GREEN + mobName + ChatColor.GREEN + " has been killed by " + player.getName() + ChatColor.GREEN + " and dropped ";
                 after = ChatColor.GREEN + ".";

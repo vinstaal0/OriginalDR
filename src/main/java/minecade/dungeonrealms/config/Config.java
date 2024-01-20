@@ -125,7 +125,7 @@ public class Config {
     public static int transfer_port = 25565;
     //public static String Hive_IP = "72.20.40.38";
     public static String Hive_IP_backup = "localhost";
-    public static String Hive_IP = "192.168.0.106";
+    public static String Hive_IP = "192.168.0.107";
 //    public static String Hive_IP = "localhost";
 //    public static String Hive_IP = "172.17.17.108";
 
