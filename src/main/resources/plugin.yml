@@ -579,3 +579,6 @@ commands:
   activateLootbuff:
     description: activates the loot buff
     usage: /<command>
+  createspawnerwand:
+    description: gives the player the spawnerwand
+    usage: /<command>

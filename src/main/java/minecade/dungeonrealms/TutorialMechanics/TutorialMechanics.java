@@ -180,7 +180,7 @@ public class TutorialMechanics implements Listener {
 						if(!onIsland.contains(pl.getName())) onIsland.add(pl.getName());
 						//ScoreboardMechanics.addPlayerToTeam("TI", pl);
 						if(!(pl.hasPotionEffect(PotionEffectType.INVISIBILITY))) {
-							pl.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15));
+//							pl.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15));
 						}
 						if(!(quest_map.containsKey(pl.getName()))) {
 							List<String> quests_left = new ArrayList<String>(Arrays.asList("Master Miner", "Master Marksmen", "Master Fisherman", "Master Duelist", "Equipment Master", "Interface Guide", "Item Enchanter", "Armor Guide", "Alignment Guide", ChatColor.YELLOW.toString() + "Neutral Guide", ChatColor.RED.toString() + "Chaotic Guide", ChatColor.LIGHT_PURPLE + "[100]" + ChatColor.GRAY + " Lee"));
@@ -235,8 +235,10 @@ public class TutorialMechanics implements Listener {
 		Player pl = e.getPlayer();
 		Location from = e.getFrom();
 		Location to = e.getTo();
+
 		if(onIsland.contains(pl.getName()) && !DuelMechanics.getRegionName(to).equalsIgnoreCase(tutorialRegion)) {
 			// Don't let them off the island!
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15));
 			e.setCancelled(true);
 			pl.teleport(from);
 			pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "must" + ChatColor.RED + " either finish the tutorial or skip it with /skip to get off tutorial island.");
@@ -640,6 +642,7 @@ public class TutorialMechanics implements Listener {
 			e.setCancelled(true);
 			if(e.getMessage().equalsIgnoreCase("y")) {
 				// TODO: Move them to the main land, give items, etc.
+
 				leaveTutorial(pl);
 			} else {
 				pl.sendMessage(ChatColor.RED + "Tutorial Skip - " + ChatColor.BOLD + "CANCELLED");
@@ -721,7 +724,11 @@ public class TutorialMechanics implements Listener {
 			// Keep going.
 		}
 		
-		pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 2));
+		try {
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 2));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		//pl.teleport(new Location(Bukkit.getWorlds().get(0), -203, 35, 214));
 		pl.teleport(new Location(Bukkit.getWorlds().get(0), -378, 84, 355, 37F, 1F));
 		//pl.teleport(new Location(Bukkit.getWorlds().get(0), -398, 85, 376, 87F, 1F));

@@ -55,6 +55,9 @@ import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
+import nl.vinstaal0.Dungeonrealms.AreaTeleport;
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.Monstermechanics.SpawnerMechanics;
 import nl.vinstaal0.Dungeonrealms.Utils;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
 import org.bukkit.event.EventHandler;
@@ -97,6 +100,8 @@ public class Main extends JavaPlugin implements Listener {
     private static RestrictionMechanics restrictionMechanics;
     private static ShopMechanics shopMechanics;
     private static SpawnMechanics spawnMechanics;
+
+    private static SpawnerMechanics spawnerMechanics;
     private static SubscriberMechanics subscriberMechanics;
     private static TeleportationMechanics teleportationMechanics;
     private static TradeMechanics tradeMechanics;
@@ -117,6 +122,7 @@ public class Main extends JavaPlugin implements Listener {
      */
     public static Main plugin;
     public static Logger log;
+    private static ConfigFile configFile;
 
     private static final List<String> devs = Arrays.asList("EtherealTemplar", "Vilsol", "Rar349", "iFamasssxD", "Tux2", "Vinstaal0");
     private static final List<String> masters = Arrays.asList("Bradez1571", "felipepcjr");
@@ -125,6 +131,8 @@ public class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         log = this.getLogger();
+
+        getConfigFile();
 
         int serverid = Integer.parseInt(getServer().getMotd().split("-")[1].split(" ")[0]);
 
@@ -177,6 +185,7 @@ public class Main extends JavaPlugin implements Listener {
 
         shopMechanics = new ShopMechanics();
         spawnMechanics = new SpawnMechanics();
+        spawnerMechanics = new SpawnerMechanics();
         subscriberMechanics = new SubscriberMechanics();
         teleportationMechanics = new TeleportationMechanics();
         tradeMechanics = new TradeMechanics();
@@ -223,6 +232,7 @@ public class Main extends JavaPlugin implements Listener {
         restrictionMechanics.onEnable();
         shopMechanics.onEnable();
         spawnMechanics.onEnable();
+        spawnerMechanics.onEnable();
         subscriberMechanics.onEnable();
         teleportationMechanics.onEnable();
         tradeMechanics.onEnable();
@@ -232,6 +242,9 @@ public class Main extends JavaPlugin implements Listener {
         levelMechanics.onEnable();
         foodVendor.onEnable();
         utils.onEnable();
+
+        AreaTeleport areaTeleport = new AreaTeleport();
+        areaTeleport.onEnable();
         
         ItemGenerator.loadModifiers();
 
@@ -290,6 +303,7 @@ public class Main extends JavaPlugin implements Listener {
         restrictionMechanics.onDisable();
 
         spawnMechanics.onDisable();
+        spawnerMechanics.onDisable();
         subscriberMechanics.onDisable();
         teleportationMechanics.onDisable();
         tradeMechanics.onDisable();
@@ -298,6 +312,14 @@ public class Main extends JavaPlugin implements Listener {
         hive.onDisable();
         hiveServer.onDisable();
 
+    }
+
+    public static ConfigFile getConfigFile() {
+        if (configFile == null) {
+            configFile = new ConfigFile();
+        }
+
+        return  configFile;
     }
 
     @EventHandler

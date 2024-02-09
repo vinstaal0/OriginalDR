@@ -462,8 +462,8 @@ public class ProfessionMechanics implements Listener {
                             if (r.nextInt(chance) == 1) {
                                 try {
                                     ParticleEffect.sendToLocation(ParticleEffect.SPLASH, loc, r.nextFloat(), r.nextFloat(), r.nextFloat(), 0.4F, 20);
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
                                 }
                                 // loc.getWorld().spawnParticle(loc, Particle.SPLASH, 0.4F, 20);
                             }

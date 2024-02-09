@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import minecade.dungeonrealms.Main;
 import org.bukkit.Bukkit;
 
 public class Config {
@@ -120,7 +121,6 @@ public class Config {
     public static List<String> us_public_servers = new ArrayList<String>(Arrays.asList("US-1", "US-2", "US-3", "US-4"));
     public static List<String> us_beta_servers = new ArrayList<String>(Arrays.asList("US-100"/*, "US-101", "US-102", "US-103", "US-104", "US-105", "US-106", "US-107", "US-108", "US-109", "US-110"*/));
     public static List<String> us_private_servers = new ArrayList<String>(Arrays.asList("US-5"));
-
     
     public static int transfer_port = 25565;
     //public static String Hive_IP = "72.20.40.38";
@@ -151,4 +151,5 @@ public class Config {
     public static String local_IP = Bukkit.getIp();
     
     public static String realmPath = "/rdata/";
+
 }

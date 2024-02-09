@@ -104,7 +104,7 @@ public enum ParticleEffect {
 		// Hive.log.info(effect.name + " @ " + location.toString());
 				Object packet = null;
 				try {
-					packet = createPacket(effect, location, offsetX, offsetY, offsetZ, speed, count);
+// TODO fix packets					packet = createPacket(effect, location, offsetX, offsetY, offsetZ, speed, count);
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
