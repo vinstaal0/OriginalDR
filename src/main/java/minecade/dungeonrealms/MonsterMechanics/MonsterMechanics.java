@@ -142,7 +142,7 @@ public class MonsterMechanics implements Listener {
     public static volatile long loot_buff_timeout = 0L;
     // }
 
-    public static volatile CopyOnWriteArrayList<Chunk> chunk_copy = new CopyOnWriteArrayList<Chunk>();
+    public static volatile CopyOnWriteArrayList<Chunk> chunk_copy = new CopyOnWriteArrayList<>();
     // Copy of all loaded chunks -- used for multithread operations.
 
     // Mob Attributes -- health, armor, damage, tier, etc.
@@ -305,7 +305,7 @@ public class MonsterMechanics implements Listener {
 
         Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
-                if (loot_buff == true) {
+                if (loot_buff) {
                     if ((System.currentTimeMillis() - loot_buff_timeout) > 0) {
                         // Time to stop the fun.
                         loot_buff = false;
@@ -1540,7 +1540,7 @@ public class MonsterMechanics implements Listener {
             try {
                 Location l = entry.getKey();
                 String spawn_data = entry.getValue();
-                String mob_data[] = spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",");
+                String[] mob_data = spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",");
 
                 List<String> to_spawn_list = new ArrayList<String>();
 
@@ -3480,7 +3480,7 @@ public class MonsterMechanics implements Listener {
         } else if (loc.getBlock().getType() == Material.MOB_SPAWNER) {
             Player p = e.getPlayer();
             if (!(mob_spawn_location.containsKey(p))) {
-                e.setCancelled(true);
+//                e.setCancelled(true); // TODO commented out to fix the new spawner placement
                 p.sendMessage(ChatColor.YELLOW + "You did not initiate this mob spawner's registration, therfore you cannot destroy it.");
                 p.sendMessage(ChatColor.GRAY + "It will automatically delete on a server reboot.");
                 return;
