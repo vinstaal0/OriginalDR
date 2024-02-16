@@ -536,9 +536,6 @@ public class SpawnerMechanics implements Listener {
             }
         }
 
-
-        // TODO Iterate over all the MobType options and add them when they are spawnable
-
         player.openInventory(mobSelectionMenu);
     }
 
