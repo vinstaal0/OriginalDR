@@ -26,6 +26,7 @@ import java.util.logging.Logger;
  * Created by Vinstaal0 on 2023-07-05
  * based on the code made by Nick on 2015-09-11
  */
+@SuppressWarnings("GrazieInspection")
 public class PartyMechanics extends minecade.dungeonrealms.PartyMechanics.PartyMechanics implements Listener {
 
     static Logger log = Logger.getLogger("Minecraft");
@@ -145,7 +146,7 @@ public class PartyMechanics extends minecade.dungeonrealms.PartyMechanics.PartyM
 
         party = getParty(player).get();
 
-        if (!(party == null)) {
+        if (party != null) {
             party.getMembers().remove(player);
             Scoreboard board = party.getPartyScoreboard();
             board.resetScores(player.getName());

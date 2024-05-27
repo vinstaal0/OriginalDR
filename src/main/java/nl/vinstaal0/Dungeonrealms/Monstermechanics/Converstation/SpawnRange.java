@@ -11,7 +11,7 @@ public class SpawnRange extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conversationContext) {
-        return ChatColor.RED + "Please enter the spawn range (ex: 1-5):";
+        return ChatColor.RED + "Please enter the spawn range (example: 1-5):";
     }
 
 
@@ -31,7 +31,7 @@ public class SpawnRange extends StringPrompt {
             return Prompt.END_OF_CONVERSATION;
 
         } catch (NumberFormatException exception) {
-            conversationContext.getForWhom().sendRawMessage(ChatColor.RED + "Invalid input. Please enter two numbers seperated by a dash (ex: 1-5):");
+            conversationContext.getForWhom().sendRawMessage(ChatColor.RED + "Invalid input. Please enter two numbers seperated by a dash (example: 1-5):");
             return this;
         }
     }

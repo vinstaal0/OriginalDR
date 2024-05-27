@@ -34,6 +34,6 @@ public class CommandCreateSpawnerWand implements CommandExecutor {
 
         player.getInventory().addItem(itemStack);
 
-        return false;
+        return true;
     }
 }

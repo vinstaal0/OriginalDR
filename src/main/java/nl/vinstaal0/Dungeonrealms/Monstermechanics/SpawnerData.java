@@ -6,6 +6,7 @@ public class SpawnerData {
 
     // @zombie:1-1,skeleton:1-2,skeleton:2-3@30#1-5$
 
+    //TODO add defaults
     private String mobType;
     private String customName;
     public boolean elite;
@@ -59,6 +60,7 @@ public class SpawnerData {
         this.amount = amount;
     }
 
+    @Deprecated
     public String toString() {
 
         StringBuilder sb = new StringBuilder();

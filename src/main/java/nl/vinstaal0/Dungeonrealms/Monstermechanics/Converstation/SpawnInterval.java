@@ -17,7 +17,7 @@ public class SpawnInterval extends StringPrompt {
             int amount = Integer.parseInt(input);
             conversationContext.setSessionData("spawnInterval", amount);
             return Prompt.END_OF_CONVERSATION;
-        } catch (NumberFormatException e) {
+        } catch (Exception exception) { // NumberFormatException and
             conversationContext.getForWhom().sendRawMessage(ChatColor.RED + "Invalid input. Please enter a number.");
             return this;
         }

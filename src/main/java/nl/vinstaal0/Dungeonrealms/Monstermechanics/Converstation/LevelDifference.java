@@ -5,7 +5,7 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 
-public class levelDifference extends StringPrompt {
+public class LevelDifference extends StringPrompt {
     @Override
     public String getPromptText(ConversationContext conversationContext) {
         return ChatColor.RED + "Please enter mob level difference.";

@@ -13,6 +13,7 @@ public class Amount extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conversationContext, String input) {
+
         try {
             int amount = Integer.parseInt(input);
             conversationContext.setSessionData("amount", amount);

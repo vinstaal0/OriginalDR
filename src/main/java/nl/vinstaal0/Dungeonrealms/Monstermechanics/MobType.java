@@ -1,5 +1,6 @@
 package nl.vinstaal0.Dungeonrealms.Monstermechanics;
 
+import com.mojang.authlib.GameProfile;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -7,6 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Random;
+import java.util.UUID;
 
 public enum MobType {
 

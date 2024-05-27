@@ -44,11 +44,7 @@ import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.database.ConnectionPool;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -729,6 +725,7 @@ public class GuildMechanics implements Listener {
 						guild_creation_name_check.remove(pl.getName());
 					}
 				}
+
 				if(step == 3) {
 					// Open color picking menu.
 					Inventory color_inv = Bukkit.createInventory(null, 45, "Guild Color Selector");
@@ -737,11 +734,14 @@ public class GuildMechanics implements Listener {
 						color_inv.setItem(x, color_selector_divider);
 						x++;
 					}
+
+					//Show leather armour
 					color_inv.setItem(17, new ItemStack(Material.LEATHER_HELMET));
 					color_inv.setItem(26, new ItemStack(Material.LEATHER_CHESTPLATE));
 					color_inv.setItem(35, new ItemStack(Material.LEATHER_LEGGINGS));
 					color_inv.setItem(44, new ItemStack(Material.LEATHER_BOOTS));
 
+					//Different colour dyes
 					color_inv.setItem(27, new ItemStack(Material.INK_SACK, 1, (short) 0));
 					color_inv.setItem(28, new ItemStack(Material.INK_SACK, 1, (short) 1));
 					color_inv.setItem(29, new ItemStack(Material.INK_SACK, 1, (short) 2));
@@ -756,14 +756,21 @@ public class GuildMechanics implements Listener {
 					color_inv.setItem(40, new ItemStack(Material.INK_SACK, 1, (short) 11));
 					color_inv.setItem(41, new ItemStack(Material.INK_SACK, 1, (short) 12));
 					color_inv.setItem(42, new ItemStack(Material.INK_SACK, 1, (short) 13));
-
 					color_inv.setItem(18, new ItemStack(Material.INK_SACK, 1, (short) 14));
 					color_inv.setItem(19, new ItemStack(Material.INK_SACK, 1, (short) 15));
 
+					//Empty spaces
 					color_inv.setItem(3, new ItemStack(Material.AIR));
-					color_inv.setItem(4, new ItemStack(Material.THIN_GLASS));
 					color_inv.setItem(5, new ItemStack(Material.AIR));
 
+					//Filler
+					int[] filler = new int[]{1, 2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 34, 43};
+
+					for (int i : filler) {
+						color_inv.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 0, (byte)7));
+					}
+
+					//Accept button
 					color_inv.setItem(0, CraftItemStack.asCraftCopy(gray_button));
 
 					pl.openInventory(color_inv);

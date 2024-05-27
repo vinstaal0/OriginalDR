@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
  *
  * Created by Vinstaal0 on 2023-07-05
  */
+@SuppressWarnings("ConstantValue")
 public class CommandPInvite implements CommandExecutor {
 
     /**

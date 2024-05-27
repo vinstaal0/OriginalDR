@@ -28,9 +28,9 @@ import java.util.logging.Logger;
 
 public class SpawnerMechanics implements Listener {
 
-    private static final Logger log = Logger.getLogger("Minecraft");
+    private final Logger log = Logger.getLogger("Minecraft");
 
-    private static final HashMap<Player, Spawner> midCreationSpawners = new HashMap<>();
+    private static final HashMap<Player, Spawner> midCreationSpawners = new HashMap<>(); //TODO remove static
 
     private static final ArrayList<Spawner> spawnerArrayList = new ArrayList<>();
 
@@ -121,6 +121,14 @@ public class SpawnerMechanics implements Listener {
     private void onMenuClick(InventoryClickEvent event) {
         Player creator = (Player) event.getWhoClicked();
         Inventory clickedInventory = event.getClickedInventory();
+
+        // TODO check for the correct inventory, otherwise cancel out
+//        if (clickedInventory == null || !clickedInventory.getTitle().equalsIgnoreCase("select a mob type") ||
+//                !clickedInventory.getTitle().equalsIgnoreCase("mob options") ||
+//                !clickedInventory.getTitle().equalsIgnoreCase("select a mob type")) {
+//            return;
+//        }
+
         Spawner spawner = midCreationSpawners.get(creator);
 
         SpawnerData spawnerData;
@@ -131,10 +139,6 @@ public class SpawnerMechanics implements Listener {
             spawnerData = spawner.getSpawnerDataMidCreation();
         }
 
-        if (clickedInventory == null) {
-            return;
-        }
-
         if (clickedInventory.getTitle().equals("Select a mob type")) {
             event.setCancelled(true);
 
@@ -143,8 +147,6 @@ public class SpawnerMechanics implements Listener {
             if (clickedItem == null || clickedItem.getType() == Material.AIR) {
                 return;
             }
-
-//            String mobType = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
 
             MobType mobType = MobType.valueOf(ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()));
 
@@ -160,7 +162,7 @@ public class SpawnerMechanics implements Listener {
 
         }
 
-        if (clickedInventory.getTitle().equals("Mob options")) {
+        else if (clickedInventory.getTitle().equals("Mob options")) { // TODO enum
             event.setCancelled(true);
 
             ItemStack clickedItem = event.getCurrentItem();
@@ -217,9 +219,14 @@ public class SpawnerMechanics implements Listener {
 
             }
 
-            if (selectedOption.equalsIgnoreCase("elite")) {
+            else if (selectedOption.equalsIgnoreCase("elite")) {
 
-                if (!spawnerData.isElite()) {
+                //TODO remove code after testing
+
+                spawnerData.setElite(!spawnerData.isElite());
+                creator.sendMessage("Elite = " + spawnerData.isElite());
+
+                /*if (!spawnerData.isElite()) {
                     spawnerData.setElite(true);
                     spawner.addSpawnerData(spawnerData);
                     creator.sendMessage("Elite = " + spawnerData.isElite());
@@ -227,10 +234,10 @@ public class SpawnerMechanics implements Listener {
                     spawnerData.setElite(false);
                     spawner.addSpawnerData(spawnerData);
                     creator.sendMessage("Elite = " + spawnerData.isElite());
-                }
+                }*/
             }
 
-            if (selectedOption.equalsIgnoreCase("spawn range")) {
+            else if (selectedOption.equalsIgnoreCase("spawn range")) {
                 creator.closeInventory();
 
                 ConversationFactory conversationFactory;
@@ -275,7 +282,7 @@ public class SpawnerMechanics implements Listener {
                 conversation.begin();
             }
 
-            if (selectedOption.equalsIgnoreCase("spawn interval")) {
+            else if (selectedOption.equalsIgnoreCase("spawn interval")) {
                 creator.closeInventory();
 
                 ConversationFactory conversationFactory;
@@ -317,13 +324,13 @@ public class SpawnerMechanics implements Listener {
                 conversation.begin();
             }
 
-            if (selectedOption.equalsIgnoreCase("Mob level difference")) {
+            else if (selectedOption.equalsIgnoreCase("Mob level difference")) {
                 creator.closeInventory();
 
                 ConversationFactory conversationFactory;
 
                 conversationFactory = new ConversationFactory(Main.getPlugin())
-                        .withFirstPrompt(new levelDifference())
+                        .withFirstPrompt(new LevelDifference())
                         .withEscapeSequence("/cancel")
                         .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
                         .addConversationAbandonedListener(new ConversationAbandonedListener() {
@@ -360,7 +367,7 @@ public class SpawnerMechanics implements Listener {
 
             }
 
-            if (selectedOption.equalsIgnoreCase("Amount")) {
+            else if (selectedOption.equalsIgnoreCase("Amount")) {
                 creator.closeInventory();
 
                 ConversationFactory conversationFactory;
@@ -404,38 +411,38 @@ public class SpawnerMechanics implements Listener {
 
             }
 
-            if (selectedOption.equalsIgnoreCase("tier 1")) {
+            else if (selectedOption.equalsIgnoreCase("tier 1")) {
                 creator.sendMessage("Tier 1 selected");
                 spawnerData.setTier(Tier.ONE);
                 spawner.addSpawnerData(spawnerData);
 
             }
 
-            if (selectedOption.equalsIgnoreCase("tier 2")) {
+            else if (selectedOption.equalsIgnoreCase("tier 2")) {
                 creator.sendMessage("Tier 2 selected");
                 spawnerData.setTier(Tier.TWO);
                 spawner.addSpawnerData(spawnerData);
             }
 
-            if (selectedOption.equalsIgnoreCase("tier 3")) {
+            else if (selectedOption.equalsIgnoreCase("tier 3")) {
                 creator.sendMessage("Tier 3 selected");
                 spawnerData.setTier(Tier.TREE);
                 spawner.addSpawnerData(spawnerData);
             }
 
-            if (selectedOption.equalsIgnoreCase("tier 4")) {
+            else if (selectedOption.equalsIgnoreCase("tier 4")) {
                 creator.sendMessage("Tier 4 selected");
                 spawnerData.setTier(Tier.FOUR);
                 spawner.addSpawnerData(spawnerData);
             }
 
-            if (selectedOption.equalsIgnoreCase("tier 5")) {
+            else if (selectedOption.equalsIgnoreCase("tier 5")) {
                 creator.sendMessage("Tier 5 selected");
                 spawnerData.setTier(Tier.FIVE);
                 spawner.addSpawnerData(spawnerData);
             }
 
-            if (selectedOption.equalsIgnoreCase("add another mob")) {
+            else if (selectedOption.equalsIgnoreCase("add another mob")) {
                 spawner.addSpawnerData(spawnerData);
                 spawner.finishSpawnerData();
                 spawnerData = null;
@@ -444,7 +451,7 @@ public class SpawnerMechanics implements Listener {
                 openMobTypeSelectionGUI(creator);
             }
 
-            if (selectedOption.equalsIgnoreCase("accept")) {
+            else if (selectedOption.equalsIgnoreCase("accept")) {
                 spawner.addSpawnerData(spawnerData);
                 spawner.finishSpawnerData();
                 spawnerData = null;
@@ -546,8 +553,6 @@ public class SpawnerMechanics implements Listener {
      */
     private static void openOptionSelectionGUI(Player player) {
         Inventory optionSelectionGUI = Bukkit.createInventory(null, 18, "Mob options");
-
-
 
         optionSelectionGUI.setItem(0, customMenuItem(Material.NAME_TAG, "Custom name"));
         optionSelectionGUI.setItem(1, customMenuItem(Material.ENCHANTMENT_TABLE, "Elite"));

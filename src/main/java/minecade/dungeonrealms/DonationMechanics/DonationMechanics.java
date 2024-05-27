@@ -121,11 +121,14 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 			
 		}
 		*/
-			
+
+		/*
+		// check if Votifier is enabled
 		if(new File("plugins/Votifier.jar").exists()) {
 			log.info("[DonationMechanics] Votifier.jar detected, registering listener.");
 			Bukkit.getServer().getPluginManager().registerEvents(new CustomEventListener(this), Main.plugin);
 		}
+		*/
 		
 	}
 	

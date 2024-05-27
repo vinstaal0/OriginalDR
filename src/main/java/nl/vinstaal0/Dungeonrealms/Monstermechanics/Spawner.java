@@ -71,23 +71,23 @@ public class Spawner {
 
 
     /**
-     * Add the spawner data that is being modifier
-     * @param spawnerData the spawner data that is being modifier while creating the specific spawner
+     * Add the spawner data that is being modified
+     * @param spawnerData the spawner data that is being modified while creating the specific spawner
      */
     public void addSpawnerData(SpawnerData spawnerData) {
         this.spawnerDataMidCreation = spawnerData;
     }
 
     /**
-     * Retrieves the spawner data that is being modifier
-     * @return SpawnerData the spawner data that is being modifier
+     * Retrieves the spawner data that is being modified
+     * @return SpawnerData the spawner data that is being modified
      */
     public SpawnerData getSpawnerDataMidCreation() {
         return spawnerDataMidCreation;
     }
 
     /**
-     * Finishes the spawner that was being modifier to either finish the spawner or add more spawner-data
+     * Finishes the spawner that was being modified to either finish the spawner or add more spawner-data
      */
     public void finishSpawnerData() {
         this.spawnerData.add(spawnerDataMidCreation);
