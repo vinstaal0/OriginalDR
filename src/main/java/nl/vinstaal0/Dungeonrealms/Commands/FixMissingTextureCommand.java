@@ -1,5 +1,9 @@
 package nl.vinstaal0.Dungeonrealms.Commands;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemMechanics;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,21 +20,31 @@ public class FixMissingTextureCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        ItemStack itemInHand = player.getItemInHand();
-        int amount = itemInHand.getAmount();
-        net.minecraft.server.v1_8_R1.ItemStack nmsIS = CraftItemStack.asNMSCopy(itemInHand);
-        CraftItemStack craftItemStack = CraftItemStack.asCraftMirror(nmsIS);
+        ItemStack itemStack = TeleportationScrolls.Cyrennica_scroll.clone();
 
-        craftItemStack.getItemMeta().removeItemFlags();
+        ItemStack item = ItemTracker.addSerialNumber(itemStack, player);
 
-        ItemMeta im = craftItemStack.getItemMeta();
-        Material mat = craftItemStack.getType();
+        player.getInventory().addItem(item);
 
-        ItemStack newItem = new ItemStack(mat, amount);
-        newItem.setItemMeta(im);
-        newItem.setDurability((short)0);
 
-        player.setItemInHand(newItem);
+//        ItemMechanics.itemTracker.addSerialNumber()
+
+
+//        ItemStack itemInHand = player.getItemInHand();
+//        int amount = itemInHand.getAmount();
+//        net.minecraft.server.v1_8_R1.ItemStack nmsIS = CraftItemStack.asNMSCopy(itemInHand);
+//        CraftItemStack craftItemStack = CraftItemStack.asCraftMirror(nmsIS);
+//
+//        craftItemStack.getItemMeta().removeItemFlags();
+//
+//        ItemMeta im = craftItemStack.getItemMeta();
+//        Material mat = craftItemStack.getType();
+//
+//        ItemStack newItem = new ItemStack(mat, amount);
+//        newItem.setItemMeta(im);
+//        newItem.setDurability((short)0);
+//
+//        player.setItemInHand(newItem);
 
         return true;
     }

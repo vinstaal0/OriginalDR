@@ -38,7 +38,6 @@ import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
-import minecade.dungeonrealms.TeleportationMechanics.TeleportationMechanics;
 import minecade.dungeonrealms.enums.ItemTier;
 import minecade.dungeonrealms.enums.ItemType;
 import minecade.dungeonrealms.managers.PlayerManager;
@@ -48,6 +47,9 @@ import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemLogger;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -116,7 +118,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import sun.security.action.GetLongAction;
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.*;
 
 public class ItemMechanics implements Listener {
 
@@ -252,14 +254,14 @@ public class ItemMechanics implements Listener {
         foodVendor.addItem(new ItemStack(Material.BREAD));
         foodVendor.addItem(new ItemStack(Material.CARROT));
 
-        tpBookVendor.addItem(TeleportationMechanics.Crestguard_keep_scroll);
-        tpBookVendor.addItem(TeleportationMechanics.Dark_Oak_Tavern_scroll);
-        tpBookVendor.addItem(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll);
-        tpBookVendor.addItem(TeleportationMechanics.Tripoli_scroll);
-        tpBookVendor.addItem(TeleportationMechanics.Harrison_scroll);
-        tpBookVendor.addItem(TeleportationMechanics.Swamp_safezone_scroll);
-        tpBookVendor.addItem(TeleportationMechanics.Jagged_Rocks_Tavern);
-        tpBookVendor.addItem(TeleportationMechanics.Cyrennica_scroll);
+        tpBookVendor.addItem(Crestguard_keep_scroll);
+        tpBookVendor.addItem(Dark_Oak_Tavern_scroll);
+        tpBookVendor.addItem(Deadpeaks_Mountain_Camp_scroll);
+        tpBookVendor.addItem(Tripoli_scroll);
+        tpBookVendor.addItem(Harrison_scroll);
+        tpBookVendor.addItem(Swamp_safezone_scroll);
+        tpBookVendor.addItem(Jagged_Rocks_Tavern);
+        tpBookVendor.addItem(Cyrennica_scroll);
 
         Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {

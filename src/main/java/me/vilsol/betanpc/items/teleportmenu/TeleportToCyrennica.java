@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Cyrennica_scroll;
+
 public class TeleportToCyrennica implements MenuItem {
 
 	@Override
@@ -21,7 +23,7 @@ public class TeleportToCyrennica implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(TeleportationMechanics.Cyrennica_scroll).clone();
+		ItemStack tp = TeleportationMechanics.makeUnstackable(Cyrennica_scroll).clone();
 		plr.getInventory().addItem(tp);
 	}
 

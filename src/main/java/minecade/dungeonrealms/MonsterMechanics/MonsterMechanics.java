@@ -135,6 +135,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.*;
+
 public class MonsterMechanics implements Listener {
 
     // Used for E-CASH items {
@@ -929,16 +931,16 @@ public class MonsterMechanics implements Listener {
                                 ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
                     } else if (m == Material.EMPTY_MAP) {
                         if (item_meta == 1) {
-                            loot.add(CraftItemStack.asCraftCopy(TeleportationMechanics.Cyrennica_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(Cyrennica_scroll));
                         }
                         if (item_meta == 2) {
-                            loot.add(CraftItemStack.asCraftCopy(TeleportationMechanics.Harrison_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(Harrison_scroll));
                         }
                         if (item_meta == 3) {
-                            loot.add(CraftItemStack.asCraftCopy(TeleportationMechanics.Dark_Oak_Tavern_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(Dark_Oak_Tavern_scroll));
                         }
                         if (item_meta == 4) {
-                            loot.add(CraftItemStack.asCraftCopy(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(Deadpeaks_Mountain_Camp_scroll));
                         }
                         if (item_meta == 11) {
                             loot.add(CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));
@@ -5272,11 +5274,11 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(2); // 0, 1
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Cyrennica_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Cyrennica_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Harrison_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Harrison_scroll)));
                             }
                         }
                     }
@@ -5293,23 +5295,23 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(5); // 0, 1
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Cyrennica_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Cyrennica_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Harrison_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Harrison_scroll)));
                             }
                             if (scroll_type == 2) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Dark_Oak_Tavern_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Dark_Oak_Tavern_scroll)));
                             }
                             if (scroll_type == 3) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Jagged_Rocks_Tavern)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Jagged_Rocks_Tavern)));
                             }
                             if (scroll_type == 4) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Tripoli_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Tripoli_scroll)));
                             }
                         }
                     }
@@ -5326,23 +5328,23 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(5); // 0, 1, 2, 3
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Cyrennica_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Cyrennica_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Dark_Oak_Tavern_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Dark_Oak_Tavern_scroll)));
                             }
                             if (scroll_type == 2) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Jagged_Rocks_Tavern)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Jagged_Rocks_Tavern)));
                             }
                             if (scroll_type == 3) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Swamp_safezone_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Swamp_safezone_scroll)));
                             }
                             if (scroll_type == 4) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Crestguard_keep_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Crestguard_keep_scroll)));
                             }
                         }
                     }
@@ -5361,11 +5363,11 @@ public class MonsterMechanics implements Listener {
                                 ent.getWorld().dropItemNaturally(
                                         ent.getLocation(),
                                         CraftItemStack.asCraftCopy(TeleportationMechanics
-                                                .makeUnstackable(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll)));
+                                                .makeUnstackable(Deadpeaks_Mountain_Camp_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Swamp_safezone_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Swamp_safezone_scroll)));
                             }
                         }
                     }
@@ -5383,11 +5385,11 @@ public class MonsterMechanics implements Listener {
                                 ent.getWorld().dropItemNaturally(
                                         ent.getLocation(),
                                         CraftItemStack.asCraftCopy(TeleportationMechanics
-                                                .makeUnstackable(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll)));
+                                                .makeUnstackable(Deadpeaks_Mountain_Camp_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Swamp_safezone_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Swamp_safezone_scroll)));
                             }
                         }
                     }
@@ -5400,7 +5402,7 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(1); // 0
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Crestguard_keep_scroll)));
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Crestguard_keep_scroll)));
                             }
                         }
                     }

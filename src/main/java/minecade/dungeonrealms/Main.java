@@ -1,5 +1,7 @@
 package minecade.dungeonrealms;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -56,6 +58,7 @@ import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
 
 import nl.vinstaal0.Dungeonrealms.AreaTeleport;
+import nl.vinstaal0.Dungeonrealms.Commands.CompileTime;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.Monstermechanics.SpawnerMechanics;
 import nl.vinstaal0.Dungeonrealms.Utils;
@@ -127,10 +130,18 @@ public class Main extends JavaPlugin implements Listener {
     private static final List<String> devs = Arrays.asList("EtherealTemplar", "Vilsol", "Rar349", "iFamasssxD", "Tux2", "Vinstaal0");
     private static final List<String> masters = Arrays.asList("Bradez1571", "felipepcjr");
 
+    public static String compileTimedate;
+
     @Override
     public void onEnable() {
         plugin = this;
         log = this.getLogger();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        compileTimedate = dtf.format(now);
+        System.out.println("Compile date and time: " + dtf.format(now));
+        getCommand("compiletime").setExecutor(new CompileTime());
 
         getConfigFile();
 

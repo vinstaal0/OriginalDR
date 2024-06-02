@@ -53,6 +53,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static nl.vinstaal0.Dungeonrealms.Config.version;
+
 public class TutorialMechanics implements Listener {
 	Logger log = Logger.getLogger("Minecraft");
 	
@@ -754,7 +756,7 @@ public class TutorialMechanics implements Listener {
 		pl.sendMessage("");
 		pl.sendMessage("");
 		pl.sendMessage("");
-		pl.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "              Dungeon Realms Patch " + Config.version);
+		pl.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "              Dungeon Realms Patch " + version);
 		pl.sendMessage(ChatColor.GRAY + "                    " + "http://www.dungeonrealms.net/");
 		pl.sendMessage("");
 		pl.sendMessage(ChatColor.YELLOW + "                 " + "You are on the " + ChatColor.BOLD + Hive.MOTD.substring(0, Hive.MOTD.indexOf(" ")) + ChatColor.YELLOW + " shard.");

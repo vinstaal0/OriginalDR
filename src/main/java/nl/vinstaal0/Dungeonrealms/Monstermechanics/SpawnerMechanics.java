@@ -122,350 +122,338 @@ public class SpawnerMechanics implements Listener {
         Player creator = (Player) event.getWhoClicked();
         Inventory clickedInventory = event.getClickedInventory();
 
-        // TODO check for the correct inventory, otherwise cancel out
-//        if (clickedInventory == null || !clickedInventory.getTitle().equalsIgnoreCase("select a mob type") ||
-//                !clickedInventory.getTitle().equalsIgnoreCase("mob options") ||
-//                !clickedInventory.getTitle().equalsIgnoreCase("select a mob type")) {
-//            return;
-//        }
+        if (clickedInventory.getTitle().equalsIgnoreCase("select a mob type") ||
+        clickedInventory.getTitle().equalsIgnoreCase("mob options") ||
+        clickedInventory.getTitle().equalsIgnoreCase("select a mob type")) {
 
-        Spawner spawner = midCreationSpawners.get(creator);
+            Spawner spawner = midCreationSpawners.get(creator);
 
-        SpawnerData spawnerData;
+            SpawnerData spawnerData;
 
-        if (spawner.getSpawnerDataMidCreation() == null) {
-            spawnerData = new SpawnerData();
-        } else {
-            spawnerData = spawner.getSpawnerDataMidCreation();
-        }
-
-        if (clickedInventory.getTitle().equals("Select a mob type")) {
-            event.setCancelled(true);
-
-            ItemStack clickedItem = event.getCurrentItem();
-
-            if (clickedItem == null || clickedItem.getType() == Material.AIR) {
-                return;
+            if (spawner.getSpawnerDataMidCreation() == null) {
+                spawnerData = new SpawnerData();
+            } else {
+                spawnerData = spawner.getSpawnerDataMidCreation();
             }
 
-            MobType mobType = MobType.valueOf(ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()));
+            if (clickedInventory.getTitle().equals("Select a mob type")) {
+                event.setCancelled(true);
 
-            String legacyType = mobType.legacyType;
+                ItemStack clickedItem = event.getCurrentItem();
 
-            creator.sendMessage("Mob selected: " + mobType);
-            spawnerData.setMobType(legacyType);
-            spawner.addSpawnerData(spawnerData);
+                if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+                    return;
+                }
 
-            creator.closeInventory();
+                MobType mobType = MobType.valueOf(ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()));
 
-            openOptionSelectionGUI(creator);
+                String legacyType = mobType.legacyType;
 
-        }
+                creator.sendMessage("Mob selected: " + mobType);
+                spawnerData.setMobType(legacyType);
+                spawner.addSpawnerData(spawnerData);
 
-        else if (clickedInventory.getTitle().equals("Mob options")) { // TODO enum
-            event.setCancelled(true);
-
-            ItemStack clickedItem = event.getCurrentItem();
-
-            if (clickedItem == null || clickedItem.getType() == Material.AIR) {
-                return;
-            }
-
-            String selectedOption = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
-
-            if (selectedOption.equalsIgnoreCase("custom name")) {
                 creator.closeInventory();
 
-                ConversationFactory conversationFactory;
-
-                conversationFactory = new ConversationFactory(Main.getPlugin())
-                        .withFirstPrompt(new CustomName())
-                        .withEscapeSequence("/cancel")
-                        .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
-                        .addConversationAbandonedListener(new ConversationAbandonedListener() {
-                            @Override
-                            public void conversationAbandoned(ConversationAbandonedEvent event) {
-                                ConversationCanceller canceller = event.getCanceller();
-                                ConversationContext context = event.getContext();
-                                Player player = (Player) context.getForWhom();
-
-                                if (event.gracefulExit()) {
-                                    player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
-
-                                    Spawner spawner = midCreationSpawners.get(player);
-                                    SpawnerData spawnerData = spawner.getSpawnerDataMidCreation();
-
-                                    spawnerData.setCustomName((String) context.getSessionData("customName"));
-
-                                    spawner.addSpawnerData(spawnerData);
-
-                                    openOptionSelectionGUI(player);
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "Conversation cancelled.");
-                                    openOptionSelectionGUI(player);
-                                }
-
-                                if (canceller != null) {
-                                    player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
-                                }
-
-                                // Clean up any session data if necessary
-                                context.getAllSessionData().clear();
-                            }
-                        });
-
-                Conversation conversation = conversationFactory.buildConversation(creator);
-                conversation.begin();
+                openOptionSelectionGUI(creator);
 
             }
 
-            else if (selectedOption.equalsIgnoreCase("elite")) {
+            else if (clickedInventory.getTitle().equals("Mob options")) { // TODO enum
+                event.setCancelled(true);
 
-                //TODO remove code after testing
+                ItemStack clickedItem = event.getCurrentItem();
 
-                spawnerData.setElite(!spawnerData.isElite());
-                creator.sendMessage("Elite = " + spawnerData.isElite());
+                if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+                    return;
+                }
 
-                /*if (!spawnerData.isElite()) {
-                    spawnerData.setElite(true);
-                    spawner.addSpawnerData(spawnerData);
+                String selectedOption = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
+
+                if (selectedOption.equalsIgnoreCase("custom name")) {
+                    creator.closeInventory();
+
+                    ConversationFactory conversationFactory;
+
+                    conversationFactory = new ConversationFactory(Main.getPlugin())
+                            .withFirstPrompt(new CustomName())
+                            .withEscapeSequence("/cancel")
+                            .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
+                            .addConversationAbandonedListener(new ConversationAbandonedListener() {
+                                @Override
+                                public void conversationAbandoned(ConversationAbandonedEvent event) {
+                                    ConversationCanceller canceller = event.getCanceller();
+                                    ConversationContext context = event.getContext();
+                                    Player player = (Player) context.getForWhom();
+
+                                    if (event.gracefulExit()) {
+                                        player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
+
+                                        Spawner spawner = midCreationSpawners.get(player);
+                                        SpawnerData spawnerData = spawner.getSpawnerDataMidCreation();
+
+                                        spawnerData.setCustomName((String) context.getSessionData("customName"));
+
+                                        spawner.addSpawnerData(spawnerData);
+
+                                        openOptionSelectionGUI(player);
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "Conversation cancelled.");
+                                        openOptionSelectionGUI(player);
+                                    }
+
+                                    if (canceller != null) {
+                                        player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
+                                    }
+
+                                    // Clean up any session data if necessary
+                                    context.getAllSessionData().clear();
+                                }
+                            });
+
+                    Conversation conversation = conversationFactory.buildConversation(creator);
+                    conversation.begin();
+
+                }
+
+                else if (selectedOption.equalsIgnoreCase("elite")) {
+
+                    spawnerData.setElite(!spawnerData.isElite());
                     creator.sendMessage("Elite = " + spawnerData.isElite());
-                } else {
-                    spawnerData.setElite(false);
+
+                }
+
+                else if (selectedOption.equalsIgnoreCase("spawn range")) {
+                    creator.closeInventory();
+
+                    ConversationFactory conversationFactory;
+
+                    conversationFactory = new ConversationFactory(Main.getPlugin())
+                            .withFirstPrompt(new SpawnRange())
+                            .withEscapeSequence("/cancel")
+                            .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
+                            .addConversationAbandonedListener(new ConversationAbandonedListener() {
+                                @Override
+                                public void conversationAbandoned(ConversationAbandonedEvent event) {
+                                    ConversationCanceller canceller = event.getCanceller();
+                                    ConversationContext context = event.getContext();
+                                    Player player = (Player) context.getForWhom();
+
+                                    if (event.gracefulExit()) {
+                                        player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
+
+                                        Spawner spawner = midCreationSpawners.get(player);
+
+                                        int[] range = (int[]) context.getSessionData("spawnRange");
+
+                                        spawner.setLowerRange(range[0]);
+                                        spawner.setUpperRange(range[1]);
+
+                                        openOptionSelectionGUI(player);
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "Conversation cancelled.");
+                                        openOptionSelectionGUI(player);
+                                    }
+
+                                    if (canceller != null) {
+                                        player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
+                                    }
+
+                                    // Clean up any session data if necessary
+                                    context.getAllSessionData().clear();
+                                }
+                            });
+
+                    Conversation conversation = conversationFactory.buildConversation(creator);
+                    conversation.begin();
+
+                }
+
+                else if (selectedOption.equalsIgnoreCase("spawn interval")) {
+                    creator.closeInventory();
+
+                    ConversationFactory conversationFactory;
+
+                    conversationFactory = new ConversationFactory(Main.getPlugin())
+                            .withFirstPrompt(new SpawnInterval())
+                            .withEscapeSequence("/cancel")
+                            .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
+                            .addConversationAbandonedListener(new ConversationAbandonedListener() {
+                                @Override
+                                public void conversationAbandoned(ConversationAbandonedEvent event) {
+                                    ConversationCanceller canceller = event.getCanceller();
+                                    ConversationContext context = event.getContext();
+                                    Player player = (Player) context.getForWhom();
+
+                                    if (event.gracefulExit()) {
+                                        player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
+
+                                        Spawner spawner = midCreationSpawners.get(player);
+
+                                        spawner.setSpawnInterval((int) context.getSessionData("spawnInterval"));
+
+                                        openOptionSelectionGUI(player);
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "Conversation cancelled.");
+                                        openOptionSelectionGUI(player);
+                                    }
+
+                                    if (canceller != null) {
+                                        player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
+                                    }
+
+                                    // Clean up any session data if necessary
+                                    context.getAllSessionData().clear();
+                                }
+                            });
+
+                    Conversation conversation = conversationFactory.buildConversation(creator);
+                    conversation.begin();
+                }
+
+                else if (selectedOption.equalsIgnoreCase("Mob level difference")) {
+                    creator.closeInventory();
+
+                    ConversationFactory conversationFactory;
+
+                    conversationFactory = new ConversationFactory(Main.getPlugin())
+                            .withFirstPrompt(new LevelDifference())
+                            .withEscapeSequence("/cancel")
+                            .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
+                            .addConversationAbandonedListener(new ConversationAbandonedListener() {
+                                @Override
+                                public void conversationAbandoned(ConversationAbandonedEvent event) {
+                                    ConversationCanceller canceller = event.getCanceller();
+                                    ConversationContext context = event.getContext();
+                                    Player player = (Player) context.getForWhom();
+
+                                    if (event.gracefulExit()) {
+                                        player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
+
+                                        Spawner spawner = midCreationSpawners.get(player);
+
+                                        spawner.setLevelRange((int) context.getSessionData("levelDifference"));
+
+                                        openOptionSelectionGUI(player);
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "Conversation cancelled.");
+                                        openOptionSelectionGUI(player);
+                                    }
+
+                                    if (canceller != null) {
+                                        player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
+                                    }
+
+                                    // Clean up any session data if necessary
+                                    context.getAllSessionData().clear();
+                                }
+                            });
+
+                    Conversation conversation = conversationFactory.buildConversation(creator);
+                    conversation.begin();
+
+                }
+
+                else if (selectedOption.equalsIgnoreCase("Amount")) {
+                    creator.closeInventory();
+
+                    ConversationFactory conversationFactory;
+
+                    conversationFactory = new ConversationFactory(Main.getPlugin())
+                            .withFirstPrompt(new Amount())
+                            .withEscapeSequence("/cancel")
+                            .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
+                            .addConversationAbandonedListener(new ConversationAbandonedListener() {
+                                @Override
+                                public void conversationAbandoned(ConversationAbandonedEvent event) {
+                                    ConversationCanceller canceller = event.getCanceller();
+                                    ConversationContext context = event.getContext();
+                                    Player player = (Player) context.getForWhom();
+
+                                    if (event.gracefulExit()) {
+                                        player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
+
+                                        Spawner spawner = midCreationSpawners.get(player);
+                                        SpawnerData spawnerData = spawner.getSpawnerDataMidCreation();
+
+                                        spawnerData.setAmount((int) context.getSessionData("amount"));
+
+                                        openOptionSelectionGUI(player);
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "Conversation cancelled.");
+                                        openOptionSelectionGUI(player);
+                                    }
+
+                                    if (canceller != null) {
+                                        player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
+                                    }
+
+                                    // Clean up any session data if necessary
+                                    context.getAllSessionData().clear();
+                                }
+                            });
+
+                    Conversation conversation = conversationFactory.buildConversation(creator);
+                    conversation.begin();
+
+                }
+
+                else if (selectedOption.equalsIgnoreCase("tier 1")) {
+                    creator.sendMessage("Tier 1 selected");
+                    spawnerData.setTier(Tier.ONE);
                     spawner.addSpawnerData(spawnerData);
-                    creator.sendMessage("Elite = " + spawnerData.isElite());
-                }*/
-            }
 
-            else if (selectedOption.equalsIgnoreCase("spawn range")) {
-                creator.closeInventory();
+                }
 
-                ConversationFactory conversationFactory;
+                else if (selectedOption.equalsIgnoreCase("tier 2")) {
+                    creator.sendMessage("Tier 2 selected");
+                    spawnerData.setTier(Tier.TWO);
+                    spawner.addSpawnerData(spawnerData);
+                }
 
-                conversationFactory = new ConversationFactory(Main.getPlugin())
-                        .withFirstPrompt(new SpawnRange())
-                        .withEscapeSequence("/cancel")
-                        .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
-                        .addConversationAbandonedListener(new ConversationAbandonedListener() {
-                            @Override
-                            public void conversationAbandoned(ConversationAbandonedEvent event) {
-                                ConversationCanceller canceller = event.getCanceller();
-                                ConversationContext context = event.getContext();
-                                Player player = (Player) context.getForWhom();
+                else if (selectedOption.equalsIgnoreCase("tier 3")) {
+                    creator.sendMessage("Tier 3 selected");
+                    spawnerData.setTier(Tier.TREE);
+                    spawner.addSpawnerData(spawnerData);
+                }
 
-                                if (event.gracefulExit()) {
-                                    player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
+                else if (selectedOption.equalsIgnoreCase("tier 4")) {
+                    creator.sendMessage("Tier 4 selected");
+                    spawnerData.setTier(Tier.FOUR);
+                    spawner.addSpawnerData(spawnerData);
+                }
 
-                                    Spawner spawner = midCreationSpawners.get(player);
+                else if (selectedOption.equalsIgnoreCase("tier 5")) {
+                    creator.sendMessage("Tier 5 selected");
+                    spawnerData.setTier(Tier.FIVE);
+                    spawner.addSpawnerData(spawnerData);
+                }
 
-                                    int[] range = (int[]) context.getSessionData("spawnRange");
+                else if (selectedOption.equalsIgnoreCase("add another mob")) {
+                    spawner.addSpawnerData(spawnerData);
+                    spawner.finishSpawnerData();
+                    spawnerData = null;
+                    creator.closeInventory();
 
-                                    spawner.setLowerRange(range[0]);
-                                    spawner.setUpperRange(range[1]);
+                    openMobTypeSelectionGUI(creator);
+                }
 
-                                    openOptionSelectionGUI(player);
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "Conversation cancelled.");
-                                    openOptionSelectionGUI(player);
-                                }
+                else if (selectedOption.equalsIgnoreCase("accept")) {
+                    spawner.addSpawnerData(spawnerData);
+                    spawner.finishSpawnerData();
+                    spawnerData = null;
+                    creator.closeInventory();
 
-                                if (canceller != null) {
-                                    player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
-                                }
+                    spawnerArrayList.add(spawner);
 
-                                // Clean up any session data if necessary
-                                context.getAllSessionData().clear();
-                            }
-                        });
+                    legacyAddSpawner();
 
-                Conversation conversation = conversationFactory.buildConversation(creator);
-                conversation.begin();
-            }
+                    // TODO add some final checks and make it store it in the file
+                }
 
-            else if (selectedOption.equalsIgnoreCase("spawn interval")) {
-                creator.closeInventory();
-
-                ConversationFactory conversationFactory;
-
-                conversationFactory = new ConversationFactory(Main.getPlugin())
-                        .withFirstPrompt(new SpawnInterval())
-                        .withEscapeSequence("/cancel")
-                        .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
-                        .addConversationAbandonedListener(new ConversationAbandonedListener() {
-                            @Override
-                            public void conversationAbandoned(ConversationAbandonedEvent event) {
-                                ConversationCanceller canceller = event.getCanceller();
-                                ConversationContext context = event.getContext();
-                                Player player = (Player) context.getForWhom();
-
-                                if (event.gracefulExit()) {
-                                    player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
-
-                                    Spawner spawner = midCreationSpawners.get(player);
-
-                                    spawner.setSpawnInterval((int) context.getSessionData("spawnInterval"));
-
-                                    openOptionSelectionGUI(player);
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "Conversation cancelled.");
-                                    openOptionSelectionGUI(player);
-                                }
-
-                                if (canceller != null) {
-                                    player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
-                                }
-
-                                // Clean up any session data if necessary
-                                context.getAllSessionData().clear();
-                            }
-                        });
-
-                Conversation conversation = conversationFactory.buildConversation(creator);
-                conversation.begin();
-            }
-
-            else if (selectedOption.equalsIgnoreCase("Mob level difference")) {
-                creator.closeInventory();
-
-                ConversationFactory conversationFactory;
-
-                conversationFactory = new ConversationFactory(Main.getPlugin())
-                        .withFirstPrompt(new LevelDifference())
-                        .withEscapeSequence("/cancel")
-                        .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
-                        .addConversationAbandonedListener(new ConversationAbandonedListener() {
-                            @Override
-                            public void conversationAbandoned(ConversationAbandonedEvent event) {
-                                ConversationCanceller canceller = event.getCanceller();
-                                ConversationContext context = event.getContext();
-                                Player player = (Player) context.getForWhom();
-
-                                if (event.gracefulExit()) {
-                                    player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
-
-                                    Spawner spawner = midCreationSpawners.get(player);
-
-                                    spawner.setLevelRange((int) context.getSessionData("levelDifference"));
-
-                                    openOptionSelectionGUI(player);
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "Conversation cancelled.");
-                                    openOptionSelectionGUI(player);
-                                }
-
-                                if (canceller != null) {
-                                    player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
-                                }
-
-                                // Clean up any session data if necessary
-                                context.getAllSessionData().clear();
-                            }
-                        });
-
-                Conversation conversation = conversationFactory.buildConversation(creator);
-                conversation.begin();
-
-            }
-
-            else if (selectedOption.equalsIgnoreCase("Amount")) {
-                creator.closeInventory();
-
-                ConversationFactory conversationFactory;
-
-                conversationFactory = new ConversationFactory(Main.getPlugin())
-                        .withFirstPrompt(new Amount())
-                        .withEscapeSequence("/cancel")
-                        .thatExcludesNonPlayersWithMessage("You must be a player to use this command.")
-                        .addConversationAbandonedListener(new ConversationAbandonedListener() {
-                            @Override
-                            public void conversationAbandoned(ConversationAbandonedEvent event) {
-                                ConversationCanceller canceller = event.getCanceller();
-                                ConversationContext context = event.getContext();
-                                Player player = (Player) context.getForWhom();
-
-                                if (event.gracefulExit()) {
-                                    player.sendMessage(ChatColor.GREEN + "Conversation ended successfully.");
-
-                                    Spawner spawner = midCreationSpawners.get(player);
-                                    SpawnerData spawnerData = spawner.getSpawnerDataMidCreation();
-
-                                    spawnerData.setAmount((int) context.getSessionData("amount"));
-
-                                    openOptionSelectionGUI(player);
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "Conversation cancelled.");
-                                    openOptionSelectionGUI(player);
-                                }
-
-                                if (canceller != null) {
-                                    player.sendMessage(ChatColor.YELLOW + "Reason: " + canceller.getClass().getSimpleName());
-                                }
-
-                                // Clean up any session data if necessary
-                                context.getAllSessionData().clear();
-                            }
-                        });
-
-                Conversation conversation = conversationFactory.buildConversation(creator);
-                conversation.begin();
-
-            }
-
-            else if (selectedOption.equalsIgnoreCase("tier 1")) {
-                creator.sendMessage("Tier 1 selected");
-                spawnerData.setTier(Tier.ONE);
                 spawner.addSpawnerData(spawnerData);
 
-            }
-
-            else if (selectedOption.equalsIgnoreCase("tier 2")) {
-                creator.sendMessage("Tier 2 selected");
-                spawnerData.setTier(Tier.TWO);
-                spawner.addSpawnerData(spawnerData);
-            }
-
-            else if (selectedOption.equalsIgnoreCase("tier 3")) {
-                creator.sendMessage("Tier 3 selected");
-                spawnerData.setTier(Tier.TREE);
-                spawner.addSpawnerData(spawnerData);
-            }
-
-            else if (selectedOption.equalsIgnoreCase("tier 4")) {
-                creator.sendMessage("Tier 4 selected");
-                spawnerData.setTier(Tier.FOUR);
-                spawner.addSpawnerData(spawnerData);
-            }
-
-            else if (selectedOption.equalsIgnoreCase("tier 5")) {
-                creator.sendMessage("Tier 5 selected");
-                spawnerData.setTier(Tier.FIVE);
-                spawner.addSpawnerData(spawnerData);
-            }
-
-            else if (selectedOption.equalsIgnoreCase("add another mob")) {
-                spawner.addSpawnerData(spawnerData);
-                spawner.finishSpawnerData();
-                spawnerData = null;
-                creator.closeInventory();
-
-                openMobTypeSelectionGUI(creator);
-            }
-
-            else if (selectedOption.equalsIgnoreCase("accept")) {
-                spawner.addSpawnerData(spawnerData);
-                spawner.finishSpawnerData();
-                spawnerData = null;
-                creator.closeInventory();
-
-                spawnerArrayList.add(spawner);
-
-                legacyAddSpawner();
-
-                // TODO add some final checks and make it store it in the file
-            }
-
-            spawner.addSpawnerData(spawnerData);
-
+        }
         }
 
     }

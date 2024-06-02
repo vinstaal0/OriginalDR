@@ -28,7 +28,6 @@ import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
-import minecade.dungeonrealms.TeleportationMechanics.TeleportationMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 import net.minecraft.server.v1_8_R1.BlockPosition;
 import net.minecraft.server.v1_8_R1.Packet;
@@ -63,6 +62,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.*;
 
 public class LootMechanics implements Listener {
 	static HashMap<String, List<String>> loot_templates = new HashMap<String, List<String>>();
@@ -323,16 +324,16 @@ public class LootMechanics implements Listener {
 								loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
 							} else if(m == Material.EMPTY_MAP) {
 								if(item_meta == 1) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Cyrennica_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Cyrennica_scroll));
 								}
 								if(item_meta == 2) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Harrison_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Harrison_scroll));
 								}
 								if(item_meta == 3) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Dark_Oak_Tavern_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Dark_Oak_Tavern_scroll));
 								}
 								if(item_meta == 4) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Deadpeaks_Mountain_Camp_scroll));
 								}
 								if(item_meta == 11) {
 									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));
@@ -627,16 +628,16 @@ public class LootMechanics implements Listener {
 									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
 								} else if (m == Material.EMPTY_MAP) {
 									if (item_meta == 1) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Cyrennica_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Cyrennica_scroll));
 									}
 									if (item_meta == 2) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Harrison_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Harrison_scroll));
 									}
 									if (item_meta == 3) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Dark_Oak_Tavern_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Dark_Oak_Tavern_scroll));
 									}
 									if (item_meta == 4) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Deadpeaks_Mountain_Camp_scroll));
 									}
 									if (item_meta == 11) {
 										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));

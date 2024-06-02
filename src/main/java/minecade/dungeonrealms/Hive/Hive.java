@@ -138,6 +138,8 @@ import org.fusesource.jansi.Ansi;
 
 import com.google.common.base.Joiner;
 
+import static nl.vinstaal0.Dungeonrealms.Config.version;
+
 @SuppressWarnings("deprecation")
 public class Hive implements Listener {
 
@@ -1819,6 +1821,7 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
+	// TODO add NBT tag support
 	public static String convertInventoryToString(String p_name, Inventory inv, boolean player) {
 		// @item@Slot:ItemID-Amount.Durability#Item_Name#$Item_Lore$[lam1]lam_color[lam2]
 		// @item@1:267-1.54#Magic Sword#$DMG: 5 - 7, CRIT: 5%$@item@
@@ -1912,6 +1915,7 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
+	// TODO add NBT data support
 	public static List<ItemStack> convertStringToInventoryString(String inventory_string) {
 		List<ItemStack> is_list = new ArrayList<ItemStack>();
 		// int expected_item_size = inventory_string.split("@item@").length;
@@ -1991,6 +1995,7 @@ public class Hive implements Listener {
 		return is_list;
 	}
 
+	// TODO add NBT data support
 	public static Inventory convertStringToInventory(Player pl, String inventory_string, String inventory_name, int slots) {
 		Inventory inv = null;
 		// int slot_cache = -1;
@@ -3500,7 +3505,7 @@ public class Hive implements Listener {
 			p.sendMessage("");
 			p.sendMessage("");
 			p.sendMessage("");
-			p.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "              Dungeon Realms Patch " + Config.version);
+			p.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "              Dungeon Realms Patch " + version);
 			// p.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "              Dungeon Realms Halloween Patch");
 			p.sendMessage(ChatColor.GRAY + "                    " + "http://www.dungeonrealms.net/");
 			p.sendMessage("");
@@ -3943,7 +3948,7 @@ public class Hive implements Listener {
 	public String addPatchVersion(String motd) {
 		// It's 48 characters to get to where we need to be. (from 0)
 		String motd_with_space = motd + "";
-		String patch_string = ChatColor.GRAY + "Patch " + Config.version;
+		String patch_string = ChatColor.GRAY + "Patch " + version;
 		int needed_space = (int) (58 - ((ChatColor.stripColor(motd).length()) * 1.25));
 		while (needed_space > 0) {
 			needed_space--;

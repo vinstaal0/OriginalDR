@@ -2,6 +2,8 @@ package nl.vinstaal0.Dungeonrealms;
 
 public class Config {
 
+    public static String version = "1.9.4";
+
     // True means that the level restrictions are enabled.
     // Default = true
     public static boolean enableLevelRestrictions = true;
@@ -22,5 +24,7 @@ public class Config {
     public static int rareDroprate = 4; // Default 4
 
     public static int uniqueDroprate = 1; // Default 1
+
+
 
 }

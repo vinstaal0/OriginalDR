@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Crestguard_keep_scroll;
+
 public class TeleportToCrestguard implements MenuItem {
 
 	@Override
@@ -21,7 +23,7 @@ public class TeleportToCrestguard implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(TeleportationMechanics.Crestguard_keep_scroll).clone();
+		ItemStack tp = TeleportationMechanics.makeUnstackable(Crestguard_keep_scroll).clone();
 		plr.getInventory().addItem(tp);
 	}
 

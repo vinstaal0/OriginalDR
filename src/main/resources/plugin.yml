@@ -582,3 +582,6 @@ commands:
   createspawnerwand:
     description: gives the player the spawnerwand
     usage: /<command>
+  compiletime:
+    description: gets the time of compiling
+    usage: /<command>

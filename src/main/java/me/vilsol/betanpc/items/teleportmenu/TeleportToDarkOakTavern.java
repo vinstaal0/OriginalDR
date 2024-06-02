@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Dark_Oak_Tavern_scroll;
+
 public class TeleportToDarkOakTavern implements MenuItem {
 
 	@Override
@@ -21,7 +23,7 @@ public class TeleportToDarkOakTavern implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(TeleportationMechanics.Dark_Oak_Tavern_scroll).clone();
+		ItemStack tp = TeleportationMechanics.makeUnstackable(Dark_Oak_Tavern_scroll).clone();
 		plr.getInventory().addItem(tp);
 	}
 

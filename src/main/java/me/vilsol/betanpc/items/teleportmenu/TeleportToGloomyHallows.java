@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Swamp_safezone_scroll;
+
 public class TeleportToGloomyHallows implements MenuItem {
 
 	@Override
@@ -21,7 +23,7 @@ public class TeleportToGloomyHallows implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(TeleportationMechanics.Swamp_safezone_scroll).clone();
+		ItemStack tp = TeleportationMechanics.makeUnstackable(Swamp_safezone_scroll).clone();
 		plr.getInventory().addItem(tp);
 	}
 

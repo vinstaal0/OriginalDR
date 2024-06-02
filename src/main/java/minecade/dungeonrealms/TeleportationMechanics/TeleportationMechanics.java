@@ -46,23 +46,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class TeleportationMechanics implements Listener {
 	public static Logger log = Logger.getLogger("Minecraft");
-	
-	public static ItemStack Cyrennica_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 1, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Cyrennica", ChatColor.GRAY.toString() + "Teleports the user to the grand City of Cyrennica.");
-	
-	public static ItemStack Harrison_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 2, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Harrison Field", ChatColor.GRAY.toString() + "Teleports the user to Harrison Field.");
-	
-	public static ItemStack Dark_Oak_Tavern_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 3, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Dark Oak Tavern", ChatColor.GRAY.toString() + "Teleports the user to the tavern in Dark Oak Forest.");
-	
-	public static ItemStack Deadpeaks_Mountain_Camp_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 4, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Deadpeaks Mountain Camp", ChatColor.GRAY.toString() + "Teleports the user to the Deadpeaks." + "," + ChatColor.RED.toString() + "" + ChatColor.BOLD.toString() + "WARNING:" + ChatColor.RED.toString() + " CHAOTIC ZONE");
-	
-	public static ItemStack Jagged_Rocks_Tavern = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 5, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Trollsbane Tavern", ChatColor.GRAY.toString() + "Teleports the user to Trollsbane Tavern.");
-	
-	public static ItemStack Tripoli_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 6, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Tripoli", ChatColor.GRAY.toString() + "Teleports the user to Tripoli.");
-	
-	public static ItemStack Swamp_safezone_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 7, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Gloomy Hollows ", ChatColor.GRAY.toString() + "Teleports the user to the Gloomy Hollows.");
-	
-	public static ItemStack Crestguard_keep_scroll = ItemMechanics.signNewCustomItem(Material.BOOK, (short) 7, ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString() + " Crestguard Keep ", ChatColor.GRAY.toString() + "Teleports the user to the Crestguard Keep.");
-	
 	public static Location Harrison_Field;
 	public static Location Dark_Oak_Tavern;
 	public static Location Deadpeaks_Mountain_Camp;

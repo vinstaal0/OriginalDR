@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Deadpeaks_Mountain_Camp_scroll;
+
 public class TeleportToDeadPeaks implements MenuItem {
 
 	@Override
@@ -21,7 +23,7 @@ public class TeleportToDeadPeaks implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(TeleportationMechanics.Deadpeaks_Mountain_Camp_scroll).clone();
+		ItemStack tp = TeleportationMechanics.makeUnstackable(Deadpeaks_Mountain_Camp_scroll).clone();
 		plr.getInventory().addItem(tp);
 	}
 

@@ -146,7 +146,7 @@ public class Config {
     public static String ftp_user = "agent";
     public static String ftp_pass = "9bgsMKsknkJ6OY"; 
     
-    public static String version = "1.9.4";
+//    public static String version = "1.9.4";
     
     public static String local_IP = Bukkit.getIp();
     

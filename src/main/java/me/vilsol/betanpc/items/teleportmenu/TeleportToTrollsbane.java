@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Jagged_Rocks_Tavern;
+
 public class TeleportToTrollsbane implements MenuItem {
 
 	@Override
@@ -21,7 +23,7 @@ public class TeleportToTrollsbane implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(TeleportationMechanics.Jagged_Rocks_Tavern).clone();
+		ItemStack tp = TeleportationMechanics.makeUnstackable(Jagged_Rocks_Tavern).clone();
 		plr.getInventory().addItem(tp);
 	}
 
