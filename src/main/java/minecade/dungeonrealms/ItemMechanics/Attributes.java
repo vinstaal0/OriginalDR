@@ -226,15 +226,17 @@ public class Attributes {
 	public Attributes(ItemStack stack) {
 		// Create a CraftItemStack (under the hood)
 		this.nmsStack = CraftItemStack.asNMSCopy(stack);
-		
-		// Load NBT
-		if(nmsStack.getTag() == null) {
-			
-			parent = new NBTTagCompound();
-			nmsStack.setTag(parent);
-		} else {
-			parent = nmsStack.getTag();
-		}
+
+		try {
+			// Load NBT
+			if(nmsStack.getTag() == null) {
+
+				parent = new NBTTagCompound();
+				nmsStack.setTag(parent);
+			} else {
+				parent = nmsStack.getTag();
+			}
+		} catch (NullPointerException ignored) {}
 		
 		// Load attribute list
 		if(parent.hasKey("AttributeModifiers")) {

@@ -60,13 +60,17 @@ public class KarmaMechanics implements Listener {
 	public static HashMap<String, Long> last_attack_time = new HashMap<String, Long>();
 	// Last time a player attacked another player.
 
+	/**
+	 *  Used on player death event to ensure gear is safe on respawn
+	 * */
 	public static HashMap<String, List<ItemStack>> saved_gear = new HashMap<String, List<ItemStack>>();
-	// Used on player death event to ensure gear is safe on respawn.
 	// TODO: Make this cross-server
 
+	/**
+	 * Used to prevent dupe from neutral deaths not coordinating correct lost items.
+	 * ',' delim list of slot #'s of armor/weapon that was dropped.
+	 * */
 	public static HashMap<String, String> lost_gear = new HashMap<String, String>();
-	// Used to prevent dupe from neutral deaths not coordinating correct lost items.
-	// ',' delim list of slot #'s of armor/weapon that was dropped.
 
 	public static HashMap<String, Location> saved_location = new HashMap<String, Location>();
 	// Location to TP players back to on asyncmove event.

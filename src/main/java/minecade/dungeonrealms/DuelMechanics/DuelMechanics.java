@@ -27,6 +27,7 @@ import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.managers.PlayerManager;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -630,7 +631,7 @@ public class DuelMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                        i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                     }
                     closer.getInventory().setItem(closer.getInventory().firstEmpty(), i);
 
@@ -651,7 +652,7 @@ public class DuelMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                        i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                     }
                     duel_partner.getInventory().setItem(duel_partner.getInventory().firstEmpty(), i);
                 }
@@ -671,7 +672,7 @@ public class DuelMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                        i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                     }
                     duel_partner.getInventory().setItem(duel_partner.getInventory().firstEmpty(), i);
                 }
@@ -690,7 +691,7 @@ public class DuelMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                        i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                     }
                     closer.getInventory().setItem(closer.getInventory().firstEmpty(), i);
                 }
@@ -797,7 +798,7 @@ public class DuelMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                    i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                 }
                 // closer.getInventory().setItem(closer.getInventory().firstEmpty(),
                 // i);
@@ -820,7 +821,7 @@ public class DuelMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                    i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                 }
                 trade_partner.getInventory().setItem(trade_partner.getInventory().firstEmpty(), i);
             }
@@ -840,7 +841,7 @@ public class DuelMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                    i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                 }
                 trade_partner.getInventory().setItem(trade_partner.getInventory().firstEmpty(), i);
             }
@@ -859,7 +860,7 @@ public class DuelMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(MoneyMechanics.getCountMeta(i));
+                    i = Money.makeGems(MoneyMechanics.getCountMeta(i));
                 }
                 closer.getInventory().setItem(closer.getInventory().firstEmpty(), i);
             }

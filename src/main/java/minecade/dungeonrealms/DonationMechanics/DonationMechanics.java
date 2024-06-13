@@ -10,10 +10,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,10 +29,12 @@ import minecade.dungeonrealms.DonationMechanics.commands.CommandRemoveSub;
 import minecade.dungeonrealms.DonationMechanics.commands.CommandRemoveSubPlus;
 import minecade.dungeonrealms.DonationMechanics.commands.CommandRewardSubLife;
 import minecade.dungeonrealms.config.Config;
+import minecade.dungeonrealms.database.ConnectionPool;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DonationMechanics implements Listener {
 	
@@ -41,13 +43,10 @@ public class DonationMechanics implements Listener {
 //	public final static String sql_url = "jdbc:mysql://72.20.40.38:7447/dungeonrealms";
 //	public final static String sql_user = "slave_3XNZvi";
 //	public final static String sql_password = "SgUmxYSJSFmOdro3";
-public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
-	public final static String sql_user = "root";
-	public final static String sql_password = "qcHqKGVdLXNXXN5j";
-	
-	public final static int transfer_port = 6427;
-	
-	public static String Hive_IP = "72.20.40.38";
+//	public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
+	public final static String sql_url = "jdbc:mysql://" + Config.Hive_IP_backup + ":" + Config.SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
+	public final static String sql_user = "dungeonrealms";
+	public final static String sql_password = "dungeonrealms";
 	
 	public static String local_IP = "";
 	
@@ -87,11 +86,12 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 		
 		log.info("" + Bukkit.getOnlinePlayers().size());
 		
-		/* Do NOT uncomment!  The timer is now handled by a separate donation-dedicated server!
+		// Do NOT uncomment!  The timer is now handled by a separate donation-dedicated server!
 		if (Bukkit.getMotd().contains("US-0")) {
-			Calendar nextUpdate = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+//			Calendar nextUpdate = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+			Calendar nextUpdate = Calendar.getInstance(TimeZone.getTimeZone(ZonedDateTime.now().getZone()));
 			nextUpdate.set(nextUpdate.get(Calendar.YEAR), nextUpdate.get(Calendar.MONTH), nextUpdate.get(Calendar.DATE) + 1, 0, 0);
-			Calendar now = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+			Calendar now = Calendar.getInstance(TimeZone.getTimeZone(ZonedDateTime.now().getZone()));
 			Long msToUp = nextUpdate.getTimeInMillis() - now.getTimeInMillis();
 			Long secToUp = TimeUnit.MILLISECONDS.toSeconds(msToUp);
 			log.info("[DonationMechanics] Scheduled daily donation duties to run in "
@@ -120,7 +120,6 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 			}.runTaskLaterAsynchronously(Main.plugin, secToUp * 20L);
 			
 		}
-		*/
 
 		/*
 		// check if Votifier is enabled
@@ -140,6 +139,7 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 		PreparedStatement pst = null;
 		
 		try {
+
 			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
 			pst = con.prepareStatement("SELECT rank FROM player_database WHERE p_name = '" + p_name + "'");
 			
@@ -364,7 +364,7 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 		}
 		
 		try {
-			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
+			con = DriverManager.getConnection(Config.sql_url_backup, Config.sql_user, Config.sql_password);
 			pst = con.prepareStatement("INSERT INTO player_database (p_name, sdays_left)" + " VALUES" + "('" + p_name + "', '" + days_to_add + "') ON DUPLICATE KEY UPDATE sdays_left ='" + days_to_add + "'");
 			
 			pst.executeUpdate();
@@ -394,7 +394,7 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 		List<String> pet_data = new ArrayList<String>();
 		
 		try {
-			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
+			con = DriverManager.getConnection(Config.sql_url_backup, Config.sql_user, Config.sql_password);
 			pst = con.prepareStatement("SELECT pets FROM player_database WHERE p_name = '" + pname + "'");
 			
 			pst.execute();
@@ -438,7 +438,8 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 		PreparedStatement pst = null;
 		
 		try {
-			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
+//			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
+			con = ConnectionPool.getConnection();
 			pst = con.prepareStatement("SELECT ecash FROM player_database WHERE p_name = '" + p_name + "'");
 			
 			pst.execute();
@@ -469,7 +470,8 @@ public final static String sql_url = "jdbc:mysql://localhost/dungeonrealms";
 		PreparedStatement pst = null;
 		
 		try {
-			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
+//			con = DriverManager.getConnection(sql_url, sql_user, sql_password);
+			con = ConnectionPool.getConnection();
 			pst = con.prepareStatement("INSERT INTO player_database (p_name, ecash)" + " VALUES" + "('" + p_name + "', '" + amount + "') ON DUPLICATE KEY UPDATE ecash ='" + amount + "'");
 			
 			pst.executeUpdate();

@@ -3,6 +3,7 @@ package me.vilsol.betanpc.items.teleportmenu;
 import java.util.Arrays;
 
 import me.vilsol.menuengine.engine.MenuItem;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import org.bukkit.event.inventory.ClickType;
 import me.vilsol.menuengine.utils.Builder;
 import minecade.dungeonrealms.TeleportationMechanics.TeleportationMechanics;
@@ -12,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.Dark_Oak_Tavern_scroll;
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls.Dark_Oak_Tavern_scroll;
 
 public class TeleportToDarkOakTavern implements MenuItem {
 
@@ -23,7 +24,7 @@ public class TeleportToDarkOakTavern implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack tp = TeleportationMechanics.makeUnstackable(Dark_Oak_Tavern_scroll).clone();
+		ItemStack tp = ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll);
 		plr.getInventory().addItem(tp);
 	}
 

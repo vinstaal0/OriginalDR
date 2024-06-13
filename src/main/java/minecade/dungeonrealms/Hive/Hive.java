@@ -11,7 +11,6 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.sql.*;
 import java.text.DecimalFormat;
@@ -32,7 +31,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.persistence.EntityManager;
-import javax.sql.rowset.serial.SerialBlob;
 
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.Utils;
@@ -86,6 +84,9 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
 import io.netty.util.internal.ConcurrentSet;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -121,7 +122,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -1130,7 +1130,7 @@ public class Hive implements Listener {
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"CREATE TABLE IF NOT EXISTS " + "statistics"
-							+ "(pname CHAR(18) PRIMARY KEY, unlawful_kills INT, lawful_kills INT, deaths INT, mob_kills INT, money INT, duel_wins INT, duel_lose INT) ENGINE=InnoDB;");
+							+ "(pname CHAR(18) PRIMARY KEY, unlawful_kills INT, lawful_kills INT, deaths INT, mob_kills INT, money INT, duel_wins INT, duel_lose INT, hasHorse INT, hasMule INT) ENGINE=InnoDB;");
 			pst.executeUpdate();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
@@ -1285,9 +1285,23 @@ public class Hive implements Listener {
 			// return; // Empty inventory being uploaded.
 		}
 
-		String inventory = convertInventoryToString(p_name, inv, true);
+		// TODO remove legacy Inventory storage
+//		String inventory = convertInventoryToString(p_name, inv, true);
+//		inventory = inventory.replace(ChatColor.COLOR_CHAR, '&');
 
-		inventory = inventory.replace(ChatColor.COLOR_CHAR, '&');
+		String inventory = null;
+
+		try {
+			inventory = ItemSerialization.serializePlayerInventory(Bukkit.getPlayer(p_name).getInventory());
+		} catch (IOException e) {
+			e.printStackTrace();
+
+			// if exception happens, try storing the inventory as legacy inventory.
+			inventory = convertInventoryToString(p_name, inv, true);
+			inventory = inventory.replace(ChatColor.COLOR_CHAR, '&');
+
+			log.warning("Legacy inventory is loaded for " + p_name);
+		}
 
 		long align_time = 0;
 		String align_status = "good";
@@ -1368,12 +1382,29 @@ public class Hive implements Listener {
 
 		String saved_gear = "";
 		if (KarmaMechanics.saved_gear.containsKey(p_name)) {
-			saved_gear = StringEscapeUtils.escapeSql(convertInventoryToString(KarmaMechanics.saved_gear.get(p_name)));
+//			saved_gear = StringEscapeUtils.escapeSql(convertInventoryToString(KarmaMechanics.saved_gear.get(p_name)));
+			// TODO test and remove
+
+			try {
+				saved_gear = StringEscapeUtils.escapeSql(ItemSerialization.serializeInventory(KarmaMechanics.saved_gear.get(p_name), InventoryType.PLAYER_INVENTORY));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		String mule_inventory_string = "";
 		if (MountMechanics.mule_inventory.containsKey(p_name)) {
-			mule_inventory_string = Hive.convertInventoryToString(null, MountMechanics.mule_inventory.get(p_name), false);
+
+			try {
+
+				mule_inventory_string = ItemSerialization.serializeInventory(MountMechanics.mule_inventory.get(p_name), InventoryType.MULE);
+
+			} catch (IOException ignored) {
+				// Seralizing failed, use legacy code instead
+				mule_inventory_string = Hive.convertInventoryToString(null, MountMechanics.mule_inventory.get(p_name), false);
+				log.warning("Legacy mule inventory saved for " + p_name);
+			}
+
 		}
 		if (mule_inventory_string.equalsIgnoreCase("") && !MountMechanics.mule_inventory.containsKey(p_name)) {
 			if (MountMechanics.mule_itemlist_string.containsKey(p_name)) {
@@ -1390,8 +1421,20 @@ public class Hive implements Listener {
 
 		String ecash_storage = "";
 		if (EcashMechanics.ecash_storage_map.containsKey(p_name)) {
-			ecash_storage = StringEscapeUtils.escapeSql(EcashMechanics.ecash_storage_map.get(p_name));
-			ecash_storage = ecash_storage.replace(ChatColor.COLOR_CHAR, '&');
+
+			ecash_storage = EcashMechanics.ecash_storage_map.get(p_name);
+
+			try {
+				System.out.println("[Hive] " + ItemSerialization.deserializeInventory(ecash_storage, Bukkit.getPlayer(p_name), InventoryType.E_CASH, InventoryType.E_CASH.getSize()));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
+			if (Base64.isBase64(ecash_storage)) {
+				ecash_storage = StringEscapeUtils.escapeSql(ecash_storage);
+				ecash_storage = ecash_storage.replace(ChatColor.COLOR_CHAR, '&');
+			}
+
 		}
 
 		PreparedStatement pst = null;
@@ -1499,6 +1542,9 @@ public class Hive implements Listener {
 		pst.executeUpdate();
 	}
 
+	/**
+	 *  Used to grab all thhe player data from the database before the login.
+	 * */
 	public Object downloadPlayerDatabaseData(String p_name) {
 		// Any # = Don't let them log in, they're on another server or something, the # will = the server. (server_num >= 0)
 		// false = Data does not exist / error. (server_num = -2)
@@ -1652,10 +1698,13 @@ public class Hive implements Listener {
 				loc = convertStringToLocation(loc_s);
 			}
 
-			String inventory_s_raw = rs.getString("inventory");
-			inventory_s_raw = inventory_s_raw.replace('?','&');
-			inventory_s_raw = inventory_s_raw.replace(ChatColor.COLOR_CHAR,'&');
-			String inventory_s = ChatColor.translateAlternateColorCodes('&', inventory_s_raw);
+			// TODO this is not even needed?
+//			String inventory_s_raw = rs.getString("inventory");
+//			inventory_s_raw = inventory_s_raw.replace('?','&');
+//			inventory_s_raw = inventory_s_raw.replace(ChatColor.COLOR_CHAR,'&');
+//			String inventory_s = ChatColor.translateAlternateColorCodes('&', inventory_s_raw);
+
+			String inventory_s = rs.getString("inventory");
 
 			if (inventory_s == null) {
 				log.info("[HIVE (Slave Edition)] No INVENTORY data found for " + p_name + ", return null.");
@@ -1708,7 +1757,11 @@ public class Hive implements Listener {
 
 			String saved_gear = rs.getString("saved_gear");
 			if (saved_gear != null && saved_gear.length() > 0) {
-				List<ItemStack> sg_list = convertStringToInventoryString(saved_gear);
+//				List<ItemStack> sg_list = convertStringToInventoryString(saved_gear);
+				// TODO remove
+
+				List<ItemStack> sg_list = ItemSerialization.deserializeInventoryAsArray(saved_gear, Bukkit.getPlayer(p_name));
+
 				KarmaMechanics.saved_gear.put(p_name, sg_list);
 				if (!HealthMechanics.combat_logger.contains(p_name)) {
 					// If combat_logger contains them, they'll be killed on login anyway. We don't want to double kill.
@@ -1721,18 +1774,9 @@ public class Hive implements Listener {
 				KarmaMechanics.lost_gear.put(p_name, lost_gear);
 			}
 
+			// Grab and store the inventory String
 			String mule_inventory = rs.getString("mule_inventory");
-			if (mule_inventory != null && mule_inventory.contains("@item@")) {
-				// We put the ItemStack list into a hashmap, when they OPEN the mule, it will generate the inventory and the slots based on the mule they're
-				// using.;
-
-				String mule_inventory_raw = rs.getString("inventory");
-				mule_inventory_raw = mule_inventory_raw.replace('?','&');
-				mule_inventory_raw = mule_inventory_raw.replace(ChatColor.COLOR_CHAR,'&');
-				mule_inventory = ChatColor.translateAlternateColorCodes('&', mule_inventory_raw);
-
-				MountMechanics.mule_itemlist_string.put(p_name, mule_inventory);
-			}
+			MountMechanics.mule_itemlist_string.put(p_name, mule_inventory);
 
 			String achievments = rs.getString("achievments");
 			if (achievments == null) {
@@ -1743,10 +1787,13 @@ public class Hive implements Listener {
 			String ecash_storage = rs.getString("ecash_storage");
 			if (ecash_storage != null) {
 
-				String ecash_storage_raw = rs.getString("inventory");
-				ecash_storage_raw = ecash_storage_raw.replace('?','&');
-				ecash_storage_raw = ecash_storage_raw.replace(ChatColor.COLOR_CHAR,'&');
-				ecash_storage = ChatColor.translateAlternateColorCodes('&', ecash_storage_raw);
+				String ecash_storage_raw = rs.getString("ecash_storage"); // TODO changed to ecash_storage from Inventory
+
+				if (!Base64.isBase64(ecash_storage)) {
+					ecash_storage_raw = ecash_storage_raw.replace('?','&');
+					ecash_storage_raw = ecash_storage_raw.replace(ChatColor.COLOR_CHAR,'&');
+					ecash_storage = ChatColor.translateAlternateColorCodes('&', ecash_storage_raw);
+				}
 
 				EcashMechanics.ecash_storage_map.put(p_name, ecash_storage);
 			}
@@ -1780,6 +1827,11 @@ public class Hive implements Listener {
 		return true;
 	}
 
+	/**
+	 *  Used to convert the death players saved inventory to a String to store it in the database
+	 * */
+	// TODO remove
+	@Deprecated
 	public static String convertInventoryToString(List<ItemStack> inv) {
 		// @item@Slot:ItemID-Amount.Durability#Item_Name#$Item_Lore$[lam1]lam_color[lam2]
 		// @item@1:267-1.54#Magic Sword#$DMG: 5 - 7, CRIT: 5%$@item@
@@ -1821,7 +1873,9 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
-	// TODO add NBT tag support
+	/**
+	 * Legacy method to convert an inventory to a string
+	 * */
 	public static String convertInventoryToString(String p_name, Inventory inv, boolean player) {
 		// @item@Slot:ItemID-Amount.Durability#Item_Name#$Item_Lore$[lam1]lam_color[lam2]
 		// @item@1:267-1.54#Magic Sword#$DMG: 5 - 7, CRIT: 5%$@item@
@@ -1915,7 +1969,11 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
-	// TODO add NBT data support
+	/**
+	 * Used to convert the death players saved inventory from a string back to the inventory
+	 * */
+	// TODO remove
+	@Deprecated
 	public static List<ItemStack> convertStringToInventoryString(String inventory_string) {
 		List<ItemStack> is_list = new ArrayList<ItemStack>();
 		// int expected_item_size = inventory_string.split("@item@").length;
@@ -1995,7 +2053,10 @@ public class Hive implements Listener {
 		return is_list;
 	}
 
-	// TODO add NBT data support
+	/**
+	 *  Legacy method to convert Strings back to an inventory
+	 * */
+	@Deprecated
 	public static Inventory convertStringToInventory(Player pl, String inventory_string, String inventory_name, int slots) {
 		Inventory inv = null;
 		// int slot_cache = -1;
@@ -3109,25 +3170,37 @@ public class Hive implements Listener {
 		try {
 			setPlayerServer(p_name);
 
-			if (MoneyMechanics.downloadBankDatabaseData(p_name) == false) {
-				// Either new player or failed to download. Let's see.
-				if (server_num_on != -2) {
-					// Not a new player!
-					no_upload.add(p_name);
-					e.setKickMessage(ChatColor.RED.toString() + "Failed to LOAD bank data from database." + "\n" + ChatColor.GRAY.toString()
-							+ "Please try again later. " + "\n\n" + ChatColor.BOLD.toString() + "ERROR CODE: 013D");
-					log.info("Problematic server: " + server_num_on);
-					e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-					setPlayerOffline(p_name, 1);
-					return;
-				} else {
-					MoneyMechanics.bank_map.put(p_name, 0);
-					MoneyMechanics.bank_level.put(p_name, 0);
-					MoneyMechanics.bank_contents.put(p_name, new ArrayList<Inventory>(Arrays.asList(Bukkit.createInventory(null, 9, "Bank Chest"))));
+			try {
+
+				if (!MoneyMechanics.downloadBankDatabaseData(p_name)) {
+					// Either new player or failed to download. Let's see.
+					if (server_num_on != -2) {
+						// Not a new player!
+						no_upload.add(p_name);
+						e.setKickMessage(ChatColor.RED.toString() + "Failed to LOAD bank data from database." + "\n" + ChatColor.GRAY.toString()
+								+ "Please try again later. " + "\n\n" + ChatColor.BOLD.toString() + "ERROR CODE: 013D");
+						log.info("Problematic server: " + server_num_on);
+						e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
+						setPlayerOffline(p_name, 1);
+						return;
+					} else {
+						MoneyMechanics.bank_map.put(p_name, 0);
+						MoneyMechanics.bank_level.put(p_name, 0);
+						MoneyMechanics.bank_contents.put(p_name, new ArrayList<Inventory>(Arrays.asList(Bukkit.createInventory(null, 9, "Bank Chest"))));
+					}
 				}
+
+			} catch (NullPointerException nullPointerException) {
+				nullPointerException.printStackTrace();
+
+
+				// TODO fix inventory not loading
+				MoneyMechanics.bank_map.put(p_name, 0);
+				MoneyMechanics.bank_level.put(p_name, 0);
+				MoneyMechanics.bank_contents.put(p_name, new ArrayList<Inventory>(Arrays.asList(Bukkit.createInventory(null, 9, "Bank Chest"))));
 			}
 
-			if (ShopMechanics.downloadShopDatabaseData(p_name) == false) {
+			if (!ShopMechanics.downloadShopDatabaseData(p_name)) {
 				// Either new player or failed to download. Let's see.
 				if (server_num_on != -2) {
 					// Not a new player!
@@ -3254,7 +3327,7 @@ public class Hive implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onPlayerLogin(PlayerLoginEvent e) throws IOException {
+	public void onPlayerLogin(PlayerLoginEvent e) {
 		final Player p = e.getPlayer();
 		final String p_name = p.getName();
 
@@ -3278,7 +3351,17 @@ public class Hive implements Listener {
 			Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 			    public void run() {
 //			        log.info("Loading inventory for " + p.getName());
-			        convertStringToInventory(p, inventory_s, null, 0);
+
+					// TODO remove
+
+//			        convertStringToInventory(p, inventory_s, null, 0);
+
+					try {
+						ItemSerialization.deserializeInventory(inventory_s, p, InventoryType.PLAYER_INVENTORY, 0);
+					} catch (IOException ex) {
+						log.warning(ex.getMessage());
+					}
+
 //			        log.info("Inventory loaded for " + p.getName());
 			    }
 			}, 20L);

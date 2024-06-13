@@ -25,4 +25,17 @@ public class ItemMechanics extends minecade.dungeonrealms.ItemMechanics.ItemMech
         return itemStack;
     }
 
+    public static ItemStack createItemStack(Material material, String displayname, List<String> lore) {
+
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        itemMeta.setDisplayName(displayname);
+
+        itemMeta.setLore(lore);
+        itemStack.setItemMeta(itemMeta);
+
+        return itemStack;
+    }
+
 }

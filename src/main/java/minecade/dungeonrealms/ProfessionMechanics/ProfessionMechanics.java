@@ -25,7 +25,6 @@ import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
-import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.commands.CommandHideFish;
 import minecade.dungeonrealms.ProfessionMechanics.commands.CommandProf;
@@ -39,6 +38,10 @@ import net.minecraft.server.v1_8_R1.BlockPosition;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Scrap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -3038,23 +3041,23 @@ public class ProfessionMechanics implements Listener {
 
                             if (junk_type <= 70) {
                                 if (spot_tier == 1) {
-                                    junk = ItemMechanics.t1_arrow;
+                                    junk = Arrow.t1_arrow;
                                     junk.setAmount(42 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 2) {
-                                    junk = ItemMechanics.t2_arrow;
+                                    junk = Arrow.t2_arrow;
                                     junk.setAmount(27 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 3) {
-                                    junk = ItemMechanics.t3_arrow;
+                                    junk = Arrow.t3_arrow;
                                     junk.setAmount(26 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 4) {
-                                    junk = ItemMechanics.t4_arrow;
+                                    junk = Arrow.t4_arrow;
                                     junk.setAmount(24 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 5) {
-                                    junk = ItemMechanics.t5_arrow;
+                                    junk = Arrow.t5_arrow;
                                     junk.setAmount(21 + new Random().nextInt(7));
                                 }
                             }
@@ -3084,23 +3087,23 @@ public class ProfessionMechanics implements Listener {
 
                             if (junk_type >= 95) {
                                 if (spot_tier == 1) {
-                                    junk = MerchantMechanics.T1_scrap;
+                                    junk = Scrap.T1_scrap;
                                     junk.setAmount(20 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 2) {
-                                    junk = MerchantMechanics.T2_scrap;
+                                    junk = Scrap.T2_scrap;
                                     junk.setAmount(15 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 3) {
-                                    junk = MerchantMechanics.T3_scrap;
+                                    junk = Scrap.T3_scrap;
                                     junk.setAmount(10 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 4) {
-                                    junk = MerchantMechanics.T4_scrap;
+                                    junk = Scrap.T4_scrap;
                                     junk.setAmount(5 + new Random().nextInt(7));
                                 }
                                 if (spot_tier == 5) {
-                                    junk = MerchantMechanics.T5_scrap;
+                                    junk = Scrap.T5_scrap;
                                     junk.setAmount(2 + new Random().nextInt(6));
                                 }
                             }
@@ -3146,11 +3149,11 @@ public class ProfessionMechanics implements Listener {
                             }
                             if (treasure_type == 1) {
                                 // OOF
-                                treasure = CraftItemStack.asCraftCopy(ItemMechanics.orb_of_flight);
+                                treasure = CraftItemStack.asCraftCopy(Misc.orb_of_flight);
                             }
                             if (treasure_type == 2) {
                                 // OOP
-                                treasure = CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace);
+                                treasure = CraftItemStack.asCraftCopy(Misc.orb_of_peace);
                             }
 
                             if (pl.getInventory().firstEmpty() != -1) {
@@ -3679,7 +3682,7 @@ public class ProfessionMechanics implements Listener {
                      * if(pl.getInventory().firstEmpty() != -1){ pl.getInventory().addItem(MoneyMechanics.makeGems(amount_to_drop)); } else{
                      */
                     // Drop on floor so that the itemPickup event is fired, put gems in pouch first, etc, etc.
-                    pl.getWorld().dropItemNaturally(pl.getLocation(), MoneyMechanics.makeGems(amount_to_drop));
+                    pl.getWorld().dropItemNaturally(pl.getLocation(), Money.makeGems(amount_to_drop));
                     // }
 
                     if (PlayerManager.getPlayerModel(pl).getToggleList() != null && PlayerManager.getPlayerModel(pl).getToggleList().contains("debug")) {

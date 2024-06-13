@@ -24,7 +24,6 @@ import minecade.dungeonrealms.LootMechanics.commands.CommandHideLoot;
 import minecade.dungeonrealms.LootMechanics.commands.CommandLoadLoot;
 import minecade.dungeonrealms.LootMechanics.commands.CommandLoot;
 import minecade.dungeonrealms.LootMechanics.commands.CommandShowLoot;
-import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
@@ -33,6 +32,8 @@ import net.minecraft.server.v1_8_R1.BlockPosition;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -63,7 +64,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.*;
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls.*;
 
 public class LootMechanics implements Listener {
 	static HashMap<String, List<String>> loot_templates = new HashMap<String, List<String>>();
@@ -284,9 +285,9 @@ public class LootMechanics implements Listener {
 								if(amount_to_spawn > 64) {
 									short real_id = 777;
 									ItemStack money = new ItemStack(Material.PAPER, 1, real_id);
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), Money.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 								} else if(amount_to_spawn <= 64) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.makeGems(amount_to_spawn));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), Money.makeGems(amount_to_spawn));
 								}
 							} else if(m == Material.POTION) {
 								if(item_meta == 1) {
@@ -324,16 +325,16 @@ public class LootMechanics implements Listener {
 								loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
 							} else if(m == Material.EMPTY_MAP) {
 								if(item_meta == 1) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Cyrennica_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
 								}
 								if(item_meta == 2) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Harrison_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Harrison_scroll)));
 								}
 								if(item_meta == 3) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Dark_Oak_Tavern_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll)));
 								}
 								if(item_meta == 4) {
-									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Deadpeaks_Mountain_Camp_scroll));
+									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Deadpeaks_Mountain_Camp_scroll)));
 								}
 								if(item_meta == 11) {
 									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));
@@ -588,9 +589,9 @@ public class LootMechanics implements Listener {
 									if (amount_to_spawn > 64) {
 										short real_id = 777;
 										ItemStack money = new ItemStack(Material.PAPER, 1, real_id);
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), Money.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 									} else if (amount_to_spawn <= 64) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), MoneyMechanics.makeGems(amount_to_spawn));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), Money.makeGems(amount_to_spawn));
 									}
 								} else if (m == Material.POTION) {
 									if (item_meta == 1) {
@@ -628,16 +629,16 @@ public class LootMechanics implements Listener {
 									loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
 								} else if (m == Material.EMPTY_MAP) {
 									if (item_meta == 1) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Cyrennica_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
 									}
 									if (item_meta == 2) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Harrison_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Harrison_scroll)));
 									}
 									if (item_meta == 3) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Dark_Oak_Tavern_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll)));
 									}
 									if (item_meta == 4) {
-										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(Deadpeaks_Mountain_Camp_scroll));
+										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Deadpeaks_Mountain_Camp_scroll)));
 									}
 									if (item_meta == 11) {
 										loot_chest_inventory.setItem(loot_chest_inventory.firstEmpty(), CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));

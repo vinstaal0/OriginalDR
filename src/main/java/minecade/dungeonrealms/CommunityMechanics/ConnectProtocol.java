@@ -30,6 +30,8 @@ import minecade.dungeonrealms.enums.LogType;
 import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.LogModel;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -353,9 +355,21 @@ public class ConnectProtocol implements Runnable {
 
 					String collection_bin_s = inputLine.substring(inputLine.indexOf("&"), inputLine.length());
 					if (collection_bin_s != null && collection_bin_s.contains("@item@")) {
-						Inventory collection_bin_inv = Hive.convertStringToInventory(null, collection_bin_s, "Collection Bin", 54);
-						ShopMechanics.collection_bin.put(p_name, collection_bin_inv);
-						CommunityMechanics.log.info("[ShopMechanics] Downloaded new collection bin data for user: " + p_name);
+						Inventory collection_bin_inv;
+
+						try {
+
+							collection_bin_inv = ItemSerialization.deserializeInventory(collection_bin_s, Bukkit.getPlayer(p_name), InventoryType.COLLECTION_BIN, InventoryType.COLLECTION_BIN.getSize()).get(0);
+							ShopMechanics.collection_bin.put(p_name, collection_bin_inv);
+							CommunityMechanics.log.info("[ShopMechanics] Downloaded new collection bin data for user: " + p_name);
+
+						} catch (IOException exception) {
+							exception.printStackTrace();
+						}
+
+							// TODO remove
+//							collection_bin_inv = Hive.convertStringToInventory(null, collection_bin_s, "Collection Bin", 54);
+
 					}
 				}
 

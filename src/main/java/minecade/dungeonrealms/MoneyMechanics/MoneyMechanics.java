@@ -1,7 +1,6 @@
 package minecade.dungeonrealms.MoneyMechanics;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +31,10 @@ import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.LogModel;
 
-import org.apache.commons.lang.ObjectUtils;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -67,7 +69,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import javax.sql.rowset.serial.SerialBlob;
+import static org.bukkit.Material.THIN_GLASS;
 
 public class MoneyMechanics implements Listener {
 
@@ -104,14 +106,6 @@ public class MoneyMechanics implements Listener {
 	private static final String ALPHA_NUM = "123456789";
 
 	static Logger log = Logger.getLogger("Minecraft");
-
-	public static ItemStack t1_gem_pouch = ItemMechanics.signCustomItem(Material.INK_SACK, (short) 0, ChatColor.WHITE.toString() + "Small Gem Pouch" + ChatColor.GREEN + ChatColor.BOLD.toString() + " 0g", ChatColor.GRAY.toString() + "A small linen pouch that holds " + ChatColor.BOLD + "100g");
-
-	public static ItemStack t2_gem_pouch = ItemMechanics.signCustomItem(Material.INK_SACK, (short) 0, ChatColor.GREEN.toString() + "Medium Gem Sack" + ChatColor.GREEN + ChatColor.BOLD.toString() + " 0g", ChatColor.GRAY.toString() + "A medium wool sack that holds " + ChatColor.BOLD + "150g");
-
-	public static ItemStack t3_gem_pouch = ItemMechanics.signCustomItem(Material.INK_SACK, (short) 0, ChatColor.AQUA.toString() + "Large Gem Satchel" + ChatColor.GREEN + ChatColor.BOLD.toString() + " 0g", ChatColor.GRAY.toString() + "A large leather satchel that holds " + ChatColor.BOLD + "200g");
-
-	public static ItemStack t4_gem_pouch = ItemMechanics.signCustomItem(Material.INK_SACK, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Gigantic Gem Container" + ChatColor.GREEN + ChatColor.BOLD.toString() + " 0g", ChatColor.GRAY.toString() + "A giant container that holds " + ChatColor.BOLD + "300g");
 
 	public void onEnable() {
 		Main.plugin.getServer().getPluginManager().registerEvents(this, Main.plugin);
@@ -155,26 +149,15 @@ public class MoneyMechanics implements Listener {
 	}
 
 	public static int getBankSlots(int level) {
-		if(level == 0) { return 9; }
-		if(level == 1) { return 18; }
-		if(level == 2) { return 27; }
-		if(level == 3) { return 36; }
-		if(level == 4) { return 45; }
-		if(level == 5) { return 54; }
-		if(level == 6) { return 63; }
-		if(level == 7) { return 72; }
-		if(level == 8) { return 81; }
-		if(level == 9) { return 90; }
-		if(level == 10) { return 99; }
-		if(level == 11) { return 108; }
-		if(level == 12) { return 117; }
-		if(level == 13) { return 126; }
-		if(level == 14) { return 135; }
-		if(level == 15) { return 144; }
-		if(level == 16) { return 153; }
-		if(level == 17) { return 162; }
 
-		return 9;
+		if (level > 18) {
+			level = 18;
+		}
+
+		int l = level + 1;
+
+		return l * 9;
+
 	}
 
 	public static ItemStack generateArrowButton(String type, int current_page, int max_pages) {
@@ -184,7 +167,7 @@ public class MoneyMechanics implements Listener {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public static Inventory legacyBankStringToInventory(final String p_name, String bank_string) {
 		int bank_level = MoneyMechanics.bank_level.get(p_name);
 		int slots = getBankSlots(bank_level);
@@ -374,6 +357,7 @@ public class MoneyMechanics implements Listener {
 			pst.execute();
 
 			ResultSet rs = pst.getResultSet();
+
 			if(!rs.next()) {
 				bank_map.put(p_name, 0);
 				bank_level.put(p_name, 0);
@@ -385,118 +369,15 @@ public class MoneyMechanics implements Listener {
 			int level = rs.getInt("level");
 			String bank_content_raw = rs.getString("content");
 
-			String bank_content = null;
-
+//			ArrayList<Inventory> bank = ItemSerialization.legacyBankDeserialization(bank_content_raw, money, level);
+			ArrayList<Inventory> bank = null;
 			try {
-				bank_content_raw = bank_content_raw.replace('?','&');
-				bank_content_raw = bank_content_raw.replace(ChatColor.COLOR_CHAR, '&');
-				bank_content = ChatColor.translateAlternateColorCodes('&', bank_content_raw);
-			} catch (NullPointerException ignored) {
-				// Bank is empty, just ignore
+				bank = ItemSerialization.deserializeInventory(bank_content_raw, Bukkit.getPlayer(p_name), InventoryType.BANK, 0);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
 
-
-			if(money < 0) {
-				// Negative balance?
-				money = 0;
-			}
-
-			if(level == -2) {
-				// We messed up badly, calculate level.
-				level = 0;
-				while(bank_content != null && bank_content.contains("@item@") && (bank_content.split("@item@").length > (getBankSlots(level) - 1)) && level < 17) {
-					level++;
-				}
-			}
-
-			// Inventory inv = null;
-			/*
-			 * while(bank_content != null && bank_content.contains("@item@") && (bank_content.split("@item@").length > (getBankSlots(level) - 1)) && level < 5){
-			 * level++; }
-			 */
-
-			List<Inventory> bank_pages = new ArrayList<Inventory>();
-			int max_slots = getBankSlots(level);
-
-			if(bank_content != null && !(bank_content.equalsIgnoreCase("null"))) {
-				int total_pages = 1;
-				int current_page = 1;
-				if(max_slots > 54 && !(bank_content.contains("@page_break@"))) {
-					bank_content += "@page_break@";
-				}
-
-				if(bank_content.contains("@page_break@")) {
-					// They need to have multiple pages if it reaches this point.
-					total_pages = bank_content.split("@page_break@").length;
-					int last_page_slots = max_slots - ((total_pages - 1) * 54); // The amount of slots to allocate to the last page. All other pages = 54
-																				// storage, 63 for extra row.
-
-					// log.info("total_pages - " + total_pages);
-
-					for(String s_bank_content : bank_content.split("@page_break@")) {
-						if(s_bank_content.contains("@item@")) {
-							int page_slots = 63; // All pages are 63 slots except the last page.
-							if(current_page == total_pages && total_pages > 1) {
-								page_slots = last_page_slots + 9; // Add 9, need the last row for the 'back' button.
-							}
-							// log.info("page_slots - " + page_slots);
-							Inventory page = Hive.convertStringToInventory(null, s_bank_content, "Bank Chest (" + current_page + "/" + total_pages + ")", page_slots);
-
-							if(page_slots == 63) {
-								int start_slot = 54 - 1;
-								int end_slot = 63 - 1;
-								// boolean empty = true;
-
-								start_slot--; // Offset by 1 since we add first.
-								while(start_slot < end_slot) {
-									start_slot++;
-									if(page.getItem(start_slot) != null && page.getItem(start_slot).getType() != Material.AIR) {
-										// empty = false;
-										break;
-									}
-								}
-
-								// if(empty){
-								if(current_page == 1) {
-									page.setItem(54, RealmMechanics.divider);
-								} else {
-									page.setItem(54, generateArrowButton("previous", current_page, total_pages));
-								}
-								page.setItem(55, RealmMechanics.divider);
-								page.setItem(56, RealmMechanics.divider);
-								page.setItem(57, RealmMechanics.divider);
-								page.setItem(58, RealmMechanics.divider);
-								page.setItem(59, RealmMechanics.divider);
-								page.setItem(60, RealmMechanics.divider);
-								page.setItem(61, RealmMechanics.divider);
-								if(current_page == total_pages) { // Last page, no 'next'
-									page.setItem(62, RealmMechanics.divider);
-								} else {
-									page.setItem(62, generateArrowButton("next", current_page, total_pages));
-								}
-								// }
-								// else if(!empty){
-								// They have items in the last row -- this should not be possible unless they have it from an old bug. We won't let them change
-								// pages I suppose?
-								// TODO: What do we do with these noobs?
-								// }
-							}
-
-							bank_pages.add(page);
-							current_page++;
-						}
-					}
-				} else if(!(bank_content.contains("@page_break@"))) {
-					Inventory inv_page = Hive.convertStringToInventory(null, bank_content, "Bank Chest (1/1)", getBankSlots(level));
-					bank_pages.add(inv_page);
-				}
-			}
-
-			else if(bank_pages.isEmpty()) {
-				bank_pages.add(Bukkit.createInventory(null, getBankSlots(level), "Bank Chest (1/1)"));
-			}
-
-			bank_contents.put(p_name, bank_pages);
+			bank_contents.put(p_name, bank);
 			bank_map.put(p_name, money);
 			bank_level.put(p_name, level);
 
@@ -555,22 +436,41 @@ public class MoneyMechanics implements Listener {
 		int final_bank_level = -2;
 
 		if(bank_contents.containsKey(p_name)) {
-			for(Inventory inv : bank_contents.get(p_name)) {
-				String local_inv = Hive.convertInventoryToString(p_name, inv, false);
 
-				local_inv = local_inv.replace(ChatColor.COLOR_CHAR, '&');
 
-				final_bank_content += local_inv + "@page_break@"; // TODO: Randomize
-			}
+			// TODO fix after working, currently below code is added upon uploading
+			try {
+				final_bank_content = ItemSerialization.serializeBankInventory(new ArrayList<>(bank_contents.get(p_name)));
+			} catch (IOException e) {
 
-			if(final_bank_content.endsWith("@page_break@")) {
-				// Trim.
-				final_bank_content = final_bank_content.substring(0, final_bank_content.lastIndexOf("@page_break@"));
+				// Try legacy conent
+				for(Inventory inv : bank_contents.get(p_name)) {
+					String local_inv = Hive.convertInventoryToString(p_name, inv, false);
+
+					local_inv = local_inv.replace(ChatColor.COLOR_CHAR, '&');
+
+					final_bank_content += local_inv + "@page_break@";
+				}
+
+				if(final_bank_content.endsWith("@page_break@")) {
+					// Trim.
+					final_bank_content = final_bank_content.substring(0, final_bank_content.lastIndexOf("@page_break@"));
+				}
+
 			}
 
 			// DEPRECIATED, multi-page banks.
 			// final_bank_content = Hive.convertInventoryToString(p_name, bank_contents.get(p_name), false);
+		} else {
+			Inventory inv = Bukkit.createInventory(Bukkit.getPlayer(p_name), 9, "Bank Chest (1/1)");
+			List<Inventory> list = new ArrayList<>();
+			list.add(inv);
+
+			Main.log.warning("Inventory of " + p_name + " not found, it been reset!");
+
+			bank_contents.put(p_name, list);
 		}
+
 
 		if(bank_map.containsKey(p_name)) {
 			final_bank_net = bank_map.get(p_name);
@@ -634,26 +534,6 @@ public class MoneyMechanics implements Listener {
 
 	}
 
-	public static ItemStack signBankNote(ItemStack i, String name, String desc) {
-		ItemStack iss = i;
-		List<String> new_lore = new ArrayList<String>();
-
-		for(String s : desc.split(",")) {
-			if(s.length() <= 1) {
-				continue;
-			}
-			new_lore.add(s);
-		}
-
-		ItemMeta im = iss.getItemMeta();
-		im.setLore(new_lore);
-		im.setDisplayName(name);
-
-		iss.setItemMeta(im);
-
-		return iss;
-	}
-
 	public ItemStack markSplitting(ItemStack i) { // Mark the note being split as "Splitting" super annoying to do lol.
 		List<String> new_lore = new ArrayList<String>();
 		for(String s : i.getItemMeta().getLore()) {
@@ -691,20 +571,6 @@ public class MoneyMechanics implements Listener {
 			return is.getAmount();
 		}
 		return amount;
-	}
-
-	public static ItemStack makeGems(int amount) {
-		ItemStack i = new ItemStack(Material.EMERALD, amount);
-		List<String> new_lore = new ArrayList<String>(Arrays.asList(ChatColor.GRAY.toString() + "The currency of Andalucia"));
-
-		ItemMeta im = i.getItemMeta();
-		im.setLore(new_lore);
-
-		im.setDisplayName(ChatColor.WHITE.toString() + "Gem");
-		i.setItemMeta(im);
-		i.setAmount(amount);
-
-		return i;
 	}
 
 	public ItemStack markNotSplitting(ItemStack i) { // Mark the note being split as "Splitting" super annoying to do lol.
@@ -802,10 +668,10 @@ public class MoneyMechanics implements Listener {
 		money = new ItemStack(Material.PAPER, 1, real_id);
 
 		if(p.getInventory().firstEmpty() == -1) {
-			p.getWorld().dropItem(p.getLocation(), signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+			p.getWorld().dropItem(p.getLocation(), Money.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 			p.sendMessage(ChatColor.RED + "Because you had no room in your inventory, your new bank note has been placed at your character's feet.");
 		} else {
-			p.getInventory().setItem(p.getInventory().firstEmpty(), signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+			p.getInventory().setItem(p.getInventory().firstEmpty(), Money.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 			if(echo == true) {
 				p.sendMessage(ChatColor.GREEN + "You have signed a bank note for the value of " + ChatColor.BOLD + amount + " GEM(s).");
 			}
@@ -815,18 +681,37 @@ public class MoneyMechanics implements Listener {
 	}
 
 	public static void updateMoney(Player p, int slot, int new_amount) {
-		p.getInventory().setItem(slot, signBankNote(new ItemStack(Material.PAPER, 1, (short) 777), ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + new_amount + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+		p.getInventory().setItem(slot, Money.signBankNote(new ItemStack(Material.PAPER, 1, (short) 777), ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + new_amount + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 		// addMoneyCert(p, new_amount, false); Depreciated.
 	}
 
 	public static boolean isNextArrow(ItemStack is) {
-		if(is != null && is.getType() == Material.ARROW && is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getDurability() == (short) 1 && is.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->")) { return true; }
+
+		if (is != null && is.getType() == Material.ARROW) {
+
+			ItemMeta itemMeta = is.getItemMeta();
+			String displayname = itemMeta.getDisplayName();
+
+            return displayname.equalsIgnoreCase(Misc.next_page_1.getItemMeta().getDisplayName()) ||
+                    displayname.equalsIgnoreCase(Misc.next_page_2.getItemMeta().getDisplayName());
+		}
+
 		return false;
 	}
 
 	public static boolean isPreviousArrow(ItemStack is) {
-		if(is != null && is.getType() == Material.ARROW && is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getDurability() == (short) 1 && is.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-" + ChatColor.YELLOW.toString() + " Previous Page ")) { return true; }
+
+		if (is != null && is.getType() == Material.ARROW) {
+
+			ItemMeta itemMeta = is.getItemMeta();
+			String displayname = itemMeta.getDisplayName();
+
+			return displayname.equalsIgnoreCase(Misc.previous_page_2.getItemMeta().getDisplayName()) ||
+					displayname.equalsIgnoreCase(Misc.previous_page_3.getItemMeta().getDisplayName());
+		}
+
 		return false;
+
 	}
 
 	public static int getBankNoteValue(ItemStack i) {
@@ -939,14 +824,14 @@ public class MoneyMechanics implements Listener {
 																																// previous button.
 
 			new_page.setItem(9, generateArrowButton("previous", current_page, total_pages));
-			new_page.setItem(10, RealmMechanics.divider);
-			new_page.setItem(11, RealmMechanics.divider);
-			new_page.setItem(12, RealmMechanics.divider);
-			new_page.setItem(13, RealmMechanics.divider);
-			new_page.setItem(14, RealmMechanics.divider);
-			new_page.setItem(15, RealmMechanics.divider);
-			new_page.setItem(16, RealmMechanics.divider);
-			new_page.setItem(17, RealmMechanics.divider);
+			new_page.setItem(10, Misc.divider);
+			new_page.setItem(11, Misc.divider);
+			new_page.setItem(12, Misc.divider);
+			new_page.setItem(13, Misc.divider);
+			new_page.setItem(14, Misc.divider);
+			new_page.setItem(15, Misc.divider);
+			new_page.setItem(16, Misc.divider);
+			new_page.setItem(17, Misc.divider);
 
 			int previous_page_num = bank_contents.get(p.getName()).size() - 1;
 			Inventory old_previous_page = bank_contents.get(p.getName()).get(previous_page_num);
@@ -963,18 +848,18 @@ public class MoneyMechanics implements Listener {
 			}
 
 			if(bank_contents.get(p.getName()).size() <= 1) {
-				new_previous_page.setItem(54, RealmMechanics.divider);
+				new_previous_page.setItem(54, Misc.divider);
 			} else {
 				new_previous_page.setItem(54, generateArrowButton("previous", current_page, total_pages));
 			}
 			// new_previous_page.setItem(54, RealmMechanics.divider);
-			new_previous_page.setItem(55, RealmMechanics.divider);
-			new_previous_page.setItem(56, RealmMechanics.divider);
-			new_previous_page.setItem(57, RealmMechanics.divider);
-			new_previous_page.setItem(58, RealmMechanics.divider);
-			new_previous_page.setItem(59, RealmMechanics.divider);
-			new_previous_page.setItem(60, RealmMechanics.divider);
-			new_previous_page.setItem(61, RealmMechanics.divider);
+			new_previous_page.setItem(55, Misc.divider);
+			new_previous_page.setItem(56, Misc.divider);
+			new_previous_page.setItem(57, Misc.divider);
+			new_previous_page.setItem(58, Misc.divider);
+			new_previous_page.setItem(59, Misc.divider);
+			new_previous_page.setItem(60, Misc.divider);
+			new_previous_page.setItem(61, Misc.divider);
 			new_previous_page.setItem(62, generateArrowButton("next", current_page, total_pages));
 
 			bank_pages.set(previous_page_num, new_previous_page);
@@ -1002,14 +887,14 @@ public class MoneyMechanics implements Listener {
 			}
 
 			i.setItem(last_page_slots, generateArrowButton("previous", current_page, total_pages));
-			i.setItem(last_page_slots + 1, RealmMechanics.divider);
-			i.setItem(last_page_slots + 2, RealmMechanics.divider);
-			i.setItem(last_page_slots + 3, RealmMechanics.divider);
-			i.setItem(last_page_slots + 4, RealmMechanics.divider);
-			i.setItem(last_page_slots + 5, RealmMechanics.divider);
-			i.setItem(last_page_slots + 6, RealmMechanics.divider);
-			i.setItem(last_page_slots + 7, RealmMechanics.divider);
-			i.setItem(last_page_slots + 8, RealmMechanics.divider);
+			i.setItem(last_page_slots + 1, Misc.divider);
+			i.setItem(last_page_slots + 2, Misc.divider);
+			i.setItem(last_page_slots + 3, Misc.divider);
+			i.setItem(last_page_slots + 4, Misc.divider);
+			i.setItem(last_page_slots + 5, Misc.divider);
+			i.setItem(last_page_slots + 6, Misc.divider);
+			i.setItem(last_page_slots + 7, Misc.divider);
+			i.setItem(last_page_slots + 8, Misc.divider);
 
 			bank_pages.set(last_page_index, i);
 		}
@@ -1018,7 +903,7 @@ public class MoneyMechanics implements Listener {
 	}
 
 	public static boolean isDivider(ItemStack is) {
-		if(is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equalsIgnoreCase(" ") && is.getType() == Material.THIN_GLASS) { return true; }
+		if(is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equalsIgnoreCase(" ") && is.getType() == THIN_GLASS) { return true; }
 		return false;
 	}
 
@@ -1044,26 +929,26 @@ public class MoneyMechanics implements Listener {
 		while(Gems_worth > 0) {
 			while(Gems_worth > 64) {
 				if(p.getInventory().firstEmpty() == -1) {
-					p.getWorld().dropItemNaturally(p.getLocation(), makeGems(Gems_worth));
+					p.getWorld().dropItemNaturally(p.getLocation(), Money.makeGems(Gems_worth));
 					p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + "WARNING: " + ChatColor.RED + "Not all GEMS fit in your inventory, the remainder have been dropped on the ground nearby.");
 					Gems_worth = 0;
 				}
-				p.getInventory().setItem(p.getInventory().firstEmpty(), makeGems(64));
+				p.getInventory().setItem(p.getInventory().firstEmpty(), Money.makeGems(64));
 				Gems_worth -= 64;
 			}
 
 			if(p.getInventory().firstEmpty() == -1) {
-				p.getWorld().dropItemNaturally(p.getLocation(), makeGems(Gems_worth));
+				p.getWorld().dropItemNaturally(p.getLocation(), Money.makeGems(Gems_worth));
 				p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + "WARNING: " + ChatColor.RED + "Not all GEMS fit in your inventory, the remainder have been dropped on the ground nearby.");
 				Gems_worth = 0;
 			} else if(p.getInventory().firstEmpty() != -1) {
-				p.getInventory().setItem(p.getInventory().firstEmpty(), makeGems(Gems_worth));
+				p.getInventory().setItem(p.getInventory().firstEmpty(), Money.makeGems(Gems_worth));
 				// p.getInventory().addItem(new ItemStack(Material.EMERALD, Gems_worth));
 				Gems_worth = 0;
 			}
 		}
 		if(Gems_worth > 0) {
-			p.getWorld().dropItemNaturally(p.getLocation(), makeGems(Gems_worth));
+			p.getWorld().dropItemNaturally(p.getLocation(), Money.makeGems(Gems_worth));
 			p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + "WARNING: " + ChatColor.RED + "Not all GEMS fit in your inventory, the remainder have been dropped on the ground nearby.");
 			Gems_worth = 0;
 		}
@@ -1209,7 +1094,7 @@ public class MoneyMechanics implements Listener {
 			addMoneyCert(p, split_amount, true);
 			int slot = getSplitSlot(p);
 			ItemStack i = p.getInventory().getItem(slot);
-			p.getInventory().setItem(slot, signBankNote(i, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + dif + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+			p.getInventory().setItem(slot, Money.signBankNote(i, ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + dif + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 		}
 
 	}
@@ -1428,7 +1313,10 @@ public class MoneyMechanics implements Listener {
 			updateStaticCashStack(p);
 
 			try {
-				if(!(bank_contents.containsKey(p.getName()) || !(bank_map.containsKey(p.getName()))) || bank_contents.get(p.getName()).get(0) == null) {
+				if(!(bank_contents.containsKey(p.getName()) ||
+						!(bank_map.containsKey(p.getName()))) ||
+						bank_contents.get(p.getName()).get(0) == null) {
+
 					log.info("[MoneyMechanics] Failed to load bank data for " + p.getName() + ".");
 					return;
 				}
@@ -1497,6 +1385,7 @@ public class MoneyMechanics implements Listener {
 	@EventHandler
 	public void onInventoryCloseEvent(InventoryCloseEvent e) throws IOException {
 		Player p = (Player) e.getPlayer();
+		Inventory inv = e.getInventory();
 
 		if(e.getInventory().getName().equalsIgnoreCase("container.crafting")) {
 			unstackAllPouches(p);
@@ -1550,6 +1439,7 @@ public class MoneyMechanics implements Listener {
 				p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE + "To purchase more bank slots, " + ChatColor.GREEN + ChatColor.BOLD + "SNEAK + RIGHT-CLICK" + ChatColor.WHITE + " the banking chest.");
 			}
 
+
 			if(e.getInventory().contains(Material.NETHER_STAR)) {
 				e.getInventory().remove(Material.NETHER_STAR);
 			}
@@ -1584,9 +1474,20 @@ public class MoneyMechanics implements Listener {
 			}
 
 			String title = e.getInventory().getTitle();
+
 			int page = Integer.parseInt(title.substring(title.lastIndexOf("(") + 1, title.lastIndexOf("/")));
 			List<Inventory> bank_pages = bank_contents.get(p.getName());
 			bank_pages.set((page - 1), e.getInventory());
+
+			int total_pages = 1;
+
+			if(bank_level.get(p.getDisplayName()) >= 6) {
+				total_pages++;
+			}
+			if(bank_level.get(p.getDisplayName()) >= 12) {
+				total_pages++;
+			}
+
 			bank_contents.put(p.getName(), bank_pages);
 
 			int junk_count = 0;
@@ -1773,14 +1674,14 @@ public class MoneyMechanics implements Listener {
 			// Withdraw only 64.
 			e.setCancelled(true);
 			setPouchWorth(pouch, (current_value - 64));
-			e.setCursor(makeGems(64));
+			e.setCursor(Money.makeGems(64));
 			// e.setCurrentItem(pouch);
 			pl.updateInventory();
 			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 0.75F);
 		} else if(current_value <= 64) {
 			e.setCancelled(true);
 			setPouchWorth(pouch, 0);
-			e.setCursor(makeGems(current_value));
+			e.setCursor(Money.makeGems(current_value));
 			// e.setCurrentItem(pouch);
 			pl.updateInventory();
 			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 0.75F);
@@ -1836,6 +1737,7 @@ public class MoneyMechanics implements Listener {
 			ItemStack clicked = e.getCurrentItem();
 
 			if(isNextArrow(clicked)) {
+
 				e.setCancelled(true);
 
 				String title = inv.getTitle();
@@ -2063,7 +1965,7 @@ public class MoneyMechanics implements Listener {
 			}
 			// event.setCancelled(true);
 			event.setCursor(new ItemStack(Material.AIR, 1));
-			event.setCurrentItem(signBankNote(event.getCurrentItem(), ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + new_val + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+			event.setCurrentItem(Money.signBankNote(event.getCurrentItem(), ChatColor.GREEN.toString() + "Bank Note", ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + new_val + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
 			// p.getInventory().getItem(event.getSlot()).setAmount(1);
 			p.updateInventory();
 			p.sendMessage(ChatColor.GRAY + "You've combined bank notes " + ChatColor.ITALIC + map1_val + "G + " + map2_val + "G" + ChatColor.GRAY + " into one bank note with the value of " + ChatColor.BOLD + new_val + "G.");
@@ -2227,7 +2129,7 @@ public class MoneyMechanics implements Listener {
 				Location loc = event.getItem().getLocation();
 				event.getItem().remove();
 				event.setCancelled(true);
-				event.getPlayer().getWorld().dropItemNaturally(loc, MoneyMechanics.makeGems(gems_left_to_give));
+				event.getPlayer().getWorld().dropItemNaturally(loc, Money.makeGems(gems_left_to_give));
 				return;
 			}
 

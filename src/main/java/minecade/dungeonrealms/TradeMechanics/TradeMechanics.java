@@ -25,6 +25,7 @@ import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.LogModel;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -365,7 +366,7 @@ public class TradeMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(i.getAmount());
+                        i = Money.makeGems(i.getAmount());
                     }
                     closer.getInventory().setItem(closer.getInventory().firstEmpty(), makeNormal(i));
 
@@ -384,7 +385,7 @@ public class TradeMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(i.getAmount());
+                        i = Money.makeGems(i.getAmount());
                     }
                     trade_partner.getInventory().setItem(trade_partner.getInventory().firstEmpty(), makeNormal(i));
                 }
@@ -416,7 +417,7 @@ public class TradeMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(i.getAmount());
+                        i = Money.makeGems(i.getAmount());
                     }
                     closer.getInventory().setItem(closer.getInventory().firstEmpty(), makeNormal(i));
                 }
@@ -730,7 +731,7 @@ public class TradeMechanics implements Listener {
                 }
 
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(i.getAmount());
+                    i = Money.makeGems(i.getAmount());
                 }
 
                 if (closer.getInventory().firstEmpty() == -1) { // TODO: Need to automatically stack items on cancel.
@@ -754,7 +755,7 @@ public class TradeMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(i.getAmount());
+                    i = Money.makeGems(i.getAmount());
                 }
                 if (trade_partner.getInventory().firstEmpty() == -1) {
                     trade_partner.getWorld().dropItemNaturally(trade_partner.getLocation(), i);
@@ -776,7 +777,7 @@ public class TradeMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(i.getAmount());
+                    i = Money.makeGems(i.getAmount());
                 }
                 if (trade_partner.getInventory().firstEmpty() == -1) {
                     trade_partner.getWorld().dropItemNaturally(trade_partner.getLocation(), i);
@@ -797,7 +798,7 @@ public class TradeMechanics implements Listener {
                     continue;
                 }
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(i.getAmount());
+                    i = Money.makeGems(i.getAmount());
                 }
                 if (closer.getInventory().firstEmpty() == -1) { // TODO: Need to automatically stack items on cancel.
                     closer.getWorld().dropItemNaturally(closer.getLocation(), i);
@@ -1202,7 +1203,7 @@ public class TradeMechanics implements Listener {
                                 continue;
                             }
                             if (i.getType() == Material.EMERALD) {
-                                i = MoneyMechanics.makeGems(i.getAmount());
+                                i = Money.makeGems(i.getAmount());
                             }
                             tradeItem++;
                             strTradeItem = String.valueOf(tradeItem);
@@ -1240,7 +1241,7 @@ public class TradeMechanics implements Listener {
                                 continue;
                             }
                             if (i.getType() == Material.EMERALD) {
-                                i = MoneyMechanics.makeGems(i.getAmount());
+                                i = Money.makeGems(i.getAmount());
                             }
                             tradeItem++;
                             strTradeItem = String.valueOf(tradeItem);
@@ -1315,7 +1316,7 @@ public class TradeMechanics implements Listener {
                                 continue;
                             }
                             if (i.getType() == Material.EMERALD) {
-                                i = MoneyMechanics.makeGems(i.getAmount());
+                                i = Money.makeGems(i.getAmount());
                             }
                             tradie_slots_needed++;
                             // clicker.getInventory().setItem(clicker.getInventory().firstEmpty(), (i));
@@ -1360,7 +1361,7 @@ public class TradeMechanics implements Listener {
                                 continue;
                             }
                             if (i.getType() == Material.EMERALD) {
-                                i = MoneyMechanics.makeGems(i.getAmount());
+                                i = Money.makeGems(i.getAmount());
                             }
                             tradeItem++;
                             strTradeItem = String.valueOf(tradeItem);
@@ -1399,7 +1400,7 @@ public class TradeMechanics implements Listener {
                                 continue;
                             }
                             if (i.getType() == Material.EMERALD) {
-                                i = MoneyMechanics.makeGems(i.getAmount());
+                                i = Money.makeGems(i.getAmount());
                             }
                             tradeItem++;
                             strTradeItem = String.valueOf(tradeItem);

@@ -39,6 +39,8 @@ import net.minecraft.server.v1_8_R1.EntityInsentient;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -1017,8 +1019,18 @@ public class PetMechanics implements Listener {
 		
 		if(!(EcashMechanics.ecash_storage_map.containsKey(pl.getName()))) { return false; }
 		
-		Inventory ecash_storage_inv = Hive.convertStringToInventory(null, EcashMechanics.ecash_storage_map.get(pl.getName()), "E-Cash Storage", 54);
-		
+//		Inventory ecash_storage_inv = Hive.convertStringToInventory(null, EcashMechanics.ecash_storage_map.get(pl.getName()), "E-Cash Storage", 54);
+
+		String data = EcashMechanics.ecash_storage_map.get(pl.getName());
+		Inventory ecash_storage_inv;
+
+		try {
+			ecash_storage_inv = ItemSerialization.deserializeInventory(data, pl, InventoryType.E_CASH,
+					InventoryType.E_CASH.getSize()).get(0);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
 		if(pet_type.equalsIgnoreCase("baby_zombie")) {
 			lf_meta_data = 54;
 		}

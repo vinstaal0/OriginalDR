@@ -1,12 +1,16 @@
 package minecade.dungeonrealms.ShopMechanics;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import minecade.dungeonrealms.Hive.Hive;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.database.ConnectionPool;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,14 +29,37 @@ public class BackupStoreData extends BukkitRunnable {
                 if (!(ShopMechanics.collection_bin.containsKey(shop_owner))) {
                     collection_bin_s = "null";
                 } else if (ShopMechanics.collection_bin.containsKey(shop_owner)) {
-                    collection_bin_s = Hive.convertInventoryToString(shop_owner, ShopMechanics.collection_bin.get(shop_owner), false);
+
+                    try {
+                        collection_bin_s = ItemSerialization.serializeInventory(ShopMechanics.collection_bin.get(shop_owner), InventoryType.COLLECTION_BIN);
+
+                    } catch (IOException ignored) {
+
+                        // Serializing inventory failed, use legacy method
+                        collection_bin_s = Hive.convertInventoryToString(shop_owner, ShopMechanics.collection_bin.get(shop_owner), false);
+
+                        Main.log.warning("Legacy Shop inventory saved for " + shop_owner);
+                    }
+
+
                 }
 
                 if (!(ShopMechanics.shop_stock.containsKey(shop_owner))) {
                     shop_contents = "";
                     // We want to set the shop_backup to 'empty' in the SQL.
                 } else if (ShopMechanics.shop_stock.containsKey(shop_owner)) {
-                    shop_contents = Hive.convertInventoryToString(shop_owner, ShopMechanics.shop_stock.get(shop_owner), false);
+
+                    try {
+                        shop_contents = ItemSerialization.serializeInventory(ShopMechanics.shop_stock.get(shop_owner), InventoryType.SHOP);
+
+                    } catch (IOException | NullPointerException exception) {
+
+                        // Serializing inventory failed, use legacy method
+                        shop_contents = Hive.convertInventoryToString(shop_owner, ShopMechanics.shop_stock.get(shop_owner), false);
+
+                        Main.log.warning("Legacy Shop inventory saved for " + shop_owner);
+                    }
+
                 }
 
                 shop_contents = shop_contents.replace(ChatColor.COLOR_CHAR, '&');

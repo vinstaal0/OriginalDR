@@ -4,6 +4,7 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,10 +24,10 @@ public class CommandMNote implements CommandExecutor {
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("pouch")) {
-			p.getInventory().addItem(CraftItemStack.asCraftCopy(MoneyMechanics.t1_gem_pouch));
-			p.getInventory().addItem(CraftItemStack.asCraftCopy(MoneyMechanics.t2_gem_pouch));
-			p.getInventory().addItem(CraftItemStack.asCraftCopy(MoneyMechanics.t3_gem_pouch));
-			p.getInventory().addItem(CraftItemStack.asCraftCopy(MoneyMechanics.t4_gem_pouch));
+			p.getInventory().addItem(CraftItemStack.asCraftCopy(Money.t1_gem_pouch));
+			p.getInventory().addItem(CraftItemStack.asCraftCopy(Money.t2_gem_pouch));
+			p.getInventory().addItem(CraftItemStack.asCraftCopy(Money.t3_gem_pouch));
+			p.getInventory().addItem(CraftItemStack.asCraftCopy(Money.t4_gem_pouch));
 			//p.getInventory().addItem(CraftItemStack.asCraftCopy(t1_gem_pouch));
 		}
 		if(args[0].equalsIgnoreCase("upload")) {

@@ -11,6 +11,8 @@ import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -48,7 +50,7 @@ public class CommandAddWeapon implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("orb")) {
-            p.getInventory().addItem(ItemMechanics.orb_of_peace);
+            p.getInventory().addItem(Misc.orb_of_peace);
             p.getInventory().addItem(MerchantMechanics.orb_of_alteration);
             p.getInventory().addItem(MerchantMechanics.orb_of_alteration);
             p.getInventory().addItem(MerchantMechanics.orb_of_alteration);
@@ -71,7 +73,7 @@ public class CommandAddWeapon implements CommandExecutor {
             }
         }
         if (args[0].equalsIgnoreCase("quiver")) {
-            p.getInventory().addItem(ItemMechanics.t1_quiver);
+            p.getInventory().addItem(Arrow.t1_quiver);
         }
         if (args[0].equalsIgnoreCase("enchantwhite")) {
             p.getInventory().addItem(EnchantMechanics.t5_white_scroll);
@@ -118,14 +120,14 @@ public class CommandAddWeapon implements CommandExecutor {
             p.getInventory().addItem(ItemMechanics.generateRandomTierItem(5));
         }
         if (args[0].equalsIgnoreCase("arrow")) {
-            p.getInventory().addItem(ItemMechanics.t1_arrow);
-            p.getInventory().addItem(ItemMechanics.t2_arrow);
-            p.getInventory().addItem(ItemMechanics.t3_arrow);
-            p.getInventory().addItem(ItemMechanics.t4_arrow);
-            p.getInventory().addItem(ItemMechanics.t5_arrow);
+            p.getInventory().addItem(Arrow.t1_arrow);
+            p.getInventory().addItem(Arrow.t2_arrow);
+            p.getInventory().addItem(Arrow.t3_arrow);
+            p.getInventory().addItem(Arrow.t4_arrow);
+            p.getInventory().addItem(Arrow.t5_arrow);
         }
         if (args[0].equalsIgnoreCase("egg")) {
-            p.getInventory().addItem(ItemMechanics.easter_egg);
+            p.getInventory().addItem(Misc.easter_egg);
         }
         if (args[0].equalsIgnoreCase("pots")) {
             p.getInventory().addItem(MerchantMechanics.t1_pot);

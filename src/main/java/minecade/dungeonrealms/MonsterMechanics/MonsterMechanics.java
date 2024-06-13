@@ -26,7 +26,6 @@ import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemGenerators;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
-import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.commands.CommandHideMS;
 import minecade.dungeonrealms.MonsterMechanics.commands.CommandMon;
 import minecade.dungeonrealms.MonsterMechanics.commands.CommandMonSpawn;
@@ -51,6 +50,8 @@ import net.minecraft.server.v1_8_R1.GenericAttributes;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import io.netty.util.internal.ConcurrentSet;
 import nl.vinstaal0.Dungeonrealms.Config;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.Party;
 import org.apache.commons.lang3.StringUtils;
 
@@ -135,7 +136,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.*;
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls.*;
 
 public class MonsterMechanics implements Listener {
 
@@ -870,11 +871,11 @@ public class MonsterMechanics implements Listener {
                         if (amount_to_spawn > 64) {
                             short real_id = 777;
                             ItemStack money = new ItemStack(Material.PAPER, 1, real_id);
-                            loot.add(MoneyMechanics.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note",
+                            loot.add(Money.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note",
                                     ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn
                                             + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
                         } else if (amount_to_spawn <= 64) {
-                            loot.add(MoneyMechanics.makeGems(amount_to_spawn));
+                            loot.add(Money.makeGems(amount_to_spawn));
                         }
                     } else if (m == Material.POTION) {
                         if (item_meta == 1) {
@@ -931,16 +932,16 @@ public class MonsterMechanics implements Listener {
                                 ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
                     } else if (m == Material.EMPTY_MAP) {
                         if (item_meta == 1) {
-                            loot.add(CraftItemStack.asCraftCopy(Cyrennica_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
                         }
                         if (item_meta == 2) {
-                            loot.add(CraftItemStack.asCraftCopy(Harrison_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Harrison_scroll)));
                         }
                         if (item_meta == 3) {
-                            loot.add(CraftItemStack.asCraftCopy(Dark_Oak_Tavern_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll)));
                         }
                         if (item_meta == 4) {
-                            loot.add(CraftItemStack.asCraftCopy(Deadpeaks_Mountain_Camp_scroll));
+                            loot.add(CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Deadpeaks_Mountain_Camp_scroll)));
                         }
                         if (item_meta == 11) {
                             loot.add(CraftItemStack.asCraftCopy(EnchantMechanics.t1_wep_scroll));
@@ -5274,11 +5275,11 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(2); // 0, 1
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Cyrennica_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Harrison_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Harrison_scroll)));
                             }
                         }
                     }
@@ -5295,23 +5296,23 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(5); // 0, 1
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Cyrennica_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Harrison_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Harrison_scroll)));
                             }
                             if (scroll_type == 2) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Dark_Oak_Tavern_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll)));
                             }
                             if (scroll_type == 3) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Jagged_Rocks_Tavern)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Jagged_Rocks_Tavern)));
                             }
                             if (scroll_type == 4) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Tripoli_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Tripoli_scroll)));
                             }
                         }
                     }
@@ -5328,23 +5329,23 @@ public class MonsterMechanics implements Listener {
                             int scroll_type = new Random().nextInt(5); // 0, 1, 2, 3
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Cyrennica_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
                             }
                             if (scroll_type == 1) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Dark_Oak_Tavern_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll)));
                             }
                             if (scroll_type == 2) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Jagged_Rocks_Tavern)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Jagged_Rocks_Tavern)));
                             }
                             if (scroll_type == 3) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Swamp_safezone_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Swamp_safezone_scroll)));
                             }
                             if (scroll_type == 4) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
-                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Crestguard_keep_scroll)));
+                                        CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Crestguard_keep_scroll)));
                             }
                         }
                     }
@@ -5445,13 +5446,13 @@ public class MonsterMechanics implements Listener {
                         int amount_to_drop = new Random().nextInt(10) + 1;
 
                         if (mob_tier == 1) {
-                            ItemStack arrow_loot = ItemMechanics.t1_arrow;
+                            ItemStack arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_arrow;
                             arrow_loot.setAmount(amount_to_drop);
                             ent.getWorld().dropItemNaturally(ent.getLocation(), arrow_loot);
                         }
 
                         if (mob_tier == 2) {
-                            ItemStack arrow_loot = ItemMechanics.t2_arrow;
+                            ItemStack arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t2_arrow;
                             arrow_loot.setAmount(amount_to_drop);
                             ent.getWorld().dropItemNaturally(ent.getLocation(), arrow_loot);
                         }
@@ -5459,36 +5460,36 @@ public class MonsterMechanics implements Listener {
                             int drop_t4 = new Random().nextInt(100);
                             ItemStack arrow_loot = null;
                             if (drop_t4 <= 5) {
-                                arrow_loot = ItemMechanics.t4_arrow;
+                                arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t4_arrow;
                             } else {
-                                arrow_loot = ItemMechanics.t3_arrow;
+                                arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t3_arrow;
                             }
                             arrow_loot.setAmount(amount_to_drop);
                             ent.getWorld().dropItemNaturally(ent.getLocation(), arrow_loot);
                             if (do_i_drop_quiver <= 10) {
-                                ent.getWorld().dropItemNaturally(ent.getLocation(), ItemMechanics.t1_quiver);
+                                ent.getWorld().dropItemNaturally(ent.getLocation(), nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_quiver);
                             }
                         }
                         if (mob_tier == 4) {
                             int drop_t5 = new Random().nextInt(100);
                             ItemStack arrow_loot = null;
                             if (drop_t5 <= 15) {
-                                arrow_loot = ItemMechanics.t5_arrow;
+                                arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t5_arrow;
                             } else {
-                                arrow_loot = ItemMechanics.t4_arrow;
+                                arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t4_arrow;
                             }
                             arrow_loot.setAmount(amount_to_drop);
                             ent.getWorld().dropItemNaturally(ent.getLocation(), arrow_loot);
                             if (do_i_drop_quiver <= 10) {
-                                ent.getWorld().dropItemNaturally(ent.getLocation(), ItemMechanics.t1_quiver);
+                                ent.getWorld().dropItemNaturally(ent.getLocation(), nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_quiver);
                             }
                         }
                         if (mob_tier == 5) {
-                            ItemStack arrow_loot = ItemMechanics.t5_arrow;
+                            ItemStack arrow_loot = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t5_arrow;
                             arrow_loot.setAmount(amount_to_drop);
                             ent.getWorld().dropItemNaturally(ent.getLocation(), arrow_loot);
                             if (do_i_drop_quiver <= 10) {
-                                ent.getWorld().dropItemNaturally(ent.getLocation(), ItemMechanics.t1_quiver);
+                                ent.getWorld().dropItemNaturally(ent.getLocation(), nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_quiver);
                             }
                         }
                     }
@@ -5643,13 +5644,13 @@ public class MonsterMechanics implements Listener {
                         // net.minecraft.server.ItemStack gems = (((CraftItemStack)
                         // ).getHandle());
                         while (gem_drop_amount > 64) {
-                            ItemStack i = MoneyMechanics.makeGems((int) 64);
+                            ItemStack i = Money.makeGems((int) 64);
                             Location loc = ent.getLocation();
                             loc.getWorld().dropItemNaturally(loc, i);
                             gem_drop_amount = gem_drop_amount - 64;
                         }
 
-                        ItemStack i = MoneyMechanics.makeGems((int) gem_drop_amount); // Drop the remainder.
+                        ItemStack i = Money.makeGems((int) gem_drop_amount); // Drop the remainder.
                         Location loc = ent.getLocation();
                         loc.getWorld().dropItemNaturally(loc, i);
                     }

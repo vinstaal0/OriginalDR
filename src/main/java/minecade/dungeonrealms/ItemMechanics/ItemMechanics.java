@@ -29,7 +29,6 @@ import minecade.dungeonrealms.ItemMechanics.commands.CommandAddWeaponNew;
 import minecade.dungeonrealms.ItemMechanics.commands.CommandAddWeaponNewNew;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
-import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.DamageTracker;
 import minecade.dungeonrealms.MonsterMechanics.Hologram;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
@@ -47,9 +46,9 @@ import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
-import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemLogger;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
-import nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -118,7 +117,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import static nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls.*;
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls.*;
 
 public class ItemMechanics implements Listener {
 
@@ -187,33 +186,6 @@ public class ItemMechanics implements Listener {
     static HashMap<String, ItemStack> spoofed_weapon = new HashMap<String, ItemStack>();
     // Player_name, Weapon to use for damage event.
 
-    public static ItemStack orb_of_peace = ItemMechanics.signNewCustomItem(Material.ENDER_PEARL, (short) 1, ChatColor.GREEN.toString() + "" + "Orb of Peace",
-            ChatColor.GRAY.toString() + "Set realm to " + ChatColor.UNDERLINE + "SAFE ZONE" + ChatColor.GRAY + " for 1 hour(s).");
-
-    @SuppressWarnings("deprecation")
-    public static ItemStack orb_of_flight = ItemMechanics.signNewCustomItem(Material.getMaterial(402), (short) 1, ChatColor.AQUA.toString() + ""
-            + "Orb of Flight", ChatColor.GRAY.toString() + "Enables " + ChatColor.UNDERLINE + "FLYING" + ChatColor.GRAY + " in realm for the owner " + ","
-            + ChatColor.GRAY.toString() + "and all builders for 30 minute(s)." + "," + ChatColor.RED.toString() + ChatColor.BOLD.toString() + "REQ:"
-            + ChatColor.RED.toString() + " Active Orb of Peace");
-
-    public static ItemStack easter_egg = ItemMechanics.signNewCustomItem(Material.EGG, (short) 1, ChatColor.LIGHT_PURPLE.toString() + "" + "Easter Egg",
-            ChatColor.GRAY.toString() + "Gives you a random item!" + "," + ChatColor.LIGHT_PURPLE + "Rare");
-
-    public static ItemStack t1_arrow = ItemMechanics.signNewCustomItem(Material.ARROW, (short) 1, ChatColor.WHITE.toString() + "" + "Bent Arrow",
-            ChatColor.GRAY.toString() + "Increase arrow damage by 5%");
-    public static ItemStack t2_arrow = ItemMechanics.signNewCustomItem(Material.ARROW, (short) 1, ChatColor.GREEN.toString() + "" + "Precise Arrow",
-            ChatColor.GRAY.toString() + "Increase arrow damage by 10%");
-    public static ItemStack t3_arrow = ItemMechanics.signNewCustomItem(Material.ARROW, (short) 1, ChatColor.AQUA.toString() + "" + "Reinforced Arrow",
-            ChatColor.GRAY.toString() + "Increase arrow damage by 20%");
-    public static ItemStack t4_arrow = ItemMechanics.signNewCustomItem(Material.ARROW, (short) 1, ChatColor.LIGHT_PURPLE.toString() + "" + "Pointed Arrow",
-            ChatColor.GRAY.toString() + "Increase arrow damage by 40%");
-    public static ItemStack t5_arrow = ItemMechanics.signNewCustomItem(Material.ARROW, (short) 1, ChatColor.YELLOW.toString() + "" + "Piercing Arrow",
-            ChatColor.GRAY.toString() + "Increase arrow damage by 80%");
-    public static ItemStack t1_quiver = ItemMechanics.createItem(Material.FLOWER_POT_ITEM, ChatColor.GOLD + "Quiver " + ChatColor.WHITE + "0 / 200", Arrays
-            .asList(ChatColor.GRAY + "A sturdy quiver to hold arrows.", ChatColor.WHITE + "Tier 1: " + ChatColor.WHITE + ChatColor.BOLD + "0", ChatColor.GREEN
-                    + "Tier 2: " + ChatColor.WHITE + ChatColor.BOLD + "0", ChatColor.AQUA + "Tier 3: " + ChatColor.WHITE + ChatColor.BOLD + "0",
-                    ChatColor.LIGHT_PURPLE + "Tier 4: " + ChatColor.WHITE + ChatColor.BOLD + "0", ChatColor.YELLOW + "Tier 5: " + ChatColor.WHITE
-                            + ChatColor.BOLD + "0"));
     public static CopyOnWriteArrayList<String> to_process_weapon = new CopyOnWriteArrayList<String>();
 
     private static Inventory foodVendor = Bukkit.createInventory(null, 18, "Vanilla Food");
@@ -254,14 +226,14 @@ public class ItemMechanics implements Listener {
         foodVendor.addItem(new ItemStack(Material.BREAD));
         foodVendor.addItem(new ItemStack(Material.CARROT));
 
-        tpBookVendor.addItem(Crestguard_keep_scroll);
-        tpBookVendor.addItem(Dark_Oak_Tavern_scroll);
-        tpBookVendor.addItem(Deadpeaks_Mountain_Camp_scroll);
-        tpBookVendor.addItem(Tripoli_scroll);
-        tpBookVendor.addItem(Harrison_scroll);
-        tpBookVendor.addItem(Swamp_safezone_scroll);
-        tpBookVendor.addItem(Jagged_Rocks_Tavern);
-        tpBookVendor.addItem(Cyrennica_scroll);
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Crestguard_keep_scroll));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Deadpeaks_Mountain_Camp_scroll));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Tripoli_scroll));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Harrison_scroll));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Swamp_safezone_scroll));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Jagged_Rocks_Tavern));
+        tpBookVendor.addItem(ItemTracker.addSerialNumber(Cyrennica_scroll));
 
         Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
@@ -3003,7 +2975,7 @@ public class ItemMechanics implements Listener {
                 } else if (p_tier == 5) {
                     to_give = Math.random() >= .5F ? EnchantMechanics.t5_armor_scroll : EnchantMechanics.t5_wep_scroll;
                 } else {
-                    to_give = orb_of_flight;
+                    to_give = Misc.orb_of_flight;
                 }
                 givePlayerItem(pl, to_give);
                 pl.sendMessage(ChatColor.RED + "You crack open the egg and find...");
@@ -3024,7 +2996,7 @@ public class ItemMechanics implements Listener {
                 } else if (p_tier == 5) {
                     to_give = EnchantMechanics.t5_white_scroll;
                 } else {
-                    to_give = orb_of_flight;
+                    to_give = Misc.orb_of_flight;
                 }
                 givePlayerItem(pl, to_give);
                 pl.sendMessage(ChatColor.RED + "You crack open the egg and find...");
@@ -3042,7 +3014,7 @@ public class ItemMechanics implements Listener {
             }
             // They got none of the other stuff so give them some gems.
             int amount_of_gems = new Random().nextInt(500) + 1000;
-            ItemStack gem_note = MoneyMechanics.signBankNote(new ItemStack(Material.PAPER, 1), ChatColor.GREEN.toString() + "Bank Note",
+            ItemStack gem_note = Money.signBankNote(new ItemStack(Material.PAPER, 1), ChatColor.GREEN.toString() + "Bank Note",
                     ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_of_gems + " Gems" + ","
                             + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)");
             givePlayerItem(pl, gem_note);
@@ -3783,19 +3755,19 @@ public class ItemMechanics implements Listener {
             im.setLore(Arrays.asList(ChatColor.GRAY + "Increase damage by 5%"));
             switch (tier) {
             case 1:
-                im = t1_arrow.getItemMeta();
+                im = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_arrow.getItemMeta();
                 break;
             case 2:
-                im = t2_arrow.getItemMeta();
+                im = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t2_arrow.getItemMeta();
                 break;
             case 3:
-                im = t3_arrow.getItemMeta();
+                im = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t3_arrow.getItemMeta();
                 break;
             case 4:
-                im = t4_arrow.getItemMeta();
+                im = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t4_arrow.getItemMeta();
                 break;
             case 5:
-                im = t5_arrow.getItemMeta();
+                im = nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t5_arrow.getItemMeta();
                 break;
             }
             is.setItemMeta(im);
@@ -6136,17 +6108,17 @@ public class ItemMechanics implements Listener {
     public ItemStack getArrowFromTier(int tier) {
         switch (tier) {
         case 1:
-            return t1_arrow;
+            return nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_arrow;
         case 2:
-            return t2_arrow;
+            return nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t2_arrow;
         case 3:
-            return t3_arrow;
+            return nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t3_arrow;
         case 4:
-            return t4_arrow;
+            return nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t4_arrow;
         case 5:
-            return t5_arrow;
+            return nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t5_arrow;
         }
-        return t1_arrow;
+        return nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow.t1_arrow;
     }
 
     public boolean addArrowsToQuiver(ItemStack quiver, ItemStack arrows) {

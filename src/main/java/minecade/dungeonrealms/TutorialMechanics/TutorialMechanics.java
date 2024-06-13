@@ -13,14 +13,14 @@ import minecade.dungeonrealms.EnchantMechanics.EnchantMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
-import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TutorialMechanics.commands.CommandSkip;
 import minecade.dungeonrealms.TutorialMechanics.commands.CommandTutorial;
-import minecade.dungeonrealms.config.Config;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Scrap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -513,7 +513,7 @@ public class TutorialMechanics implements Listener {
 			// Give the player 5x T1 arrows
 			if(!(pl.getInventory().contains(Material.ARROW))) {
 				e.setCancelled(true);
-				ItemStack reward = RealmMechanics.makeUntradeable(CraftItemStack.asCraftCopy(ItemMechanics.t1_arrow));
+				ItemStack reward = RealmMechanics.makeUntradeable(CraftItemStack.asCraftCopy(Arrow.t1_arrow));
 				reward.setAmount(10);
 				if(pl.getInventory().firstEmpty() != -1) {
 					pl.getInventory().addItem(reward);
@@ -527,7 +527,7 @@ public class TutorialMechanics implements Listener {
 			// Give the player 1x T1 Scrap
 			if(!(pl.getInventory().contains(Material.LEATHER))) {
 				e.setCancelled(true);
-				ItemStack reward = RealmMechanics.makeUntradeable(CraftItemStack.asCraftCopy(MerchantMechanics.T1_scrap));
+				ItemStack reward = RealmMechanics.makeUntradeable(CraftItemStack.asCraftCopy(Scrap.T1_scrap));
 				if(pl.getInventory().firstEmpty() != -1) {
 					pl.getInventory().addItem(reward);
 					pl.sendMessage(ChatColor.GRAY.toString() + "Armor Guide: " + ChatColor.WHITE.toString() + "Gah! Phew! Nearly burnt me'self there, here's an armor scrap for listening to an old man ramble. Use it to repair your equipment in the field.");

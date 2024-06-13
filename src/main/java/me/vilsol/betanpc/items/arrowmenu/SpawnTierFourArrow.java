@@ -3,9 +3,9 @@ package me.vilsol.betanpc.items.arrowmenu;
 import java.util.Arrays;
 
 import me.vilsol.menuengine.engine.MenuItem;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
 import org.bukkit.event.inventory.ClickType;
 import me.vilsol.menuengine.utils.Builder;
-import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ public class SpawnTierFourArrow implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-		ItemStack arrow = ItemMechanics.t4_arrow.clone();
+		ItemStack arrow = Arrow.t4_arrow.clone();
 		arrow.setAmount(64);
         plr.getInventory().addItem(arrow);
 	}

@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.CodeSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,6 +67,8 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -137,20 +137,6 @@ public class RealmMechanics implements Listener {
 
 	public static boolean shutting_down = false;
 	// Set to =true when onDisable() is run.
-
-	// Realm Shop Items {
-	public static ItemStack divider = ItemMechanics.signCustomItem(Material.THIN_GLASS, (short) 0, " ", "");
-
-	public static ItemStack next_page_1 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
-			ChatColor.YELLOW + "Next Page " + ChatColor.BOLD + "->", ChatColor.GRAY + "Page 2/3");
-	public static ItemStack next_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
-			ChatColor.YELLOW + "Next Page " + ChatColor.BOLD + "->", ChatColor.GRAY + "Page 3/3");
-
-	public static ItemStack previous_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0, ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-"
-			+ ChatColor.YELLOW + " Previous Page ", ChatColor.GRAY + "Page 1/3");
-	public static ItemStack previous_page_3 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0, ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-"
-			+ ChatColor.YELLOW + " Previous Page ", ChatColor.GRAY + "Page 2/3");
-	// }
 
 	public static String rootDir = "";
 	// Main directory of the server.
@@ -982,7 +968,7 @@ public class RealmMechanics implements Listener {
 			x++;
 			ItemStack is = mat_shop_1.getItem(x);
 			if (is == null || is.getType() == Material.AIR) {
-				mat_shop_1.setItem(x, CraftItemStack.asCraftCopy(divider));
+				mat_shop_1.setItem(x, CraftItemStack.asCraftCopy(Misc.divider));
 				continue;
 			}
 			double price_each = is.getAmount();
@@ -1032,7 +1018,7 @@ public class RealmMechanics implements Listener {
 			x++;
 			ItemStack is = mat_shop_2.getItem(x);
 			if (is == null || is.getType() == Material.AIR) {
-				mat_shop_2.setItem(x, CraftItemStack.asCraftCopy(divider));
+				mat_shop_2.setItem(x, CraftItemStack.asCraftCopy(Misc.divider));
 				continue;
 			}
 			double price_each = is.getAmount();
@@ -1092,7 +1078,7 @@ public class RealmMechanics implements Listener {
 			x++;
 			ItemStack is = mat_shop_3.getItem(x);
 			if (is == null || is.getType() == Material.AIR) {
-				mat_shop_3.setItem(x, CraftItemStack.asCraftCopy(divider));
+				mat_shop_3.setItem(x, CraftItemStack.asCraftCopy(Misc.divider));
 				continue;
 			}
 			double price_each = is.getAmount();
@@ -1147,10 +1133,10 @@ public class RealmMechanics implements Listener {
 			mat_shop_3.setItem(x, is_mod);
 		}
 
-		mat_shop_1.setItem(62, next_page_1);
-		mat_shop_2.setItem(54, previous_page_2);
-		mat_shop_2.setItem(62, next_page_2);
-		mat_shop_3.setItem(54, previous_page_3);
+		mat_shop_1.setItem(62, Misc.next_page_1);
+		mat_shop_2.setItem(54, Misc.previous_page_2);
+		mat_shop_2.setItem(62, Misc.next_page_2);
+		mat_shop_3.setItem(54, Misc.previous_page_3);
 	}
 
 	public static ItemStack fixItemName(ItemStack iss, String name) {
@@ -3154,7 +3140,7 @@ public class RealmMechanics implements Listener {
 
 			else {
 				int to_take = amount - paid_off;
-				p.getInventory().setItem(index, MoneyMechanics.makeGems(stackAmount - to_take));
+				p.getInventory().setItem(index, Money.makeGems(stackAmount - to_take));
 				paid_off += to_take;
 			}
 

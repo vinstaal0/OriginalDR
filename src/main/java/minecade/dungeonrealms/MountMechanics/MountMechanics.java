@@ -1,5 +1,6 @@
 package minecade.dungeonrealms.MountMechanics;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +30,8 @@ import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import net.minecraft.server.v1_8_R1.EntityHorse;
 import net.minecraft.server.v1_8_R1.GenericAttributes;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -1338,10 +1341,24 @@ public class MountMechanics implements Listener {
                             // Inventory mule_inventory = Bukkit.createInventory(null, getMuleSlots(ItemMechanics.getItemTier(i_mount)),
                             // "Mobile Storage Chest");
                             String inventory_string = mule_itemlist_string.get(pl.getName());
-                            mule_inventory.put(
-                                    pl.getName(),
-                                    Hive.convertStringToInventory(null, inventory_string, "Mobile Storage Chest",
-                                            getMuleSlots(ItemMechanics.getItemTier(i_mount))));
+                            Inventory inventory = null;
+
+                            try {
+                                inventory = ItemSerialization.deserializeInventory(inventory_string, pl,
+                                        InventoryType.MULE, getMuleSlots(ItemMechanics.getItemTier(i_mount))).get(0);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+
+                            // TODO remove once above code is working
+//                            mule_inventory.put(
+//                                    pl.getName(),
+//                                    Hive.convertStringToInventory(null, inventory_string, "Mobile Storage Chest",
+//                                            getMuleSlots(ItemMechanics.getItemTier(i_mount))));
+
+                            mule_inventory.put(pl.getDisplayName(), inventory);
+
                             mule_itemlist_string.remove(pl.getName());
                         } else {
                             // They have no inventory. Generate one.

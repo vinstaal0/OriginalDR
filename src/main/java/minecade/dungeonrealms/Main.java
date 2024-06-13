@@ -127,8 +127,8 @@ public class Main extends JavaPlugin implements Listener {
     public static Logger log;
     private static ConfigFile configFile;
 
-    private static final List<String> devs = Arrays.asList("EtherealTemplar", "Vilsol", "Rar349", "iFamasssxD", "Tux2", "Vinstaal0");
-    private static final List<String> masters = Arrays.asList("Bradez1571", "felipepcjr");
+    private static final List<String> devs = Arrays.asList("EtherealTemplar", "Vilsol", "Rar349", "iFamasssxD", "Tux2", "Vinstaal0", "Aviro_");
+    private static final List<String> masters = Arrays.asList("Bradez1571", "felipepcjr", "Vinstaal0", "Aviro_");
 
     public static String compileTimedate;
 

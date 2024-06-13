@@ -1,5 +1,6 @@
 package minecade.dungeonrealms.EcashMechanics;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -41,6 +42,8 @@ import net.minecraft.server.v1_8_R1.EntityLiving;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -76,6 +79,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -709,7 +713,18 @@ public class EcashMechanics implements Listener {
         if (e.getInventory().getName().equalsIgnoreCase("E-Cash Storage")) {
             Player pl = (Player) e.getPlayer();
             // pl.setMetadata("ecash_storage", new FixedMetadataValue(Hive.instance, Hive.convertInventoryToString(null, e.getInventory(), false)));
-            ecash_storage_map.put(pl.getName(), Hive.convertInventoryToString(null, e.getInventory(), false));
+
+            try {
+                ecash_storage_map.put(pl.getDisplayName(), ItemSerialization.serializeInventory(e.getInventory(), InventoryType.E_CASH));
+            } catch (IOException ignored) {
+
+                // It failed, try using legacy String
+                ecash_storage_map.put(pl.getName(), Hive.convertInventoryToString(null, e.getInventory(), false));
+
+                log.warning("[EcashMechanics] Legacy E-Cash Storage saved for " + pl.getDisplayName());
+
+            }
+
             pl.sendMessage(ChatColor.GRAY + "E-Cash Storage: " + ChatColor.WHITE + "Your trinkets are safe with me!");
         }
     }

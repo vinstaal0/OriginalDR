@@ -1,26 +1,24 @@
 package nl.vinstaal0.Dungeonrealms.Commands;
 
-import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemMechanics;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
-import nl.vinstaal0.Dungeonrealms.ItemMechanics.TeleportationScrolls;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class FixMissingTextureCommand implements CommandExecutor {
 
+    @Deprecated
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
+        // TODO return comment to the actual command
+
         Player player = (Player) commandSender;
 
-        ItemStack itemStack = TeleportationScrolls.Cyrennica_scroll.clone();
+        ItemStack itemStack = TeleportationScrolls.Cyrennica_scroll.clone(); // .clone doesn't seem to make a difference
 
         ItemStack item = ItemTracker.addSerialNumber(itemStack, player);
 
@@ -44,7 +42,7 @@ public class FixMissingTextureCommand implements CommandExecutor {
 //        newItem.setItemMeta(im);
 //        newItem.setDurability((short)0);
 //
-//        player.setItemInHand(newItem);
+//        player.setItemInHand(ItemTracker.addSerialNumber(newItem));
 
         return true;
     }

@@ -122,6 +122,10 @@ public class SpawnerMechanics implements Listener {
         Player creator = (Player) event.getWhoClicked();
         Inventory clickedInventory = event.getClickedInventory();
 
+        if (clickedInventory == null) {
+            return;
+        }
+
         if (clickedInventory.getTitle().equalsIgnoreCase("select a mob type") ||
         clickedInventory.getTitle().equalsIgnoreCase("mob options") ||
         clickedInventory.getTitle().equalsIgnoreCase("select a mob type")) {

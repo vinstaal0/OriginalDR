@@ -1,5 +1,6 @@
 package minecade.dungeonrealms.MerchantMechanics;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,6 @@ import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
-import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MountMechanics.MountMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
@@ -28,6 +28,11 @@ import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TradeMechanics.TradeMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Scrap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,18 +60,6 @@ public class MerchantMechanics implements Listener {
     public static List<String> in_npc_shop = new ArrayList<String>();
 
     ItemStack divider = new ItemStack(Material.THIN_GLASS, 1);
-
-    public static ItemStack T1_scrap = ItemMechanics.signNewCustomItem(Material.LEATHER, (short) 0, ChatColor.WHITE.toString() + "Leather Armor Scrap",
-            ChatColor.GRAY.toString() + "Recovers 3% Durability of " + ChatColor.WHITE.toString() + "Leather Equipment");
-    public static ItemStack T2_scrap = ItemMechanics.signNewCustomItem(Material.IRON_FENCE, (short) 0, ChatColor.GREEN.toString() + "Chainmail Armor Scrap",
-            ChatColor.GRAY.toString() + "Recovers 3% Durability of " + ChatColor.GREEN.toString() + "Chainmail Equipment");
-    public static ItemStack T3_scrap = ItemMechanics.signNewCustomItem(Material.INK_SACK, (short) 7, ChatColor.AQUA.toString() + "Iron Armor Scrap",
-            ChatColor.GRAY.toString() + "Recovers 3% Durability of " + ChatColor.AQUA.toString() + "Iron Equipment");
-    public static ItemStack T4_scrap = ItemMechanics.signNewCustomItem(Material.INK_SACK, (short) 12,
-            ChatColor.LIGHT_PURPLE.toString() + "Diamond Armor Scrap",
-            ChatColor.GRAY.toString() + "Recovers 3% Durability of " + ChatColor.LIGHT_PURPLE.toString() + "Diamond Equipment");
-    public static ItemStack T5_scrap = ItemMechanics.signNewCustomItem(Material.INK_SACK, (short) 11, ChatColor.YELLOW.toString() + "Golden Armor Scrap",
-            ChatColor.GRAY.toString() + "Recovers 3% Durability of " + ChatColor.YELLOW.toString() + "Gold Equipment");
 
     public static ItemStack pickaxe_scroll = ItemMechanics.signNewCustomItem(Material.EMPTY_MAP, (short) 1,
             ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Scroll:" + ChatColor.YELLOW.toString() + " Pickaxe Enchant",
@@ -470,27 +463,27 @@ public class MerchantMechanics implements Listener {
                     }
 
                     if (tier == 1) {
-                        ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+                        ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
                         scrap.setAmount(payout);
                         merchant_offer.add(scrap);
                     }
                     if (tier == 2) {
-                        ItemStack scrap = CraftItemStack.asCraftCopy(T3_scrap);
+                        ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T3_scrap);
                         scrap.setAmount(payout);
                         merchant_offer.add(scrap);
                     }
                     if (tier == 3) {
-                        ItemStack scrap = CraftItemStack.asCraftCopy(T4_scrap);
+                        ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T4_scrap);
                         scrap.setAmount(payout);
                         merchant_offer.add(scrap);
                     }
                     if (tier == 4) {
-                        ItemStack scrap = CraftItemStack.asCraftCopy(T5_scrap);
+                        ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
                         scrap.setAmount(payout);
                         merchant_offer.add(scrap);
                     }
                     if (tier == 5) {
-                        ItemStack scrap = CraftItemStack.asCraftCopy(T5_scrap);
+                        ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
                         scrap.setAmount(payout * 2);
                         merchant_offer.add(scrap);
                     }
@@ -501,12 +494,12 @@ public class MerchantMechanics implements Listener {
                 int orb_count = is.getAmount();
                 int payout = 20 * orb_count;
                 while (payout > 64) {
-                    ItemStack scrap = CraftItemStack.asCraftCopy(T5_scrap);
+                    ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
                     scrap.setAmount(64);
                     merchant_offer.add(scrap);
                     payout -= 64;
                 }
-                ItemStack scrap = CraftItemStack.asCraftCopy(T5_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
                 scrap.setAmount(payout);
                 merchant_offer.add(scrap);
             }
@@ -516,11 +509,11 @@ public class MerchantMechanics implements Listener {
             int to_give = t1_arrow / 3;
             while (to_give >= 64) {
                 to_give -= 64;
-                ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t2_arrow);
+                ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t2_arrow);
                 arrow.setAmount(64);
                 merchant_offer.add(arrow);
             }
-            ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t2_arrow);
+            ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t2_arrow);
             arrow.setAmount(to_give);
             merchant_offer.add(arrow);
         }
@@ -529,11 +522,11 @@ public class MerchantMechanics implements Listener {
             int to_give = t2_arrow / 3;
             while (to_give >= 64) {
                 to_give -= 64;
-                ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t3_arrow);
+                ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t3_arrow);
                 arrow.setAmount(64);
                 merchant_offer.add(arrow);
             }
-            ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t3_arrow);
+            ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t3_arrow);
             arrow.setAmount(to_give);
             merchant_offer.add(arrow);
         }
@@ -542,11 +535,11 @@ public class MerchantMechanics implements Listener {
             int to_give = t3_arrow / 3;
             while (to_give >= 64) {
                 to_give -= 64;
-                ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t4_arrow);
+                ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t4_arrow);
                 arrow.setAmount(64);
                 merchant_offer.add(arrow);
             }
-            ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t4_arrow);
+            ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t4_arrow);
             arrow.setAmount(to_give);
             merchant_offer.add(arrow);
         }
@@ -555,11 +548,11 @@ public class MerchantMechanics implements Listener {
             int to_give = t4_arrow / 3;
             while (to_give >= 64) {
                 to_give -= 64;
-                ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t5_arrow);
+                ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t5_arrow);
                 arrow.setAmount(64);
                 merchant_offer.add(arrow);
             }
-            ItemStack arrow = CraftItemStack.asCraftCopy(ItemMechanics.t5_arrow);
+            ItemStack arrow = CraftItemStack.asCraftCopy(Arrow.t5_arrow);
             arrow.setAmount(to_give);
             merchant_offer.add(arrow);
         }
@@ -631,131 +624,131 @@ public class MerchantMechanics implements Listener {
         if (t1_ore > 0) {
             while (t1_ore >= 100) {
                 t1_ore -= 100;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t1_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t1_gem_pouch);
                 merchant_offer.add(pouch);
             }
 
             int payout = t1_ore * 2;
             while (payout > 64) {
                 payout -= 64;
-                ItemStack scrap = CraftItemStack.asCraftCopy(T1_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T1_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T1_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T1_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
         if (t2_ore > 0) {
             while (t2_ore >= 150) {
                 t2_ore -= 150;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t2_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t2_gem_pouch);
                 merchant_offer.add(pouch);
             }
 
             while (t2_ore >= 70) {
                 t2_ore -= 70;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t1_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t1_gem_pouch);
                 merchant_offer.add(pouch);
             }
 
             int payout = t2_ore * 1;
             while (payout > 64) {
                 payout -= 64;
-                ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
         if (t3_ore > 0) {
             while (t3_ore >= 200) {
                 t3_ore -= 200;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t3_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t3_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t3_ore >= 100) {
                 t3_ore -= 100;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t2_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t2_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t3_ore >= 40) {
                 t3_ore -= 40;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t1_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t1_gem_pouch);
                 merchant_offer.add(pouch);
             }
 
             int payout = t3_ore / 2;
             while (payout > 64) {
                 payout -= 64;
-                ItemStack scrap = CraftItemStack.asCraftCopy(T3_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T3_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T3_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T3_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
         if (t4_ore > 0) {
             while (t4_ore >= 140) {
                 t4_ore -= 140;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t3_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t3_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t4_ore >= 80) {
                 t4_ore -= 80;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t2_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t2_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t4_ore >= 35) {
                 t4_ore -= 35;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t1_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t1_gem_pouch);
                 merchant_offer.add(pouch);
             }
 
             int payout = t4_ore / 2;
             while (payout > 64) {
                 payout -= 64;
-                ItemStack scrap = CraftItemStack.asCraftCopy(T4_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T4_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T4_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T4_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
         if (t5_ore > 0) {
             while (t5_ore >= 80) {
                 t5_ore -= 80;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t4_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t4_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t5_ore >= 60) {
                 t5_ore -= 60;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t3_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t3_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t5_ore >= 40) {
                 t5_ore -= 40;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t2_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t2_gem_pouch);
                 merchant_offer.add(pouch);
             }
             while (t5_ore >= 20) {
                 t5_ore -= 20;
-                ItemStack pouch = CraftItemStack.asCraftCopy(MoneyMechanics.t1_gem_pouch);
+                ItemStack pouch = CraftItemStack.asCraftCopy(Money.t1_gem_pouch);
                 merchant_offer.add(pouch);
             }
 
             int payout = t5_ore / 2;
             while (payout > 64) {
                 payout -= 64;
-                ItemStack scrap = CraftItemStack.asCraftCopy(T5_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T5_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
@@ -779,12 +772,12 @@ public class MerchantMechanics implements Listener {
 
             int payout = t1_scraps / 2;
             while (payout > 64) {
-                ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
                 payout -= 64;
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
@@ -807,12 +800,12 @@ public class MerchantMechanics implements Listener {
 
             int payout = 2 * t2_scraps;
             while (payout > 64) {
-                ItemStack scrap = CraftItemStack.asCraftCopy(T1_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T1_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
                 payout -= 64;
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T1_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T1_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
@@ -832,12 +825,12 @@ public class MerchantMechanics implements Listener {
 
             int payout = 2 * t3_scraps;
             while (payout > 64) {
-                ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
                 payout -= 64;
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T2_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
@@ -862,12 +855,12 @@ public class MerchantMechanics implements Listener {
 
             int payout = 2 * t4_scraps;
             while (payout > 64) {
-                ItemStack scrap = CraftItemStack.asCraftCopy(T3_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T3_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
                 payout -= 64;
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T3_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T3_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
@@ -892,12 +885,12 @@ public class MerchantMechanics implements Listener {
 
             int payout = 3 * t5_scraps;
             while (payout > 64) {
-                ItemStack scrap = CraftItemStack.asCraftCopy(T4_scrap);
+                ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T4_scrap);
                 scrap.setAmount(64);
                 merchant_offer.add(scrap);
                 payout -= 64;
             }
-            ItemStack scrap = CraftItemStack.asCraftCopy(T4_scrap);
+            ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T4_scrap);
             scrap.setAmount(payout);
             merchant_offer.add(scrap);
         }
@@ -986,8 +979,8 @@ public class MerchantMechanics implements Listener {
             } // Only 'Trader' should do anything.
             e.setCancelled(true);
             final Inventory TradeWindow = Bukkit.createInventory(null, 9, "Item Vendor");
-            TradeWindow.setItem(0, ShopMechanics.setPrice(CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace), 100));
-            TradeWindow.setItem(1, ShopMechanics.setPrice(CraftItemStack.asCraftCopy(ItemMechanics.orb_of_flight), 1000));
+            TradeWindow.setItem(0, ShopMechanics.setPrice(CraftItemStack.asCraftCopy(Misc.orb_of_peace), 100));
+            TradeWindow.setItem(1, ShopMechanics.setPrice(CraftItemStack.asCraftCopy(Misc.orb_of_flight), 1000));
             TradeWindow.setItem(2, ShopMechanics.setPrice(CraftItemStack.asCraftCopy(GuildMechanics.guild_dye), 1000));
             // TradeWindow.setItem(8, TradeMechanics.setIinfo(new ItemStack(Material.INK_SACK, 1, (short) 8), ChatColor.YELLOW.toString() +
             // "Click to ACCEPT Trade", ""));
@@ -1042,7 +1035,26 @@ public class MerchantMechanics implements Listener {
             e.setCancelled(true);
 
             if (EcashMechanics.ecash_storage_map.containsKey(p.getName())) {
-                Inventory ecash_inv = Hive.convertStringToInventory(null, EcashMechanics.ecash_storage_map.get(p.getName()), "E-Cash Storage", 54);
+
+                Inventory ecash_inv;
+                String data = EcashMechanics.ecash_storage_map.get(p.getName());
+
+                // TODO remove
+                /*try {
+                    ecash_inv = Hive.convertStringToInventory(null, EcashMechanics.ecash_storage_map.get(p.getName()), "E-Cash Storage", 54);
+                } catch (NullPointerException | StringIndexOutOfBoundsException ignored) {
+                    ecash_inv = Bukkit.createInventory(p,
+                            nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType.E_CASH.getSize(),
+                            nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType.E_CASH.displayname());
+                }*/
+
+                try {
+                    ecash_inv = ItemSerialization.deserializeInventory(data, p, nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType.E_CASH,
+                            nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType.E_CASH.getSize()).get(0);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
                 p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
                 boolean found_stuff = false;
                 List<ItemStack> giveBack = new ArrayList<ItemStack>();
@@ -1519,11 +1531,11 @@ public class MerchantMechanics implements Listener {
 
             if (item_slot == 0) {
                 price_per = 100; // Orb of peace
-                product = ShopMechanics.removePrice(CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace));
+                product = ShopMechanics.removePrice(CraftItemStack.asCraftCopy(Misc.orb_of_peace));
             }
             if (item_slot == 1) {
                 price_per = 1000; // Orb of flight
-                product = ShopMechanics.removePrice(CraftItemStack.asCraftCopy(ItemMechanics.orb_of_flight));
+                product = ShopMechanics.removePrice(CraftItemStack.asCraftCopy(Misc.orb_of_flight));
             }
             if (item_slot == 2) {
                 price_per = 1000; // Guild armor dye
@@ -2019,7 +2031,7 @@ public class MerchantMechanics implements Listener {
                         continue;
                     }
                     if (i.getType() == Material.EMERALD) {
-                        i = MoneyMechanics.makeGems(i.getAmount());
+                        i = Money.makeGems(i.getAmount());
                     }
                     clicker.getInventory().setItem(clicker.getInventory().firstEmpty(), (i));
                 }
@@ -2066,7 +2078,7 @@ public class MerchantMechanics implements Listener {
                 }
 
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(i.getAmount());
+                    i = Money.makeGems(i.getAmount());
                 }
 
                 if (closer.getInventory().firstEmpty() == -1) { // TODO: Need to automatically stack items on cancel.
@@ -2102,7 +2114,7 @@ public class MerchantMechanics implements Listener {
                 }
 
                 if (i.getType() == Material.EMERALD) {
-                    i = MoneyMechanics.makeGems(i.getAmount());
+                    i = Money.makeGems(i.getAmount());
                 }
 
                 if (closer.getInventory().firstEmpty() == -1) { // TODO: Need to automatically stack items on cancel.

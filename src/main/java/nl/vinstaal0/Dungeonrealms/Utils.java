@@ -26,6 +26,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import java.lang.reflect.Field;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class Utils implements Listener {
 
@@ -93,6 +94,12 @@ public class Utils implements Listener {
             return skull;
         }
 
+    }
+
+    // TODO fix proper checking if a String is base64 encoded
+    public static boolean isBase64EncodedString(String string) {
+
+        return Base64.isBase64(string);
     }
 
 }

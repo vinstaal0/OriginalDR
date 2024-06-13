@@ -1,5 +1,6 @@
 package minecade.dungeonrealms.ShopMechanics;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,6 +55,8 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 import net.minecraft.server.v1_8_R1.WorldServer;
 
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -606,7 +609,14 @@ public class ShopMechanics implements Listener {
 				}*/
 				if(collection_bin_s.length() > 0) {
 					if(level <= 6 && collection_bin_s.split("@item@").length <= 54) {
-						inv = Hive.convertStringToInventory(null, collection_bin_s, "Collection Bin", 54);
+//						inv = Hive.convertStringToInventory(null, collection_bin_s, "Collection Bin", 54);
+
+						try {
+							inv = ItemSerialization.deserializeInventory(collection_bin_s, Bukkit.getPlayer(p_name),
+											InventoryType.COLLECTION_BIN, InventoryType.COLLECTION_BIN.getSize()).get(0);
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
 					}
 				}
 
@@ -642,11 +652,27 @@ public class ShopMechanics implements Listener {
 		if(!(collection_bin.containsKey(p_name))) { return; // No one cares.
 		}
 
-		String collection_bin_s_raw = Hive.convertInventoryToString(null, collection_bin.get(p_name), false);
+		String collection_bin_s_raw;
 
-		collection_bin_s_raw = collection_bin_s_raw.replace('?', '&');
-		collection_bin_s_raw = collection_bin_s_raw.replace(ChatColor.COLOR_CHAR, '&');
-		String collection_bin_s = ChatColor.translateAlternateColorCodes('&', collection_bin_s_raw);
+		try {
+
+			collection_bin_s_raw = ItemSerialization.serializeInventory(collection_bin.get(p_name), InventoryType.COLLECTION_BIN);
+
+		} catch (IOException ignored) {
+
+			// Loading inventory failed, using legacy inventory
+			collection_bin_s_raw = Hive.convertInventoryToString(null, collection_bin.get(p_name), false);
+			log.warning("Legacy collection bin loaded for " + p_name);
+
+
+		}
+
+		// TODO shouldn't be needed anymore
+//		collection_bin_s_raw = collection_bin_s_raw.replace('?', '&');
+//		collection_bin_s_raw = collection_bin_s_raw.replace(ChatColor.COLOR_CHAR, '&');
+//		String collection_bin_s = ChatColor.translateAlternateColorCodes('&', collection_bin_s_raw);
+
+		String collection_bin_s = collection_bin_s_raw;
 
 		if(collection_bin_s.length() <= 0) {
 			collection_bin_s = "null";
@@ -710,7 +736,19 @@ public class ShopMechanics implements Listener {
 		String collection_bin_s = "null";
 		int server_num = -1;
 		if(collection_bin.containsKey(p_name)) {
-			collection_bin_s = Hive.convertInventoryToString(p_name, collection_bin.get(p_name), false);
+
+			try {
+
+				collection_bin_s = ItemSerialization.serializeInventory(collection_bin.get(p_name), InventoryType.COLLECTION_BIN);
+
+			} catch (IOException ignored) {
+
+				// Loading inventory failed, using legacy inventory
+				collection_bin_s = Hive.convertInventoryToString(p_name, collection_bin.get(p_name), false);
+				log.warning("Legacy collection bin loaded for " + p_name);
+			}
+
+
 			if(collection_bin_s.equalsIgnoreCase("")) {
 				collection_bin_s = "null"; // No items left in collection bin.
 			}
