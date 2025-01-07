@@ -45,7 +45,7 @@ public class ConnectionPool {
 					Config.Hive_IP = Config.Hive_IP_backup; // Make it so
 				}
 			}catch (Exception ex) {
-				Main.d("Couldn't connect to the main database!",CC.RED);
+				Main.d("Couldn't connect to the backup database!",CC.RED);
 				ex.printStackTrace();
 			}
 		}

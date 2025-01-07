@@ -84,6 +84,7 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
 import io.netty.util.internal.ConcurrentSet;
 
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.codec.binary.Base64;
@@ -593,7 +594,7 @@ public class Hive implements Listener {
 			public void run() {
 				if (payload_pending == true) {
 					try {
-						URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + "/sdata/payload.zip");
+						URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + ConfigFile.Hive_IP + "/sdata/payload.zip");
 						url.openConnection();
 						URLConnection urlc = url.openConnection();
 						InputStream is = urlc.getInputStream();
@@ -4112,7 +4113,7 @@ public class Hive implements Listener {
 	public static boolean isHiveOnline() {
 		Socket socket = null;
 		try {
-			socket = new Socket(Config.Hive_IP, Config.SQL_port);
+			socket = new Socket(ConfigFile.Hive_IP, Config.SQL_port);
 			socket.close();
 			return true;
 		} catch (Exception err) {
@@ -4135,7 +4136,7 @@ public class Hive implements Listener {
 			e.printStackTrace();
 		}
 
-		URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + "/sdata/payload.zip");
+		URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + ConfigFile.Hive_IP + "/sdata/payload.zip");
 		URLConnection urlc;
 
 		try {

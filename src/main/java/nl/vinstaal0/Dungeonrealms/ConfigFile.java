@@ -28,17 +28,20 @@ public class ConfigFile {
     public static int commonDroprate;
     public static int uncommonDroprate;
     public static int rareDroprate;
-
     public static int uniqueDroprate;
 
+    public static String region;
+    public static int serverNumber;
 
     public ConfigFile() {
         properties = new Properties();
 
         loadConfigFile();
+
+        System.out.println("Config loaded with ip: " + Hive_IP);
     }
 
-    public void createDefaultConfigFile() {
+    private void createDefaultConfigFile() {
 
         File dir = new File("./plugins/" + Main.plugin.getName() + "/");
         if (!dir.exists()) {
@@ -58,7 +61,7 @@ public class ConfigFile {
 
             // List all default properties
             properties.setProperty("serverport", "25565");
-            properties.setProperty("hiveip", "192.168.0.107");
+            properties.setProperty("hiveip", "192.168.20.10");
             properties.setProperty("hiveipbackup", "localhost");
             properties.setProperty("levelrestrictions", "true");
             properties.setProperty("tier1Droprate", "12");
@@ -89,7 +92,7 @@ public class ConfigFile {
             try {
                 properties.load(reader);
             } catch (FileNotFoundException fileNotFoundException) {
-                log.severe("[WARNING] config file not found");
+                log.severe("[WARNING] dungeonrealms.properties not found, creating new config file");
                 fileNotFoundException.printStackTrace();
             } catch (IOException ioException) {
                 ioException.printStackTrace();

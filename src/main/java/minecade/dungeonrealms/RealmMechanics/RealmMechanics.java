@@ -67,6 +67,7 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.apache.commons.io.FileUtils;
@@ -4760,7 +4761,7 @@ public class RealmMechanics implements Listener {
 
 	public static boolean isHiveOnline() {
 		try {
-			Socket ServerSok = new Socket(Config.Hive_IP, Config.FTP_port);
+			Socket ServerSok = new Socket(ConfigFile.Hive_IP, Config.FTP_port);
 			ServerSok.close();
 			return true;
 		} catch (Exception e) {

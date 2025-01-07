@@ -125,7 +125,6 @@ public class Main extends JavaPlugin implements Listener {
      */
     public static Main plugin;
     public static Logger log;
-    private static ConfigFile configFile;
 
     private static final List<String> devs = Arrays.asList("EtherealTemplar", "Vilsol", "Rar349", "iFamasssxD", "Tux2", "Vinstaal0", "Aviro_");
     private static final List<String> masters = Arrays.asList("Bradez1571", "felipepcjr", "Vinstaal0", "Aviro_");
@@ -136,14 +135,13 @@ public class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         log = this.getLogger();
+        new ConfigFile();
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         compileTimedate = dtf.format(now);
         System.out.println("Compile date and time: " + dtf.format(now));
         getCommand("compiletime").setExecutor(new CompileTime());
-
-        getConfigFile();
 
         int serverid = Integer.parseInt(getServer().getMotd().split("-")[1].split(" ")[0]);
 
@@ -323,14 +321,6 @@ public class Main extends JavaPlugin implements Listener {
         hive.onDisable();
         hiveServer.onDisable();
 
-    }
-
-    public static ConfigFile getConfigFile() {
-        if (configFile == null) {
-            configFile = new ConfigFile();
-        }
-
-        return  configFile;
     }
 
     @EventHandler
