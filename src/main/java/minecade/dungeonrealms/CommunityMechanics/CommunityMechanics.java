@@ -69,6 +69,7 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_8_R1.PacketPlayOutNamedEntitySpawn;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import org.apache.commons.lang3.StringUtils;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -207,7 +208,7 @@ public class CommunityMechanics implements Listener {
 		}
 		
 		ip_whitelist.add("localhost"); //Live Shards
-		ip_whitelist.add(ConfigFile.Hive_IP);
+		ip_whitelist.add(ConfigFile.getInstance().getConfigValue(ConfigKey.HIVE_IP));
 		ip_whitelist.add("127.0.0.1"); // Donation Back-end Server AND US-0
 		ip_whitelist.add("192.168.0.130");
 		ip_whitelist.add("192.168.0.202");

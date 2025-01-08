@@ -6,6 +6,7 @@ import java.util.List;
 
 import minecade.dungeonrealms.Main;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import org.bukkit.Bukkit;
 
 public class Config {
@@ -140,7 +141,7 @@ public class Config {
 //    public static String sql_password = "l8d8X7BRWY4$YXL";
     public static String sql_password = "dungeonrealms";
 //    public static String sql_url = "jdbc:mysql://" + Hive_IP + ":" + SQL_port + "/dungeonrealms";
-    public static String sql_url = "jdbc:mysql://" + ConfigFile.Hive_IP + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
+    public static String sql_url = "jdbc:mysql://" + ConfigFile.getInstance().getConfigValue(ConfigKey.HIVE_IP) + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
     public static String sql_url_backup = "jdbc:mysql://" + Hive_IP_backup + ":" + SQL_port + "/dungeonrealms?characterEncoding=latin1&useConfigs=maxPerformance";
 
     public static int FTP_port = 21;

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -133,9 +134,11 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+
         plugin = this;
         log = this.getLogger();
-        new ConfigFile();
+
+        ConfigFile.getInstance();
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();

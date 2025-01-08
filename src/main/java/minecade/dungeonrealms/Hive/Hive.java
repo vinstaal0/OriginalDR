@@ -85,6 +85,7 @@ import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
 import io.netty.util.internal.ConcurrentSet;
 
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.codec.binary.Base64;
@@ -594,7 +595,7 @@ public class Hive implements Listener {
 			public void run() {
 				if (payload_pending == true) {
 					try {
-						URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + ConfigFile.Hive_IP + "/sdata/payload.zip");
+						URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + ConfigFile.getInstance().getConfigValue(ConfigKey.HIVE_IP) + "/sdata/payload.zip");
 						url.openConnection();
 						URLConnection urlc = url.openConnection();
 						InputStream is = urlc.getInputStream();
@@ -2172,13 +2173,21 @@ public class Hive implements Listener {
 	}
 
 	public Location convertStringToLocation(String s_l) {
-		double x = Double.parseDouble(s_l.substring(0, s_l.indexOf(",")));
-		double y = Double.parseDouble(s_l.substring(s_l.indexOf(",") + 1, s_l.indexOf(",", s_l.indexOf(",") + 1)));
-		double z = Double.parseDouble(s_l.substring(s_l.lastIndexOf(",") + 1, s_l.indexOf(":")));
+		// Split the string into parts
+		String[] coords = s_l.split(":");
+		String[] xyz = coords[0].split(",");
+		String[] yawPitch = coords[1].split("\\$");
 
-		float yaw = Float.parseFloat(s_l.substring(s_l.indexOf(":") + 1, s_l.indexOf("$")));
-		float pitch = Float.parseFloat(s_l.substring(s_l.indexOf("$") + 1, s_l.length()));
+		// Parse x, y, z
+		double x = Double.parseDouble(xyz[0]);
+		double y = Double.parseDouble(xyz[1]);
+		double z = Double.parseDouble(xyz[2]);
 
+		// Parse yaw and pitch
+		float yaw = Float.parseFloat(yawPitch[0].replace(",","."));
+		float pitch = Float.parseFloat(yawPitch[1].replace(",","."));
+
+		// Create and return the Location object
 		Location loc = new Location(Bukkit.getWorlds().get(0), x, y, z, yaw, pitch);
 		return loc;
 	}
@@ -4113,7 +4122,7 @@ public class Hive implements Listener {
 	public static boolean isHiveOnline() {
 		Socket socket = null;
 		try {
-			socket = new Socket(ConfigFile.Hive_IP, Config.SQL_port);
+			socket = new Socket(String.valueOf(ConfigFile.getInstance().getConfigValue(ConfigKey.HIVE_IP)), Config.SQL_port);
 			socket.close();
 			return true;
 		} catch (Exception err) {
@@ -4136,7 +4145,7 @@ public class Hive implements Listener {
 			e.printStackTrace();
 		}
 
-		URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + ConfigFile.Hive_IP + "/sdata/payload.zip");
+		URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + ConfigFile.getInstance().getConfigValue(ConfigKey.HIVE_IP) + "/sdata/payload.zip");
 		URLConnection urlc;
 
 		try {

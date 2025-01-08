@@ -36,7 +36,7 @@ public class ItemLogger extends Logger {
     protected ItemLogger(String name, String resourceBundleName) throws IOException {
         super(name, resourceBundleName);
 
-        FileHandler fileHandler = new FileHandler("plugins/ " + Main.plugin.getName() + "/itemtracker.log", true);
+        FileHandler fileHandler = new FileHandler("plugins/" + Main.plugin.getName() + "/itemtracker.log", true);
         fileHandler.setFormatter(new Formatter() {
             @Override
             public String format(LogRecord record) {

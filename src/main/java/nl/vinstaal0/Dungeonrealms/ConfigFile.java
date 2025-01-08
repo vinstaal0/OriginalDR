@@ -1,19 +1,22 @@
 package nl.vinstaal0.Dungeonrealms;
 
 import minecade.dungeonrealms.Main;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.util.Properties;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class ConfigFile {
 
-    static Logger log = Logger.getLogger("Minecraft");
+    private static final Logger log = Logger.getLogger("Minecraft");
+    private static ConfigFile instance;
 
-    private final Properties properties;
-
-    private Set<String> keys;
+    private final Map<String, Object> cache = new ConcurrentHashMap<>();
+    private final File configFile;
+    private final Yaml yaml;
 
     public static int transfer_port; // Server port
     public static String Hive_IP; // Hive ip
@@ -28,96 +31,126 @@ public class ConfigFile {
     public static int commonDroprate;
     public static int uncommonDroprate;
     public static int rareDroprate;
+
     public static int uniqueDroprate;
 
-    public static String region;
-    public static int serverNumber;
+    private ConfigFile() {
+        configFile = new File("./plugins/" + Main.plugin.getName() + "/config.yml");
 
-    public ConfigFile() {
-        properties = new Properties();
+        // YAML formatting options
+        DumperOptions options = new DumperOptions();
+        options.setPrettyFlow(true);
+        options.setIndent(2);
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        yaml = new Yaml(options);
 
         loadConfigFile();
-
-        System.out.println("Config loaded with ip: " + Hive_IP);
     }
 
-    private void createDefaultConfigFile() {
-
-        File dir = new File("./plugins/" + Main.plugin.getName() + "/");
-        if (!dir.exists()) {
-            boolean mkdir = dir.mkdir();
-            if (!mkdir) log.severe("[WARNING] config file directory cannot be created!");
+    public static ConfigFile getInstance() {
+        if (instance == null) {
+            synchronized (ConfigFile.class) {
+                if (instance == null) {
+                    instance = new ConfigFile();
+                }
+            }
         }
-
-        try {
-            File file = new File("./plugins/" + Main.plugin.getName() + "/" + Main.plugin.getName() + ".properties");
-            boolean configFileCreated = file.createNewFile();
-            if (!configFileCreated) log.severe("[WARNING] config file cannot be created");
-            
-            FileReader reader = new FileReader(file);
-            FileWriter writer = new FileWriter(file);
-
-            properties.load(reader);
-
-            // List all default properties
-            properties.setProperty("serverport", "25565");
-            properties.setProperty("hiveip", "192.168.20.10");
-            properties.setProperty("hiveipbackup", "localhost");
-            properties.setProperty("levelrestrictions", "true");
-            properties.setProperty("tier1Droprate", "12");
-            properties.setProperty("tier2Droprate", "5");
-            properties.setProperty("tier3Droprate", "5");
-            properties.setProperty("tier4Droprate", "3");
-            properties.setProperty("tier5Droprate", "1");
-            properties.setProperty("eliteDroprateModifier", "1.5");
-            properties.setProperty("commonDroprate", "80");
-            properties.setProperty("uncommonDroprate", "15");
-            properties.setProperty("rareDroprate", "4");
-            properties.setProperty("uniqueDroprate", "1");
-
-            properties.store(writer, "Config file for the " + Main.plugin.getName() + " plugin.");
-
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-
+        return instance;
     }
 
     private void loadConfigFile() {
-        File file = new File("./plugins/" + Main.plugin.getName() + "/" + Main.plugin.getName() + ".properties");
+        for (ConfigKey key : ConfigKey.values()) {
+            cache.putIfAbsent(key.getKey(), key.getDefaultValue());
+        }
 
-        try {
-            Reader reader = new FileReader(file);
+        if (!configFile.exists()) {
+            log.warning("Config file not found, creating default one.");
+            saveConfigFile();
+        }
 
-            try {
-                properties.load(reader);
-            } catch (FileNotFoundException fileNotFoundException) {
-                log.severe("[WARNING] dungeonrealms.properties not found, creating new config file");
-                fileNotFoundException.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+        try (InputStream input = new FileInputStream(configFile)) {
+            Object loadedObject = yaml.load(input);
+
+            if (loadedObject instanceof Map) {
+                Map<?, ?> loadedConfig = (Map<?, ?>) loadedObject;
+
+                for (Map.Entry<?, ?> entry : loadedConfig.entrySet()) {
+                    if (entry.getKey() instanceof String) {
+                        cache.put((String) entry.getKey(), entry.getValue());
+                    }
+                }
             }
 
-            keys = properties.stringPropertyNames();
-
-            // Bind the config data to the values
-            transfer_port = Integer.parseInt(properties.getProperty("serverport"));
-            Hive_IP = properties.getProperty("hiveip");
-            Hive_IP_backup = properties.getProperty("hiveipbackup");
-            levelRestrictions = Boolean.parseBoolean(properties.getProperty("levelrestrictions"));
-            tier1Droprate = Integer.parseInt(properties.getProperty("tier1Droprate"));
-            tier2Droprate = Integer.parseInt(properties.getProperty("tier2Droprate"));
-            tier3Droprate = Integer.parseInt(properties.getProperty("tier3Droprate"));
-            tier4Droprate = Integer.parseInt(properties.getProperty("tier4Droprate"));
-            tier5Droprate = Integer.parseInt(properties.getProperty("tier5Droprate"));
-            eliteDroprateModifier = Double.parseDouble(properties.getProperty("eliteDroprateModifier"));
-            commonDroprate = Integer.parseInt(properties.getProperty("commonDroprate"));
-            uncommonDroprate = Integer.parseInt(properties.getProperty("uncommonDroprate"));
-            rareDroprate = Integer.parseInt(properties.getProperty("rareDroprate"));
-            uniqueDroprate = Integer.parseInt(properties.getProperty("uniqueDroprate"));
-
-        } catch (FileNotFoundException e) {
-            createDefaultConfigFile();
+            log.info("Config loaded into cache.");
+        } catch (IOException e) {
+            log.severe("Failed to load config file: " + e.getMessage());
         }
+    }
+
+    private void saveConfigFile() {
+        try (Writer writer = new FileWriter(configFile)) {
+            yaml.dump(cache, writer);
+            log.info("Config saved to file.");
+        } catch (IOException e) {
+            log.severe("Failed to save config file: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getConfigValue(ConfigKey key) {
+        Object value = cache.getOrDefault(key.getKey(), key.getDefaultValue());
+
+        if (value == null) {
+            throw new IllegalStateException("Config value for key " + key.getKey() + " is null.");
+        }
+
+        // Switch over class types
+        Class<?> valueClass = value.getClass();
+
+        switch (valueClass.getSimpleName()) {
+            case "Integer":
+                // Convert Integer to Double
+                return (T) (Double) ((Integer) value).doubleValue();
+
+            case "Double":
+                // Return as is if it's already a Double
+                return (T) (Double) value;
+
+            case "Boolean":
+                return (T) (Boolean) value;
+
+            case "Long":
+                return (T) (Long) value;
+
+            case "Float":
+                return (T) (Float) value;
+
+            case "Short":
+                return (T) (Short) value;
+
+            case "Byte":
+                return (T) (Byte) value;
+
+            case "Character":
+                return (T) (Character) value;
+
+            default:
+                // If it's any other object type (e.g., String), return it
+                return (T) value;
+        }
+
+
+    }
+
+
+    public void setConfigValue(ConfigKey key, Object value) {
+        cache.put(key.getKey(), value);
+        saveConfigFile();
+    }
+
+    public void reloadConfig() {
+        loadConfigFile();
+        log.info("Config reloaded.");
     }
 }
