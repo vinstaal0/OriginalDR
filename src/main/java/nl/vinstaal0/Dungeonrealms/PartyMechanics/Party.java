@@ -181,6 +181,8 @@ public class Party {
 
                 before = ChatColor.GREEN + receiver + " has received ";
                 after = ChatColor.GREEN + " as a drop.";
+
+                break;
             }
 
             case RANDOM : {
@@ -200,11 +202,13 @@ public class Party {
 
                 before = ChatColor.GREEN + receiver + " has received ";
                 after = ChatColor.GREEN + " as a drop.";
+
+                break;
             }
             case HIDDEN : {
 
                 dropLocation = loc;
-                return;
+                break;
             }
             case NONE : {
 

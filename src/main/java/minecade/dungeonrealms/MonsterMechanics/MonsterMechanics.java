@@ -51,6 +51,7 @@ import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import io.netty.util.internal.ConcurrentSet;
 import nl.vinstaal0.Dungeonrealms.Config;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.Party;
@@ -3005,8 +3006,10 @@ public class MonsterMechanics implements Listener {
 
         ChatColor cc = null;
 
-        DecimalFormat df = new DecimalFormat("##.#");
+        /*DecimalFormat df = new DecimalFormat("##.#");
         double percent_hp = (double) (Math.round(100.0D * Double.parseDouble((df.format((cur_hp / max_hp)))))); // EX: 0.5054134131
+*/
+        double percent_hp = Math.round((cur_hp / max_hp) * 100.0);
 
         if (percent_hp <= 0 && cur_hp > 0) {
             percent_hp = 1;
@@ -5267,7 +5270,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.WOOD_AXE || weapon.getType() == Material.WOOD_SWORD || weapon.getType() == Material.WOOD_SPADE
                             || weapon.getType() == Material.WOOD_HOE || getItemTier(weapon) == 1) { // T1
                         scroll_drop_chance = 2;
-                        drop_chance = ConfigFile.tier1Droprate;
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
                         if (gem_drop_chance <= ((50 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(3 - 1) + 1) * gold_drop_multiplier;
                         }
@@ -5288,7 +5291,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.STONE_AXE || weapon.getType() == Material.STONE_SWORD || weapon.getType() == Material.STONE_SPADE
                             || weapon.getType() == Material.STONE_HOE || getItemTier(weapon) == 2) { // T2
                         scroll_drop_chance = 2;
-                        drop_chance = ConfigFile.tier2Droprate;
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
                         if (gem_drop_chance <= ((40 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(12 - 2) + 2) * gold_drop_multiplier;
                         }
@@ -5321,7 +5324,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.IRON_AXE || weapon.getType() == Material.IRON_SWORD || weapon.getType() == Material.IRON_SPADE
                             || weapon.getType() == Material.IRON_HOE || getItemTier(weapon) == 3) { // T3
                         scroll_drop_chance = 2;
-                        drop_chance = ConfigFile.tier3Droprate;
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
                         if (gem_drop_chance <= ((30 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(30 - 10) + 10) * gold_drop_multiplier;
                         }
@@ -5354,7 +5357,8 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.DIAMOND_AXE || weapon.getType() == Material.DIAMOND_SWORD || weapon.getType() == Material.DIAMOND_HOE
                             || weapon.getType() == Material.DIAMOND_SPADE || getItemTier(weapon) == 4) { // T4
                         scroll_drop_chance = 1;
-                        drop_chance = ConfigFile.tier4Droprate;
+
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
                         if (gem_drop_chance <= ((20 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(50 - 20) + 20) * gold_drop_multiplier;
                         }
@@ -5376,7 +5380,7 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.GOLD_AXE || weapon.getType() == Material.GOLD_SWORD || weapon.getType() == Material.GOLD_HOE
                             || weapon.getType() == Material.GOLD_SPADE || getItemTier(weapon) == 5) { // T5
                         scroll_drop_chance = 1;
-                        drop_chance = ConfigFile.tier5Droprate;
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
                         if (gem_drop_chance <= ((35 * gold_drop_multiplier) * drop_multiplier)) {
                             gem_drop_amount = (new Random().nextInt(200 - 75) + 75) * gold_drop_multiplier;
                         }
@@ -5830,7 +5834,8 @@ public class MonsterMechanics implements Listener {
         }
         return 1;
     }
-    
+
+    // TODO remove
     /**
      * Generates mob gear using the newest item generation engine added in patch 1.9.  Supports 
      * both weapons and armor.
@@ -5838,7 +5843,7 @@ public class MonsterMechanics implements Listener {
      * @param tier - The tier from T1 - T5
      * @return The item in a Bukkit ItemStack object
      */
-    public static ItemStack generateMobGear(ItemType type, ItemTier tier) {
+    /*public static ItemStack generateMobGear(ItemType type, ItemTier tier) {
         int armor_range_check = new Random().nextInt(100);
         ItemRarity rarity = null;
         
@@ -5859,6 +5864,23 @@ public class MonsterMechanics implements Listener {
             rarity = ItemRarity.COMMON;
         }
         
+        return (new ItemGenerator()).setType(type).setTier(tier).setRarity(rarity).generateItem().getItem();
+    }*/
+
+    /**
+     * Generates mob gear using the newest item generation engine added in patch 1.9.  Supports
+     * both weapons and armor.
+     * @param type - The type of gear to generate, can be weapons or armor.
+     * @param tier - The tier from T1 - T5
+     * @return The item in a Bukkit ItemStack object
+     */
+    public static ItemStack generateMobGear(ItemType type, ItemTier tier) {
+        double roll = new Random().nextDouble() * 100.0;
+
+        // Get the rarity from the roll
+        ItemRarity rarity = ItemRarity.getRarityFromRoll(roll);
+
+        // Generate the item with the selected rarity
         return (new ItemGenerator()).setType(type).setTier(tier).setRarity(rarity).generateItem().getItem();
     }
 
