@@ -54,6 +54,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import static java.lang.Math.abs;
+
 public class HealthMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
 
@@ -712,7 +714,7 @@ public class HealthMechanics implements Listener {
 			String armor_data = ItemMechanics.getArmorData(armor);
 			if(armor_data.contains("hp_regen")) {
 				int health_regen_val = Integer.parseInt(armor_data.substring(armor_data.indexOf("hp_regen=") + 9, armor_data.indexOf("@hp_regen_split@")));
-				total_regen += health_regen_val;
+				total_regen += abs(health_regen_val);
 			}
 		}
 
@@ -1421,7 +1423,7 @@ public class HealthMechanics implements Listener {
 						//log.info(String.valueOf(health_percent));
 						//log.info(String.valueOf(new_health_display));
 
-						int conv_newhp_display = (int) Math.abs(new_health_display);
+						int conv_newhp_display = (int) abs(new_health_display);
 						if(conv_newhp_display < 1) {
 							conv_newhp_display = 1;
 						}
@@ -1450,7 +1452,7 @@ public class HealthMechanics implements Listener {
 			int hp_to_add = new_health_mod - old_health_mod;
 			if(hp_to_add <= 0) {
 				subtract_hp = true;
-				hp_to_add = Math.abs(hp_to_add);
+				hp_to_add = abs(hp_to_add);
 			}
 
 			if(subtract_hp == true) {
@@ -1534,7 +1536,7 @@ public class HealthMechanics implements Listener {
 				double health_percent = d_level / new_max_hp;
 				double new_health_display = (health_percent * 20.0D);
 
-				int conv_newhp_display = (int) Math.abs(new_health_display);
+				int conv_newhp_display = (int) abs(new_health_display);
 				if(conv_newhp_display < 1) {
 					conv_newhp_display = 1;
 				}
