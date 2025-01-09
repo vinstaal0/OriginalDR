@@ -132,7 +132,7 @@ public class RestrictionMechanics implements Listener {
 
         main_world_name = Bukkit.getWorlds().get(0).getName();
 
-        unstackable_items.add(Material.BOOK);
+        // unstackable_items.add(Material.BOOK);
         // unstackable_items.add(Material.RAW_FISH);
         // unstackable_items.add(Material.COOKED_FISH);
         unstackable_items.add(Material.BLAZE_ROD);

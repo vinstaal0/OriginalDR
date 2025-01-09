@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -88,6 +89,14 @@ public class CompileTime implements CommandExecutor {
 //                } catch (IOException e) {
 //                    throw new RuntimeException(e);
 //                }
+
+            } else if (strings[0].equalsIgnoreCase("nbt")) {
+
+                ItemStack itemStack = player.getItemInHand();
+
+                CraftItemStack craftItemStack = CraftItemStack.asCraftCopy(itemStack);
+
+                player.sendMessage("[DUMP] " + craftItemStack.getItemMeta().getItemFlags());
 
             }
 
