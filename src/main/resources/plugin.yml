@@ -1,5 +1,6 @@
 name: DungeonRealms
 main: minecade.dungeonrealms.Main
+depend: [NBTAPI]
 softdepend: [Citizens, MenuEngine]
 version: 1.0
 commands:
