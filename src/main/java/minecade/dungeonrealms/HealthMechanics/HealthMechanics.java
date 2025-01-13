@@ -1,10 +1,6 @@
 package minecade.dungeonrealms.HealthMechanics;
 
-import com.viaversion.viaversion.api.Via;
-import com.viaversion.viaversion.api.ViaAPI;
-import com.viaversion.viaversion.api.legacy.bossbar.BossBar;
-import com.viaversion.viaversion.api.legacy.bossbar.BossColor;
-import com.viaversion.viaversion.api.legacy.bossbar.BossStyle;
+import me.confuser.barapi.BarAPI;
 import me.vilsol.foodvendor.DynamicFoodVendor;
 import me.vilsol.foodvendor.MenuFoodVendor;
 import me.vilsol.menuengine.engine.DynamicMenuModel;
@@ -423,24 +419,24 @@ public class HealthMechanics implements Listener {
 
 				String dash = ChatColor.BLACK.toString() + ChatColor.BOLD + " - ";
 
-//				BarAPI.setMessage(pl, levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, (float) (health_percent * 100F));
+				BarAPI.setMessage(pl, levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, (float) (health_percent * 100F));
 
-				ViaAPI api = Via.getAPI(); // Get the API
-				BossBar bossBar = api.legacyAPI().createLegacyBossBar(
-						levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, // BossBar title
-						(float) (health_percent * 1F), // Boss health (Float between 0 and 1)
-						BossColor.PURPLE,  // BossBar color
-						BossStyle.SOLID); // BossBar Style
+//				ViaAPI api = Via.getAPI(); // Get the API
+//				BossBar bossBar = api.legacyAPI().createLegacyBossBar(
+//						levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData, // BossBar title
+//						(float) (health_percent * 1F), // Boss health (Float between 0 and 1)
+//						BossColor.PURPLE,  // BossBar color
+//						BossStyle.SOLID); // BossBar Style
 			}else{
 
-//				BarAPI.setMessage(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (float) (health_percent * 100F));
+				BarAPI.setMessage(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (float) (health_percent * 100F));
 
-				ViaAPI api = Via.getAPI(); // Get the API
-				BossBar bossBar = api.legacyAPI().createLegacyBossBar(
-						ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), // BossBar title
-						(float) (health_percent * 1F), // Boss health (Float between 0 and 1)
-						BossColor.PURPLE,  // BossBar color
-						BossStyle.SOLID); // BossBar Style
+//				ViaAPI api = Via.getAPI(); // Get the API
+//				BossBar bossBar = api.legacyAPI().createLegacyBossBar(
+//						ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), // BossBar title
+//						(float) (health_percent * 1F), // Boss health (Float between 0 and 1)
+//						BossColor.PURPLE,  // BossBar color
+//						BossStyle.SOLID); // BossBar Style
 
 			}
 			//FakeDragon.setStatus(pl, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / " + ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()), (int)(health_percent * 100));

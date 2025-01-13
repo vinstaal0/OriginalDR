@@ -1,21 +1,6 @@
 package minecade.dungeonrealms.ItemMechanics;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Logger;
-
-import javax.swing.text.Utilities;
-
 import me.vilsol.itemgenerator.ItemGenerator;
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
@@ -28,6 +13,7 @@ import minecade.dungeonrealms.ItemMechanics.commands.CommandAddWeapon;
 import minecade.dungeonrealms.ItemMechanics.commands.CommandAddWeaponNew;
 import minecade.dungeonrealms.ItemMechanics.commands.CommandAddWeaponNewNew;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.MonsterMechanics.DamageTracker;
 import minecade.dungeonrealms.MonsterMechanics.Hologram;
@@ -40,73 +26,34 @@ import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.enums.ItemTier;
 import minecade.dungeonrealms.enums.ItemType;
 import minecade.dungeonrealms.managers.PlayerManager;
-import net.minecraft.server.v1_8_R1.BlockPosition;
-import net.minecraft.server.v1_8_R1.EntityLiving;
-import net.minecraft.server.v1_8_R1.NBTTagCompound;
-import net.minecraft.server.v1_8_R1.Packet;
-import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
-
+import net.minecraft.server.v1_8_R1.*;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SmallFireball;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.WitherSkull;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -116,6 +63,14 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import javax.swing.text.Utilities;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls.*;
 
@@ -320,14 +275,6 @@ public class ItemMechanics implements Listener {
 
                         pl.setHealth(conv_newhp_display);
                     }
-                    /*
-                     * int str_val = getStrVal(is); int dex_val = getDexVal(is); int vit_val = getVitVal(is);
-                     *
-                     * log.info(pl.getName() + " - " + is.getItemMeta().getDisplayName());
-                     *
-                     * if(str_val > 0){ str_data.put(pl.getName(), generateTotalStrVal(pl)); } if(dex_val > 0){ dex_data.put(pl.getName(),
-                     * generateTotalDexVal(pl)); } if(vit_val > 0){ vit_data.put(pl.getName(), generateTotalVitVal(pl)); }
-                     */
 
                     to_process_weapon.remove(s);
                 }
@@ -4203,10 +4150,10 @@ public class ItemMechanics implements Listener {
             Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
                 public void run() {
                     // p_attacker.sendMessage(ChatColor.GRAY + "DEBUG: " + String.valueOf(e.getDamage()) + " DMG");
-                    if (f_is_player == true) {
+                    if (f_is_player) {
                         p.sendMessage(ChatColor.RED + "        " + (int) dmg + ChatColor.BOLD + " DMG" + ChatColor.RED + " -> " + ((Player) le).getName());
                     }
-                    if (f_is_player == false) {
+                    if (!f_is_player) {
                         String mob_name = MonsterMechanics.getMobType(ent, false);
                         p.sendMessage(ChatColor.RED + "        " + (int) dmg + ChatColor.BOLD + " DMG" + ChatColor.RED + " -> " + mob_name + " ["
                                 + ((int) MonsterMechanics.getMHealth(ent)) + "HP]");
@@ -4581,7 +4528,7 @@ public class ItemMechanics implements Listener {
             dmg = (int) (dmg * dmg_modifier);
         }
 
-        if (crit == true) {
+        if (crit) {
             dmg = (int) Math.round((double) dmg * 1.5D);
         }
 

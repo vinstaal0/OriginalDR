@@ -25,11 +25,12 @@ public class CommandPAccept implements CommandExecutor {
 
         if(strings.length == 0) {
             if (PartyMechanics.invitations.containsKey(sender) && PartyMechanics.invitations.get(sender) != null) {
-                PartyMechanics.invitations.get(sender).getMembers().add(sender);
+//                PartyMechanics.invitations.get(sender).getMembers().add(sender);
+                PartyMechanics.invitations.get(sender).addMember(sender);
                 PartyMechanics.invitations.remove(sender);
 
                 sender.sendMessage(ChatColor.GREEN + "You have joined the party!");
-                // TODY add achievement for joining a party
+                // TODO add achievement for joining a party
             } else {
                 sender.sendMessage(ChatColor.RED + "No pending party invites.");
             }

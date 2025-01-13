@@ -1,9 +1,5 @@
 package me.vilsol.itemgenerator.modifiers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import me.vilsol.itemgenerator.engine.ItemModifier;
 import me.vilsol.itemgenerator.engine.ModifierCondition;
 import me.vilsol.itemgenerator.engine.ModifierRange;
@@ -11,9 +7,12 @@ import me.vilsol.itemgenerator.engine.ModifierType;
 import minecade.dungeonrealms.enums.ItemRarity;
 import minecade.dungeonrealms.enums.ItemTier;
 import minecade.dungeonrealms.enums.ItemType;
-
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class ArmorModifiers {
 	
@@ -25,7 +24,7 @@ public class ArmorModifiers {
 
 		public HPRegen() {
 			super(armor, 100, r + "HP REGEN: +", " HP/s", false);
-			addCondition(new ModifierCondition(ItemTier.T1, null, new ModifierRange(ModifierType.STATIC, -20, 35)).setCantContain(ArmorModifiers.EnergyRegen.class));
+			addCondition(new ModifierCondition(ItemTier.T1, null, new ModifierRange(ModifierType.STATIC, 20, 35)).setCantContain(ArmorModifiers.EnergyRegen.class));
 			addCondition(new ModifierCondition(ItemTier.T2, null, new ModifierRange(ModifierType.STATIC, 45, 60)).setCantContain(ArmorModifiers.EnergyRegen.class));
 			addCondition(new ModifierCondition(ItemTier.T3, null, new ModifierRange(ModifierType.STATIC, 65, 80)).setCantContain(ArmorModifiers.EnergyRegen.class));
 			addCondition(new ModifierCondition(ItemTier.T4, null, new ModifierRange(ModifierType.STATIC, 110, 130)).setCantContain(ArmorModifiers.EnergyRegen.class));

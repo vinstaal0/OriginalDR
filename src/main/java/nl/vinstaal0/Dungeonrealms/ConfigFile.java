@@ -18,21 +18,7 @@ public class ConfigFile {
     private final File configFile;
     private final Yaml yaml;
 
-    public static int transfer_port; // Server port
-    public static String Hive_IP; // Hive ip
-    public static String Hive_IP_backup; // Backup hive ip
-    public static boolean levelRestrictions; // set the level restrictions to be enabled
-    public static int tier1Droprate;
-    public static int tier2Droprate;
-    public static int tier3Droprate;
-    public static int tier4Droprate;
-    public static int tier5Droprate;
-    public static double eliteDroprateModifier;
-    public static int commonDroprate;
-    public static int uncommonDroprate;
-    public static int rareDroprate;
-
-    public static int uniqueDroprate;
+    public static String version = "25.01.10";
 
     private ConfigFile() {
         configFile = new File("./plugins/" + Main.plugin.getName() + "/config.yml");

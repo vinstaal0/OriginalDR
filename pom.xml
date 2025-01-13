@@ -106,11 +106,20 @@
             <systemPath>${project.basedir}/libs/VoidGenerator.jar</systemPath>
         </dependency>
 
+        <!-- local dependency -->
+        <dependency>
+            <groupId>me.Confuser</groupId>
+            <artifactId>BarApi</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/BarAPI.jar</systemPath>
+        </dependency>
+
         <!--This adds the Spigot API artifact to the build -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <version>1.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- used for getting forwards compatability -->

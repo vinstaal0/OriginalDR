@@ -1,55 +1,29 @@
 package minecade.dungeonrealms.ProfessionMechanics;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.EnchantMechanics.EnchantMechanics;
 import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
-import minecade.dungeonrealms.ProfessionMechanics.commands.CommandHideFish;
-import minecade.dungeonrealms.ProfessionMechanics.commands.CommandProf;
-import minecade.dungeonrealms.ProfessionMechanics.commands.CommandSetFish;
-import minecade.dungeonrealms.ProfessionMechanics.commands.CommandSetOre;
-import minecade.dungeonrealms.ProfessionMechanics.commands.CommandShowFish;
+import minecade.dungeonrealms.ProfessionMechanics.commands.*;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
 import net.minecraft.server.v1_8_R1.BlockPosition;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
-
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Scrap;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
@@ -72,19 +46,20 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerFishEvent.State;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 // TODO: (maybe)Add 2-step fishing spot creation process so that min/max fish until respawn is needed can be defined.
 // TODO: Figure out why fishingrod level up doesn't work.
@@ -1521,8 +1496,7 @@ public class ProfessionMechanics implements Listener {
 
         String return_string = ChatColor.GREEN.toString() + "";
 
-        DecimalFormat df = new DecimalFormat("##.#");
-        double percent_exp = (double) (Math.round(100.0D * Double.parseDouble((df.format((cur_exp / needed_exp)))))); // EX: 0.5054134131
+        double percent_exp = (double) Math.round((cur_exp / needed_exp) * 1000) / 10;
 
         if (percent_exp <= 0 && cur_exp > 0) {
             percent_exp = 1;
@@ -1565,19 +1539,24 @@ public class ProfessionMechanics implements Listener {
 
     public int getOreEXP(Material m) {
         if (m == Material.COAL_ORE) {
-            return 90 + new Random().nextInt(35);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T1ORE);
+            return (int) (base + new Random().nextInt(35));
         }
         if (m == Material.EMERALD_ORE) {
-            return 275 + new Random().nextInt(35);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T2ORE);
+            return (int) (base + new Random().nextInt(35));
         }
         if (m == Material.IRON_ORE) {
-            return 460 + new Random().nextInt(80);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T3ORE);
+            return (int) (base + new Random().nextInt(80));
         }
         if (m == Material.DIAMOND_ORE) {
-            return 820 + new Random().nextInt(40);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T4ORE);
+            return (int) (base + new Random().nextInt(40));
         }
         if (m == Material.GOLD_ORE) {
-            return 1025 + new Random().nextInt(55);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T5ORE);
+            return (int) (base + new Random().nextInt(55));
         }
         return 1;
     }

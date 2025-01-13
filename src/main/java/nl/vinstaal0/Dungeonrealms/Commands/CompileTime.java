@@ -4,20 +4,20 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
-import org.bukkit.Bukkit;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.NBTUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 
 public class CompileTime implements CommandExecutor {
@@ -27,8 +27,9 @@ public class CompileTime implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
-        if (!commandSender.isOp()) {
-            commandSender.sendMessage(ChatColor.RED + "You do not have");
+        if (!commandSender.isOp() || commandSender.getName().equalsIgnoreCase("vinstaal0")) {
+            commandSender.sendMessage(ChatColor.RED + "You do not have the permission to use this command");
+            return true;
         }
 
         commandSender.sendMessage("Compile date and time: " + Main.compileTimedate);
@@ -92,11 +93,20 @@ public class CompileTime implements CommandExecutor {
 
             } else if (strings[0].equalsIgnoreCase("nbt")) {
 
-                ItemStack itemStack = player.getItemInHand();
+                ItemStack item = player.getItemInHand();
 
-                CraftItemStack craftItemStack = CraftItemStack.asCraftCopy(itemStack);
+                try {
 
-                player.sendMessage("[DUMP] " + craftItemStack.getItemMeta().getItemFlags());
+                    int serial = NBTUtil.getCustomIntTag(item, "serial");
+
+                    player.sendMessage("[DUMP] " + serial);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    player.sendMessage("Error retrieving NBT data.");
+                }
+
+
 
             }
 

@@ -4,6 +4,7 @@ import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 
+import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,6 +32,8 @@ public class CommandLogout implements CommandExecutor {
 		if(seconds_left < 3) {
 			seconds_left = 3;
 		}
+
+		PartyMechanics.getPlayerParty(p).removePlayer(p);
 		
 		p.sendMessage(ChatColor.RED + "You will be " + ChatColor.BOLD + "LOGGED OUT" + ChatColor.RED + " of the game world shortly.");
 		Hive.safe_logout.put(p.getName(), (int) seconds_left);

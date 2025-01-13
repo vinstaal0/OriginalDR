@@ -1,59 +1,41 @@
 package minecade.dungeonrealms.TutorialMechanics;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.EnchantMechanics.EnchantMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TutorialMechanics.commands.CommandSkip;
 import minecade.dungeonrealms.TutorialMechanics.commands.CommandTutorial;
-
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Scrap;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Rotation;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static nl.vinstaal0.Dungeonrealms.Config.version;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class TutorialMechanics implements Listener {
 	Logger log = Logger.getLogger("Minecraft");
@@ -756,7 +738,7 @@ public class TutorialMechanics implements Listener {
 		pl.sendMessage("");
 		pl.sendMessage("");
 		pl.sendMessage("");
-		pl.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "              Dungeon Realms Patch " + version);
+		pl.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "              Dungeon Realms Patch " + ConfigFile.version);
 		pl.sendMessage(ChatColor.GRAY + "                    " + "http://www.dungeonrealms.net/");
 		pl.sendMessage("");
 		pl.sendMessage(ChatColor.YELLOW + "                 " + "You are on the " + ChatColor.BOLD + Hive.MOTD.substring(0, Hive.MOTD.indexOf(" ")) + ChatColor.YELLOW + " shard.");

@@ -1,20 +1,7 @@
 package minecade.dungeonrealms.MonsterMechanics;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Logger;
-
+import io.netty.util.internal.ConcurrentSet;
 import me.vilsol.itemgenerator.ItemGenerator;
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.BossMechanics.BossMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
@@ -23,9 +10,11 @@ import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
+import minecade.dungeonrealms.ItemMechanics.Halloween;
 import minecade.dungeonrealms.ItemMechanics.ItemGenerators;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MonsterMechanics.commands.CommandHideMS;
 import minecade.dungeonrealms.MonsterMechanics.commands.CommandMon;
 import minecade.dungeonrealms.MonsterMechanics.commands.CommandMonSpawn;
@@ -34,38 +23,22 @@ import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
-import minecade.dungeonrealms.RecordMechanics.RecordMechanics;
 import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.TeleportationMechanics.TeleportationMechanics;
-import minecade.dungeonrealms.enums.CC;
-import minecade.dungeonrealms.enums.Delay;
-import minecade.dungeonrealms.enums.ItemRarity;
-import minecade.dungeonrealms.enums.ItemTier;
-import minecade.dungeonrealms.enums.ItemType;
-import net.minecraft.server.v1_8_R1.DataWatcher;
-import net.minecraft.server.v1_8_R1.EntityCreature;
-import net.minecraft.server.v1_8_R1.EntityLiving;
-import net.minecraft.server.v1_8_R1.EntityPlayer;
-import net.minecraft.server.v1_8_R1.GenericAttributes;
-import net.minecraft.server.v1_8_R1.NBTTagCompound;
-import io.netty.util.internal.ConcurrentSet;
-import nl.vinstaal0.Dungeonrealms.Config;
+import minecade.dungeonrealms.enums.*;
+import net.minecraft.server.v1_8_R1.*;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ConfigKey;
+import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
+import nl.vinstaal0.Dungeonrealms.PartyMechanics.LootType;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.Party;
 import org.apache.commons.lang3.StringUtils;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.EntityEffect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
@@ -74,59 +47,22 @@ import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Blaze;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Horse.Color;
 import org.bukkit.entity.Horse.Variant;
-import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.MagmaCube;
-import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Ocelot.Type;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SmallFireball;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Witch;
-import org.bukkit.entity.WitherSkull;
-import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -138,6 +74,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
+
 import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.TeleportationScrolls.*;
 
 public class MonsterMechanics implements Listener {
@@ -148,123 +91,123 @@ public class MonsterMechanics implements Listener {
     // }
 
     public static volatile CopyOnWriteArrayList<Chunk> chunk_copy = new CopyOnWriteArrayList<>();
-    // Copy of all loaded chunks -- used for multithread operations.
+    // Copy of all loaded chunks -- used for multithreading.
 
     // Mob Attributes -- health, armor, damage, tier, etc.
-    public static ConcurrentHashMap<Entity, Integer> mob_health = new ConcurrentHashMap<Entity, Integer>();
-    static HashMap<Entity, Integer> max_mob_health = new HashMap<Entity, Integer>();
-    public static HashMap<Entity, List<Integer>> mob_damage = new HashMap<Entity, List<Integer>>();
-    public static HashMap<Entity, Integer> mob_armor = new HashMap<Entity, Integer>();
-    static HashMap<Entity, Integer> mob_tier = new HashMap<Entity, Integer>();
-    public static HashMap<Entity, List<ItemStack>> mob_loot = new HashMap<Entity, List<ItemStack>>();
-    public static HashMap<Entity, Integer> mob_level = new HashMap<Entity, Integer>();
+    public static ConcurrentHashMap<Entity, Integer> mob_health = new ConcurrentHashMap<>();
+    static HashMap<Entity, Integer> max_mob_health = new HashMap<>();
+    public static HashMap<Entity, List<Integer>> mob_damage = new HashMap<>();
+    public static HashMap<Entity, Integer> mob_armor = new HashMap<>();
+    static HashMap<Entity, Integer> mob_tier = new HashMap<>();
+    public static HashMap<Entity, List<ItemStack>> mob_loot = new HashMap<>();
+    public static HashMap<Entity, Integer> mob_level = new HashMap<>();
     // Special mob attacks START.
-    static ConcurrentHashMap<Entity, Integer> special_attack = new ConcurrentHashMap<Entity, Integer>();
-    static ConcurrentHashMap<Entity, Integer> power_strike = new ConcurrentHashMap<Entity, Integer>();
-    static ConcurrentHashMap<Entity, Integer> whirlwind = new ConcurrentHashMap<Entity, Integer>();
-    static ConcurrentHashMap<Entity, Float> mob_yaw = new ConcurrentHashMap<Entity, Float>();
+    static ConcurrentHashMap<Entity, Integer> special_attack = new ConcurrentHashMap<>();
+    static ConcurrentHashMap<Entity, Integer> power_strike = new ConcurrentHashMap<>();
+    static ConcurrentHashMap<Entity, Integer> whirlwind = new ConcurrentHashMap<>();
+    static ConcurrentHashMap<Entity, Float> mob_yaw = new ConcurrentHashMap<>();
     // Special mob attacks END.
-    public static ConcurrentHashMap<UUID, DamageTracker> damage_tracker = new ConcurrentHashMap<UUID, DamageTracker>();
-    public static ConcurrentHashMap<Entity, String> mob_target = new ConcurrentHashMap<Entity, String>();
+    public static ConcurrentHashMap<UUID, DamageTracker> damage_tracker = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Entity, String> mob_target = new ConcurrentHashMap<>();
     // Player name of mob target.
 
-    static ConcurrentHashMap<Location, List<Entity>> local_spawned_mobs = new ConcurrentHashMap<Location, List<Entity>>();
+    static ConcurrentHashMap<Location, List<Entity>> local_spawned_mobs = new ConcurrentHashMap<>();
     // Chunk 0,0 location, list of all living entities the system is aware of.
 
-    public static volatile ConcurrentHashMap<Location, String> mob_spawns = new ConcurrentHashMap<Location, String>();
+    public static volatile ConcurrentHashMap<Location, String> mob_spawns = new ConcurrentHashMap<>();
     // ALL mob spawns are held within this hashmap, it is not accessed often -- used as a reference point.
 
-    static HashMap<Location, List<String>> mob_to_spawn = new HashMap<Location, List<String>>();
+    static HashMap<Location, List<String>> mob_to_spawn = new HashMap<>();
     // Mobs that have been selected to go through Phase #2 selection to determine if they should be added to mobs_being_spawned and loaded into the main thread.
 
-    public static ConcurrentHashMap<Entity, String> mob_spawn_ownership = new ConcurrentHashMap<Entity, String>(); // Location:mob_num
+    public static ConcurrentHashMap<Entity, String> mob_spawn_ownership = new ConcurrentHashMap<>(); // Location:mob_num
     // Entity, Location(x,y,z):mob_num -- information to track entities and to know which to respawn when they're killed.
 
-    static ConcurrentHashMap<Location, List<Integer>> spawned_mobs = new ConcurrentHashMap<Location, List<Integer>>();
+    static ConcurrentHashMap<Location, List<Integer>> spawned_mobs = new ConcurrentHashMap<>();
     // Inverse of mob_spawn_ownership, give a location of a mob spawner and it will return which mob_num's are currently alive.
 
     // Data stored throughout the process of placing a mob spawner.
-    static HashMap<Player, Integer> mob_spawn_step = new HashMap<Player, Integer>();
-    static HashMap<Player, String> mob_spawn_data = new HashMap<Player, String>();
-    static HashMap<Player, Location> mob_spawn_location = new HashMap<Player, Location>();
+    static HashMap<Player, Integer> mob_spawn_step = new HashMap<>();
+    static HashMap<Player, String> mob_spawn_data = new HashMap<>();
+    static HashMap<Player, Location> mob_spawn_location = new HashMap<>();
 
-    public static volatile ConcurrentHashMap<Location, List<String>> loaded_mobs = new ConcurrentHashMap<Location, List<String>>();
+    public static volatile ConcurrentHashMap<Location, List<String>> loaded_mobs = new ConcurrentHashMap<>();
     // Mob Spawner Location, The spawning string -- this map will only contain mob spawner locations of mobs in loaded chunks.
     // Used in mobs_to_spawn to save memory and skip masses of already spawned mobs.
 
-    public static HashMap<Entity, Long> mob_last_hit = new HashMap<Entity, Long>();
+    public static HashMap<Entity, Long> mob_last_hit = new HashMap<>();
     // The last time a mob hit a player. (or tried)
 
-    public static ConcurrentHashMap<Entity, Long> mob_last_hurt = new ConcurrentHashMap<Entity, Long>();
+    public static ConcurrentHashMap<Entity, Long> mob_last_hurt = new ConcurrentHashMap<>();
     // The last time a mob took damage.
 
-    public static HashMap<String, Long> player_slow = new HashMap<String, Long>();
+    public static HashMap<String, Long> player_slow = new HashMap<>();
     // Player Name, Time of last engagement -- used to apply the "combat slowness" effect.
 
-    public static HashMap<Location, Long> mob_spawn_check_delay = new HashMap<Location, Long>();
+    public static HashMap<Location, Long> mob_spawn_check_delay = new HashMap<>();
     // Saves memory. Don't try to spawn mobs that are in chunks that have no players within a far distance.
     // Location of Spawner, Last Check
 
-    public static volatile ConcurrentHashMap<String, Location> player_locations = new ConcurrentHashMap<String, Location>();
+    public static volatile ConcurrentHashMap<String, Location> player_locations = new ConcurrentHashMap<>();
     // Used in MULTIPLE plugins as a thread safe way to access player location.
 
     // static HashMap<Chunk, Entity[]> unload_chunks = new HashMap<Chunk, Entity[]>();
-    public ConcurrentSet<Entity> pathing_away = new ConcurrentSet<Entity>();
-    public static List<Entity> no_delay_kills = new ArrayList<Entity>();
+    public ConcurrentSet<Entity> pathing_away = new ConcurrentSet<>();
+    public static List<Entity> no_delay_kills = new ArrayList<>();
     // List of monsters to NOT have a spawn delay to come back. Used for chunk unloading/loading.
 
-    public CopyOnWriteArrayList<Location> chunks_to_unload = new CopyOnWriteArrayList<Location>();
+    public CopyOnWriteArrayList<Location> chunks_to_unload = new CopyOnWriteArrayList<>();
     // 0,0 Chunk locations of chunks that are being passed along to the main thread for unloading. Phase #2 unload.
 
-    public static CopyOnWriteArrayList<Entity> entities_to_kill = new CopyOnWriteArrayList<Entity>();
+    public static CopyOnWriteArrayList<Entity> entities_to_kill = new CopyOnWriteArrayList<>();
     // A list of entities being passed along to the main thread for removal. Normally as a result of chunk unload.
 
-    public static volatile CopyOnWriteArrayList<Location> loaded_chunks = new CopyOnWriteArrayList<Location>();
+    public static volatile CopyOnWriteArrayList<Location> loaded_chunks = new CopyOnWriteArrayList<>();
     // List of loaded chunks for cross-thread access.
 
-    static HashMap<Location, Long> recent_loaded_chunks = new HashMap<Location, Long>();
+    static HashMap<Location, Long> recent_loaded_chunks = new HashMap<>();
     // List of chunks that have been loaded recently, prevents infinite loading loops.
 
-    static HashMap<String, String> passive_hunter_achiev = new HashMap<String, String>();
+    public static HashMap<String, String> passive_hunter_achiev = new HashMap<>();
     // Kill 1x of every passive animal.
 
-    static HashMap<String, List<String>> mob_messages = new HashMap<String, List<String>>();
+    static HashMap<String, List<String>> mob_messages = new HashMap<>();
     // Mob Type, List of possible messages for it to send to players onEntityTarget();
 
-    public static ConcurrentHashMap<Entity, Location> entities_to_remove = new ConcurrentHashMap<Entity, Location>();
+    public static ConcurrentHashMap<Entity, Location> entities_to_remove = new ConcurrentHashMap<>();
     // A list of entities being passed along to the main thread for reset. Normally a pathback.
 
-    public static HashMap<Entity, Long> last_respawn = new HashMap<Entity, Long>();
+    public static HashMap<Entity, Long> last_respawn = new HashMap<>();
     // A list of entities being passed along to the main thread for reset. Normally a pathback.
 
-    static ConcurrentHashMap<String, Long> last_mob_message_get = new ConcurrentHashMap<String, Long>();
+    static ConcurrentHashMap<String, Long> last_mob_message_get = new ConcurrentHashMap<>();
     // Player Name, Last time they got a mob message -- prevents message spam.
 
-    public static ArrayList<ArrayList<Object>> mobs_being_spawned = new ArrayList<ArrayList<Object>>();
+    public static ArrayList<ArrayList<Object>> mobs_being_spawned = new ArrayList<>();
     // Main thread-safe data for spawning mobs. Once a mob is on this list, it will be spawned momentarily.
 
-    public static volatile CopyOnWriteArrayList<EntityTargetEvent> async_entity_target = new CopyOnWriteArrayList<EntityTargetEvent>();
+    public static volatile CopyOnWriteArrayList<EntityTargetEvent> async_entity_target = new CopyOnWriteArrayList<>();
     // Main thread-safe data for spawning mobs. Once a mob is on this list, it will be spawned momentarily.
 
-    public static ConcurrentHashMap<Player, String> async_message_send = new ConcurrentHashMap<Player, String>();
+    public static ConcurrentHashMap<Player, String> async_message_send = new ConcurrentHashMap<>();
     // Main thread-safe data for spawning mobs. Once a mob is on this list, it will be spawned momentarily.
 
-    List<Location> never_unload_chunks = new ArrayList<Location>();
+    List<Location> never_unload_chunks = new ArrayList<>();
     // High priority chunks that contain T4/T5. Prevents abuse.
 
-    public static ConcurrentHashMap<String, List<String>> custom_mob_loot_tables = new ConcurrentHashMap<String, List<String>>();
+    public static ConcurrentHashMap<String, List<String>> custom_mob_loot_tables = new ConcurrentHashMap<>();
     // CUSTOM_MOB_NAME, LIST OF DROP TABLE RULES (loot mechanics)
 
-    public static List<Entity> ignore_target_event = new ArrayList<Entity>();
+    public static List<Entity> ignore_target_event = new ArrayList<>();
     // Prevents lag from entitytarget() event.
 
-    public static List<Entity> no_pathing = new ArrayList<Entity>();
+    public static List<Entity> no_pathing = new ArrayList<>();
     // Entites that no longer use cleanupMonsters() to prevent loops.
 
-    public static CopyOnWriteArrayList<Enderman> enderman_list = new CopyOnWriteArrayList<Enderman>();
+    public static CopyOnWriteArrayList<Enderman> enderman_list = new CopyOnWriteArrayList<>();
     // Used for AoE enderman effects
 
-    public static CopyOnWriteArrayList<Entity> approaching_mage_list = new CopyOnWriteArrayList<Entity>();
+    public static CopyOnWriteArrayList<Entity> approaching_mage_list = new CopyOnWriteArrayList<>();
     // Magic weilder approaching, entity they have as a target.
 
     // static HashMap<Entity, Entity> approaching_mage_list = new HashMap<Entity, Entity>();
@@ -319,7 +262,7 @@ public class MonsterMechanics implements Listener {
                     }
                 }
             }
-        }, 15 * 20L, 1 * 20L);
+        }, 15 * 20L, 20L);
 
         Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
@@ -336,15 +279,14 @@ public class MonsterMechanics implements Listener {
                         // end.getLocation().getWorld().spawnParticle(end.getLocation().add(0, 1.5, 0), Particle.WITCH_MAGIC, 2F, 50);
                         // end.getLocation().getWorld().spawnParticle(end.getLocation().add(0, 0.5, 0), Particle.PORTAL, 1F, 20);
 
-                        int random_n = mob_damage.get((Entity) end).get(1) - mob_damage.get((Entity) end).get(0);
+                        int random_n = mob_damage.get(end).get(1) - mob_damage.get(end).get(0);
                         if (random_n <= 0) {
-                            random_n = mob_damage.get((Entity) end).get(1);
+                            random_n = mob_damage.get(end).get(1);
                         }
-                        int dmg = new Random().nextInt(random_n) + mob_damage.get((Entity) end).get(0);
+                        int dmg = new Random().nextInt(random_n) + mob_damage.get(end).get(0);
                         dmg = dmg / 2;
                         for (Entity ent : end.getNearbyEntities(4, 4, 4)) {
-                            if (ent instanceof Player) {
-                                Player pl = (Player) ent;
+                            if (ent instanceof Player pl) {
                                 pl.damage(dmg, end);
                                 pl.playSound(pl.getLocation(), Sound.ENDERMAN_STARE, 1F, 1F);
                                 try {
@@ -367,8 +309,7 @@ public class MonsterMechanics implements Listener {
             public void run() {
                 for (Entity ent : approaching_mage_list) {
                     try {
-                        if (ent != null && !ent.isDead() && ent instanceof Creature && MonsterMechanics.mob_health.containsKey(ent)) {
-                            LivingEntity le = (LivingEntity) ent;
+                        if (ent != null && !ent.isDead() && ent instanceof Creature le && MonsterMechanics.mob_health.containsKey(ent)) {
                             ItemStack weapon = le.getEquipment().getItemInHand();
                             Creature c = (Creature) le;
 
@@ -383,8 +324,7 @@ public class MonsterMechanics implements Listener {
                                 if (ent.hasMetadata("boss_type")) {
                                     String boss_type = ent.getMetadata("boss_type").get(0).asString();
                                     if (boss_type.equalsIgnoreCase("tnt_bandit") && new Random().nextInt(2) == 0) {
-                                        Projectile pj = null;
-                                        pj = le.launchProjectile(ThrownPotion.class);
+                                        Projectile pj = le.launchProjectile(ThrownPotion.class);
                                         ItemMechanics.projectile_map.put(pj, null);
                                         continue;
                                     }
@@ -430,7 +370,7 @@ public class MonsterMechanics implements Listener {
                     }
                 }
             }
-        }, 15 * 20L, 1 * 25L);
+        }, 15 * 20L, 25L);
 
         Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
             public void run() {
@@ -474,7 +414,7 @@ public class MonsterMechanics implements Listener {
 
         Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
-                if (async_message_send.size() > 0) {
+                if (!async_message_send.isEmpty()) {
                     for (Entry<Player, String> data : async_message_send.entrySet()) {
                         Player pl = data.getKey();
                         String msg = data.getValue();
@@ -533,29 +473,6 @@ public class MonsterMechanics implements Listener {
             }
         }, 13 * 20L, 4 * 20L);
 
-        // DEPRECIATED, added code to cleanupMobs() event.
-        /*
-         * this.getServer().getScheduler() .scheduleSyncRepeatingTask(this, new Runnable() { public void run() { fixNullMobs(); } }, 13 * 20L, 20L);
-         */
-
-        // DEPRECIATED, running along with MobSpawnEvent() to keep stuff in sync.
-        /*
-         * this.getServer().getScheduler() .scheduleSyncRepeatingTask(this, new Runnable() { public void run() { unloadChunks(); // Custom chunk unloading. //
-         * Unloads all chunks that do not have a player within XXX blocks of them, adding all entities to the entities_to_remove list. } }, 12 * 20L, 40L);
-         */
-
-        // DEPRECIATED, running along with processMobsToSpawn() to keep stuff in sync.
-        /*
-         * this.getServer().getScheduler() .scheduleAsyncRepeatingTask(this, new Runnable() { public void run() { processChunks(); // Populates chunks_to_unload
-         * used in unloadChunks(); } }, 12 * 20L, 5 * 20L);
-         */
-
-        // DEPRECIATEd, running along with unloadChunks to keep a more accurate list.
-        /*
-         * this.getServer().getScheduler() .scheduleAsyncRepeatingTask(this, new Runnable() { public void run() { populateLoadedChunks(); // Populates
-         * loaded_chunks } }, 5 * 20L, 20L);
-         */
-
         if (Bukkit.getMotd().contains("US-0")) {
             Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
                 public void run() {
@@ -577,14 +494,10 @@ public class MonsterMechanics implements Listener {
                 chunk_copy.clear();
                 try {
                     try {
-                        for (Chunk c : Main.plugin.getServer().getWorlds().get(0).getLoadedChunks()) {
-                            chunk_copy.add(c);
-                        }
+                        Collections.addAll(chunk_copy, Main.plugin.getServer().getWorlds().get(0).getLoadedChunks());
                     } catch (ConcurrentModificationException cme) {
-                        return;
                     }
                 } catch (NoSuchElementException nsee) {
-                    return;
                 }
             }
         }, 12 * 20L, 2 * 20L);
@@ -592,7 +505,7 @@ public class MonsterMechanics implements Listener {
         Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
                 // Combat 'slowness'
-                List<String> to_remove = new ArrayList<String>();
+                List<String> to_remove = new ArrayList<>();
                 for (Entry<String, Long> data : player_slow.entrySet()) {
                     String p_name = data.getKey();
                     long time = data.getValue();
@@ -615,7 +528,7 @@ public class MonsterMechanics implements Listener {
                     }
                 }
             }
-        }, 10 * 20L, 1 * 20L);
+        }, 10 * 20L, 20L);
 
         Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
@@ -626,7 +539,7 @@ public class MonsterMechanics implements Listener {
                     }
                 }
             }
-        }, 10 * 20L, 1 * 20L);
+        }, 10 * 20L, 20L);
 
         // Power Strike custom attack.
         Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
@@ -648,20 +561,6 @@ public class MonsterMechanics implements Listener {
                 twirlWhirldwind();
             }
         }, 10 * 20L, 1L);
-
-        /*
-         * this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() { public void run() { for(LivingEntity le :
-         * getServer().getWorlds().get(0).getLivingEntities()){ if(le instanceof Zombie){ Zombie z = (Zombie)le; if(update_goalselector.containsKey(le)){
-         * EntityZombie ez = ((CraftZombie)z).getHandle(); ez.m(); if((System.currentTimeMillis() - update_goalselector.get(le)) > 500){
-         * update_goalselector.remove(le); continue; } } if(z.getTarget() != null){ LivingEntity target = z.getTarget(); double y_diff =
-         * Math.abs(target.getLocation().getY() - z.getLocation().getY()); if(y_diff >= 1.0D){ update_goalselector.put(le, System.currentTimeMillis());
-         * //EntityZombie ez = ((CraftZombie)z).getHandle(); //ez.m(); } } } if(le instanceof org.bukkit.entity.Skeleton){ Skeleton s = (Skeleton)le;
-         * if(s.getTarget() != null){ EntitySkeleton es = ((CraftSkeleton)s).getHandle(); es.updateGoal(); } if(update_goalselector.containsKey(le)){
-         * EntitySkeleton es = ((CraftSkeleton)s).getHandle(); es.updateGoal(); if((System.currentTimeMillis() - update_goalselector.get(le)) > 500){
-         * update_goalselector.remove(le); continue; } } if(s.getTarget() != null){ LivingEntity target = s.getTarget(); double y_diff =
-         * Math.abs(target.getLocation().getY() - s.getLocation().getY()); if(y_diff >= 1.0D){ update_goalselector.put(le, System.currentTimeMillis());
-         * //EntitySkeleton es = ((CraftSkeleton)s).getHandle(); //es.updateGoal(); } } } } } }, 10 * 20L, 20L);
-         */
 
         log.info("[MonsterMechanics] V1.0 has been enabled.");
     }
@@ -697,7 +596,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public void tickPowerStrike() {
-        List<Entity> to_remove = new ArrayList<Entity>();
+        List<Entity> to_remove = new ArrayList<>();
 
         for (Entry<Entity, Integer> data : power_strike.entrySet()) {
             Entity ent = data.getKey();
@@ -764,26 +663,19 @@ public class MonsterMechanics implements Listener {
     }
 
     public static boolean hasCustomDrops(String custom_name) {
-        if (custom_mob_loot_tables.containsKey(custom_name)) {
-            return true;
-        }
-        return false;
+        return custom_mob_loot_tables.containsKey(custom_name);
     }
 
     public boolean hasCustomDrops(Entity ent) {
-        if (!(ent instanceof LivingEntity)) {
+        if (!(ent instanceof LivingEntity le)) {
             return false;
         }
-        LivingEntity le = (LivingEntity) ent;
         if (!(le.hasMetadata("mobname"))) {
             return false;
         }
         // if(InstanceMechanics.isInstance(ent.getWorld().getName())){return false;}
         String custom_name = ChatColor.stripColor(le.getMetadata("mobname").get(0).asString());
-        if (custom_mob_loot_tables.containsKey(custom_name)) {
-            return true;
-        }
-        return false;
+        return custom_mob_loot_tables.containsKey(custom_name);
     }
 
     public static DamageTracker getEntityDamageTracker(Entity e) {
@@ -814,7 +706,7 @@ public class MonsterMechanics implements Listener {
             return null;
         }
 
-        List<ItemStack> loot = new ArrayList<ItemStack>();
+        List<ItemStack> loot = new ArrayList<>();
 
         for (String s : custom_mob_loot_tables.get(custom_name)) {
             if (s.contains(" ")) {
@@ -834,7 +726,7 @@ public class MonsterMechanics implements Listener {
             short item_meta = 0;
             if (item_id_s.startsWith("T")) {
                 item_id = -1;
-                item_tier = Integer.parseInt(item_id_s.substring(1, item_id_s.length())); // Skip the 'T'.
+                item_tier = Integer.parseInt(item_id_s.substring(1)); // Skip the 'T'.
             } else if (item_id_s.startsWith("*")) {
                 item_id = -1;
                 item_tier = -1;
@@ -849,7 +741,7 @@ public class MonsterMechanics implements Listener {
             }
 
             if (item_id != -1) { // Spawn given item.
-                double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
+                double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1)) * 10.0D;
                 double do_i_spawn = new Random().nextInt(1000);
 
                 // spawn_chance = spawn_chance * 10; // It's a decimal, so we * it by 10.
@@ -873,65 +765,65 @@ public class MonsterMechanics implements Listener {
                         if (amount_to_spawn > 64) {
                             short real_id = 777;
                             ItemStack money = new ItemStack(Material.PAPER, 1, real_id);
-                            loot.add(Money.signBankNote(money, ChatColor.GREEN.toString() + "Bank Note",
-                                    ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "Value:" + ChatColor.WHITE.toString() + " " + amount_to_spawn
-                                            + " Gems" + "," + ChatColor.GRAY.toString() + "Exchange at any bank for GEM(s)"));
+                            loot.add(Money.signBankNote(money, ChatColor.GREEN + "Bank Note",
+                                    ChatColor.WHITE.toString() + ChatColor.BOLD + "Value:" + ChatColor.WHITE + " " + amount_to_spawn
+                                            + " Gems" + "," + ChatColor.GRAY + "Exchange at any bank for GEM(s)"));
                         } else if (amount_to_spawn <= 64) {
                             loot.add(Money.makeGems(amount_to_spawn));
                         }
                     } else if (m == Material.POTION) {
                         if (item_meta == 1) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 1, ChatColor.WHITE.toString() + "Minor Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.WHITE.toString() + "50HP"));
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 1, ChatColor.WHITE + "Minor Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.WHITE + "50HP"));
                         }
                         if (item_meta == 5) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 5, ChatColor.GREEN.toString() + "Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.GREEN.toString() + "250HP"));
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 5, ChatColor.GREEN + "Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.GREEN + "250HP"));
                         }
                         if (item_meta == 9) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 9, ChatColor.AQUA.toString() + "Major Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.AQUA.toString() + "800HP"));
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 9, ChatColor.AQUA + "Major Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.AQUA + "800HP"));
                         }
                         if (item_meta == 12) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 12, ChatColor.LIGHT_PURPLE.toString() + "Superior Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.LIGHT_PURPLE.toString() + "2000HP"));
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 12, ChatColor.LIGHT_PURPLE + "Superior Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.LIGHT_PURPLE + "2000HP"));
                         }
                         if (item_meta == 3) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 3, ChatColor.YELLOW.toString() + "Legendary Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.YELLOW.toString() + "3500HP"));
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 3, ChatColor.YELLOW + "Legendary Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.YELLOW + "3500HP"));
                         }
 
                         if (item_meta == 16385) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16385, ChatColor.WHITE.toString() + "Minor Splash Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.WHITE.toString() + "35HP," + ChatColor.GRAY.toString()
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16385, ChatColor.WHITE + "Minor Splash Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.WHITE + "35HP," + ChatColor.GRAY
                                             + "to players in a 4x4 AREA"));
                         }
                         if (item_meta == 16389) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16389, ChatColor.GREEN.toString() + "Splash Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.GREEN.toString() + "150HP," + ChatColor.GRAY.toString()
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16389, ChatColor.GREEN + "Splash Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.GREEN + "150HP," + ChatColor.GRAY
                                             + "to players in a 4x4 AREA"));
                         }
                         if (item_meta == 16393) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16393, ChatColor.AQUA.toString() + "Major Splash Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.AQUA.toString() + "450HP," + ChatColor.GRAY.toString()
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16393, ChatColor.AQUA + "Major Splash Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.AQUA + "450HP," + ChatColor.GRAY
                                             + "to players in a 4x4 AREA"));
                         }
                         if (item_meta == 16396) {
                             loot.add(ItemMechanics.signNewCustomItem(
                                     Material.POTION,
                                     (short) 16396,
-                                    ChatColor.LIGHT_PURPLE.toString() + "Superior Splash Health Potion",
-                                    ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.LIGHT_PURPLE.toString() + "1250HP,"
-                                            + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+                                    ChatColor.LIGHT_PURPLE + "Superior Splash Health Potion",
+                                    ChatColor.GRAY + "A potion that restores " + ChatColor.LIGHT_PURPLE + "1250HP,"
+                                            + ChatColor.GRAY + "to players in a 4x4 AREA"));
                         }
                         if (item_meta == 16387) {
-                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16387, ChatColor.YELLOW.toString()
-                                    + "Legendary Splash Health Potion", ChatColor.GRAY.toString() + "A potion that restores " + ChatColor.YELLOW.toString()
-                                    + "2500HP," + ChatColor.GRAY.toString() + "to players in a 4x4 AREA"));
+                            loot.add(ItemMechanics.signNewCustomItem(Material.POTION, (short) 16387, ChatColor.YELLOW
+                                    + "Legendary Splash Health Potion", ChatColor.GRAY + "A potion that restores " + ChatColor.YELLOW
+                                    + "2500HP," + ChatColor.GRAY + "to players in a 4x4 AREA"));
                         }
                     } else if (m == Material.MAGMA_CREAM) {
-                        loot.add(ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString() + "Orb of Alteration",
-                                ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment"));
+                        loot.add(ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE + "Orb of Alteration",
+                                ChatColor.GRAY + "Randomizes bonus stats of selected equipment"));
                     } else if (m == Material.EMPTY_MAP) {
                         if (item_meta == 1) {
                             loot.add(CraftItemStack.asCraftCopy(ItemTracker.addSerialNumber(Cyrennica_scroll)));
@@ -984,7 +876,7 @@ public class MonsterMechanics implements Listener {
             }
 
             if (item_tier != -1) { // Spawn random tier weapon.
-                double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
+                double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1)) * 10.0D;
                 double do_i_spawn = new Random().nextInt(1000);
 
                 if (spawn_chance > do_i_spawn) {
@@ -1002,7 +894,7 @@ public class MonsterMechanics implements Listener {
 
             if (item_id_s.startsWith("*")) {
                 String template_name = s.substring(1, s.indexOf(":"));
-                double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1, s.length())) * 10.0D;
+                double spawn_chance = Double.parseDouble(s.substring(s.indexOf("%") + 1)) * 10.0D;
                 double do_i_spawn = new Random().nextInt(1000);
 
                 if (spawn_chance > do_i_spawn) {
@@ -1042,17 +934,17 @@ public class MonsterMechanics implements Listener {
             loc.setYaw(yaw);
 
             EntityLiving el = (EntityLiving) ((CraftEntity) ent).getHandle();
-            el.yaw = (float) (yaw);
+            el.yaw = yaw;
             EntityCreature ec = (EntityCreature) ((CraftEntity) ent).getHandle();
             ec.setGoalTarget(null);
-            ec.yaw = (float) (yaw);
+            ec.yaw = yaw;
             ent.teleport(loc);
             // el.teleportTo(loc, false);
         }
     }
 
     public void tickWhirlwind() {
-        List<Entity> to_remove = new ArrayList<Entity>();
+        List<Entity> to_remove = new ArrayList<>();
 
         for (Entry<Entity, Integer> data : whirlwind.entrySet()) {
             try {
@@ -1109,8 +1001,7 @@ public class MonsterMechanics implements Listener {
                     // ent.getWorld().spawnParticle(ent.getLocation().add(0, 1, 0), Particle.HUGE_EXPLOSION, 1.0F, 40);
 
                     for (Entity enemy : ent.getNearbyEntities(8, 8, 8)) {
-                        if (enemy instanceof Player) {
-                            Player pl = (Player) enemy;
+                        if (enemy instanceof Player pl) {
                             if (HealthMechanics.getPlayerHP(pl.getName()) > 0) {
                                 List<Integer> dmg_range = mob_damage.get(ent);
                                 int min_dmg = dmg_range.get(0);
@@ -1236,7 +1127,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public void unloadChunks() {
-        List<Location> to_remove = new ArrayList<Location>();
+        List<Location> to_remove = new ArrayList<>();
         for (final Location l : chunks_to_unload) {
             /*
              * if(chunks_done >= 10){ return; // Skip all the rest. Only process 10 / tick. }
@@ -1267,11 +1158,9 @@ public class MonsterMechanics implements Listener {
 
                 if (loc != null) {
                     spawned_mobs.remove(loc);
-                    if (loaded_mobs.containsKey(loc)) {
-                        // no_delay_kills.add(ent);
-                        loaded_mobs.remove(loc); // Remove them from main thread list, they're no longer loaded.
-                        // Now mobs_to_spawn will once again pick it up and check for nearby players.
-                    }
+                    // no_delay_kills.add(ent);
+                    // Now mobs_to_spawn will once again pick it up and check for nearby players.
+                    loaded_mobs.remove(loc); // Remove them from main thread list, they're no longer loaded.
                 }
 
                 //LivingEntity le = (LivingEntity) ent;
@@ -1295,10 +1184,9 @@ public class MonsterMechanics implements Listener {
             if ((System.currentTimeMillis() - data.getValue()) > (6 * 1000)) {
                 // Change nametag back to name/level.
                 Entity e = data.getKey();
-                if (!(e instanceof LivingEntity)) {
+                if (!(e instanceof LivingEntity le)) {
                     continue;
                 }
-                LivingEntity le = (LivingEntity) e;
                 if (!(le.hasMetadata("mobname"))) {
                     continue;
                 }
@@ -1310,8 +1198,7 @@ public class MonsterMechanics implements Listener {
 
     public void updateParticles() {
         for (Entity ent : mob_last_hurt.keySet()) {
-            if (ent instanceof LivingEntity && ent.hasMetadata("etype")) {
-                LivingEntity le = (LivingEntity) ent;
+            if (ent instanceof LivingEntity le && ent.hasMetadata("etype")) {
                 String elemental_type = le.getMetadata("etype").get(0).asString();
                 if (elemental_type.equalsIgnoreCase("poison")) {
                     attachPotionEffect(le, 0x669900);
@@ -1332,32 +1219,12 @@ public class MonsterMechanics implements Listener {
     public static void attachPotionEffect(final LivingEntity entity, int color) {
         EntityLiving el = ((CraftLivingEntity) entity).getHandle();
 
-        /*
-         * DataWatcher dw = el.getDataWatcher(); dw.watch(8, Integer.valueOf(color));
-         */
-
         DataWatcher dw = el.getDataWatcher();
         dw.watch(8, Byte.valueOf((byte) color));
-
-        /*
-         * final DataWatcher dw = new DataWatcher(); dw.a(8, Integer.valueOf(0)); dw.watch(8, Integer.valueOf(color));
-         */
-
-        /*
-         * Packet40EntityMetadata packet = new Packet40EntityMetadata(entity.getEntityId(), dw, false); ((CraftServer)
-         * getServer()).getServer().getPlayerList().sendPacketNearby(entity.getLocation().getBlockX(), entity.getLocation().getBlockY(),
-         * entity.getLocation().getBlockZ(), 32, ((CraftWorld) entity.getWorld()).getHandle().dimension, packet);
-         */
-
-        /*
-         * Bukkit.getScheduler().scheduleAsyncDelayedTask(instance, new Runnable() { public void run() { DataWatcher dwReal =
-         * ((CraftLivingEntity)entity).getHandle().getDataWatcher(); dw.watch(8, dwReal.getByte(8)); Packet40EntityMetadata packet = new
-         * Packet40EntityMetadata(entity.getEntityId(), dw, false); } }, duration);
-         */
     }
 
     public void processChunks() {
-        List<Chunk> to_remove = new ArrayList<Chunk>();
+        List<Chunk> to_remove = new ArrayList<>();
 
         try {
             Long cur_time = System.currentTimeMillis();
@@ -1392,7 +1259,7 @@ public class MonsterMechanics implements Listener {
                     }
                 }
 
-                if (nearby == false) {
+                if (!nearby) {
                     if (recent_loaded_chunks.containsKey(l)) {
                         long last_loaded = recent_loaded_chunks.get(l);
                         if ((cur_time - last_loaded) <= (30 * 1000)) {
@@ -1448,20 +1315,16 @@ public class MonsterMechanics implements Listener {
                 loaded_chunks.remove(loc);
                 chunks_to_unload.add(loc);
             }
-            return; // Let's try again in a second.
+            // Let's try again in a second.
         }
     }
 
     public void spawnMobsIn() {
-        /*
-         * main_thread.add(loc); main_thread.add(local_loc); main_thread.add(et); main_thread.add(tier); main_thread.add(mob_num); main_thread.add(elite);
-         * main_thread.add(meta_data);
-         */
 
         if (mobs_being_spawned.size() <= 0) {
             return;
         }
-        ArrayList<ArrayList<Object>> mobs_being_spawned_copy = new ArrayList<ArrayList<Object>>();
+        ArrayList<ArrayList<Object>> mobs_being_spawned_copy = new ArrayList<>();
         for (ArrayList<Object> data : mobs_being_spawned) {
             mobs_being_spawned_copy.add(data);
         }
@@ -1489,10 +1352,9 @@ public class MonsterMechanics implements Listener {
                 // TODO: Handle nulls
                 npe.printStackTrace();
                 if (data != null) {
-                    log.info("[MM] Found a null entry in a mob on main thread, skipping... index: " + data.toString());
+                    log.info("[MM] Found a null entry in a mob on main thread, skipping... index: " + data);
                     mobs_being_spawned.remove(data);
                 }
-                continue;
             }
         }
     }
@@ -1547,7 +1409,7 @@ public class MonsterMechanics implements Listener {
                 String spawn_data = entry.getValue();
                 String[] mob_data = spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",");
 
-                List<String> to_spawn_list = new ArrayList<String>();
+                List<String> to_spawn_list = new ArrayList<>();
 
                 for (String s : mob_data) {
                     if (s.equalsIgnoreCase("")) {
@@ -1597,7 +1459,7 @@ public class MonsterMechanics implements Listener {
             // Only respawn if it's cleanup for isValid().
         }
 
-        List<String> to_spawn = new ArrayList<String>();
+        List<String> to_spawn = new ArrayList<>();
         if (loaded_mobs.containsKey(l)) {
             to_spawn = loaded_mobs.get(l);
         }
@@ -1606,7 +1468,7 @@ public class MonsterMechanics implements Listener {
             delay = 0;
         }
 
-        to_spawn.add(mob_num + ":" + (System.currentTimeMillis() + (delay * 1000)));
+        to_spawn.add(mob_num + ":" + (System.currentTimeMillis() + (delay * 1000L)));
         mob_spawn_ownership.remove(e);
         // //log.info("[MM] Adding a new entity to respawn list. LOCATION: " + l.toString() + " MOB NUMBER: " + mob_num);
         no_delay_kills.remove(e);
@@ -1619,14 +1481,14 @@ public class MonsterMechanics implements Listener {
 
     public String getMobDataFromNum(Location l, int num) {
         String spawn_data = mob_spawns.get(l);
-        String mob_data[] = spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",");
+        String[] mob_data = spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",");
         String the_mdata = "";
 
         for (String s : mob_data) {
             if (s.equalsIgnoreCase("")) {
                 continue;
             }
-            int lnum = Integer.parseInt(s.substring(s.lastIndexOf("-") + 1, s.length()));
+            int lnum = Integer.parseInt(s.substring(s.lastIndexOf("-") + 1));
             // log.info("$ " + s + " -> " + lnum);
             // log.info("LOOKING FOR: " + num);
             if (lnum == num) {
@@ -1717,7 +1579,7 @@ public class MonsterMechanics implements Listener {
 
         try {
             for (File f : templatePath.listFiles()) {
-                List<String> lmsg_template = new ArrayList<String>();
+                List<String> lmsg_template = new ArrayList<>();
                 String tn = f.getName();
                 if (tn.endsWith(".msg")) {
                     BufferedReader reader = new BufferedReader(new FileReader(f));
@@ -1742,7 +1604,7 @@ public class MonsterMechanics implements Listener {
 
         try {
             for (File f : new File("plugins/MonsterMechanics/custom_mobs").listFiles()) {
-                List<String> lmsg_template = new ArrayList<String>();
+                List<String> lmsg_template = new ArrayList<>();
                 String tn = f.getName();
                 if (tn.endsWith(".loot")) {
                     BufferedReader reader = new BufferedReader(new FileReader(f));
@@ -1801,7 +1663,7 @@ public class MonsterMechanics implements Listener {
             if (f_name.equalsIgnoreCase(instance_template)) {
                 // It's the one we want.
                 System.out.print("Found " + instance_template + " mob spawns");
-                HashMap<Location, String> local_mob_spawns = new HashMap<Location, String>();
+                HashMap<Location, String> local_mob_spawns = new HashMap<>();
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(f));
                     String line = "";
@@ -1824,12 +1686,10 @@ public class MonsterMechanics implements Listener {
                         Location loc = data.getKey();
                         String spawn_data = data.getValue();
 
-                        List<String> mob_list = new ArrayList<String>();
-                        for (String s : spawn_data.split(",")) {
-                            mob_list.add(s);
-                        }
+                        List<String> mob_list = new ArrayList<>();
+                        Collections.addAll(mob_list, spawn_data.split(","));
 
-                        List<String> new_data = new ArrayList<String>();
+                        List<String> new_data = new ArrayList<>();
                         for (String s : spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",")) {
                             if (s.equalsIgnoreCase("")) {
                                 continue;
@@ -1859,7 +1719,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public void killListEntities() {
-        List<Entity> to_remove = new ArrayList<Entity>();
+        List<Entity> to_remove = new ArrayList<>();
         if (entities_to_kill.size() <= 0) {
             return;
         }
@@ -1873,7 +1733,7 @@ public class MonsterMechanics implements Listener {
         }
 
         entities_to_kill.clear();
-        final List<Entity> safe_to_remove = new ArrayList<Entity>(to_remove);
+        final List<Entity> safe_to_remove = new ArrayList<>(to_remove);
 
         // this.getServer().getScheduler().scheduleAsyncDelayedTask(this, new Runnable() {
         // public void run() {
@@ -1887,7 +1747,7 @@ public class MonsterMechanics implements Listener {
                     no_delay_kills.add(ent);
                     List<Integer> spawned_mob_nums = spawned_mobs.get(spawner_loc);
 
-                    List<Entity> lspawned_mobs = new ArrayList<Entity>();
+                    List<Entity> lspawned_mobs = new ArrayList<>();
                     if (local_spawned_mobs.containsKey(spawner_loc)) {
                         lspawned_mobs = local_spawned_mobs.get(spawner_loc);
                         lspawned_mobs.remove(ent);
@@ -1897,7 +1757,7 @@ public class MonsterMechanics implements Listener {
                         local_spawned_mobs.put(spawner_loc, lspawned_mobs);
                     }
 
-                    spawned_mob_nums.remove(new Integer(mob_num));
+                    spawned_mob_nums.remove(Integer.valueOf(mob_num));
                     spawned_mobs.put(spawner_loc, spawned_mob_nums);
 
                     addMobToRespawnList(ent);
@@ -1912,7 +1772,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public void removeListEntities() {
-        List<Entity> to_remove = new ArrayList<Entity>();
+        List<Entity> to_remove = new ArrayList<>();
         if (entities_to_remove.size() <= 0) {
             return;
         }
@@ -1948,7 +1808,7 @@ public class MonsterMechanics implements Listener {
             }
 
             String spawn_data = mob_spawns.get(spawner_loc);
-            String loc_range[] = spawn_data.substring(spawn_data.indexOf("#") + 1, spawn_data.lastIndexOf("$")).split("-");
+            String[] loc_range = spawn_data.substring(spawn_data.indexOf("#") + 1, spawn_data.lastIndexOf("$")).split("-");
             double min_xz = Integer.parseInt(loc_range[0]);
             double max_xz = Integer.parseInt(loc_range[1]);
 
@@ -1993,7 +1853,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public void removeNoHPMobs() {
-        List<Entity> alive_ents = new ArrayList<Entity>();
+        List<Entity> alive_ents = new ArrayList<>();
         for (Entity ent : Main.plugin.getServer().getWorlds().get(0).getLivingEntities()) {
             if (ent instanceof Player) {
                 continue;
@@ -2048,12 +1908,12 @@ public class MonsterMechanics implements Listener {
             }
         } catch (NoSuchElementException nsee) {
             log.info("[MM] Failed to get a new snapshot of loaded chunks, NSEE error.");
-            return; // Try again in a bit.
+            // Try again in a bit.
         }
     }
 
     public void cleanupMonsters() {
-        List<Entity> to_remove = new ArrayList<Entity>();
+        List<Entity> to_remove = new ArrayList<>();
 
         for (Map.Entry<Entity, String> entry : mob_spawn_ownership.entrySet()) {
             Entity e = entry.getKey();
@@ -2080,7 +1940,7 @@ public class MonsterMechanics implements Listener {
                     }
 
                     String spawn_data = mob_spawns.get(spawner_loc);
-                    String loc_range[] = spawn_data.substring(spawn_data.indexOf("#") + 1, spawn_data.lastIndexOf("$")).split("-");
+                    String[] loc_range = spawn_data.substring(spawn_data.indexOf("#") + 1, spawn_data.lastIndexOf("$")).split("-");
                     // double min_xz = Integer.parseInt(loc_range[0]);
                     double max_xz = Integer.parseInt(loc_range[1]);
 
@@ -2112,7 +1972,7 @@ public class MonsterMechanics implements Listener {
                                 continue;
                             }
 
-                            Player e_target = (Player) (((EntityPlayer) ec.getGoalTarget()).getBukkitEntity());
+                            Player e_target = ((EntityPlayer) ec.getGoalTarget()).getBukkitEntity();
                             Location target_loc = e_target.getLocation();
                             if (target_loc.getWorld().getName().equalsIgnoreCase(current_mob_loc.getWorld().getName())) {
                                 if (e_target != null && e_target.getHealth() > 0 && e_target.isOnline() && e_target.getGameMode() == GameMode.SURVIVAL
@@ -2144,7 +2004,7 @@ public class MonsterMechanics implements Listener {
             if (!loaded_chunks.contains(l.getChunk().getBlock(0, 0, 0).getLocation())) {
                 spawned_mobs.remove(l);
             }
-            List<Entity> copy_lsm = new ArrayList<Entity>();
+            List<Entity> copy_lsm = new ArrayList<>();
             if (!local_spawned_mobs.containsKey(l)) {
                 continue;
             }
@@ -2268,21 +2128,17 @@ public class MonsterMechanics implements Listener {
     }
 
     public boolean isLavaNearby(Location l) {
-        if (l.getBlock().getType() == Material.FIRE || l.getBlock().getType() == Material.LAVA || l.clone().add(0, 1, 0).getBlock().getType() == Material.FIRE
+        return l.getBlock().getType() == Material.FIRE || l.getBlock().getType() == Material.LAVA || l.clone().add(0, 1, 0).getBlock().getType() == Material.FIRE
                 || l.clone().add(0, 1, 0).getBlock().getType() == Material.LAVA || l.clone().add(0, -1, 0).getBlock().getType() == Material.FIRE
                 || l.clone().add(0, -1, 0).getBlock().getType() == Material.LAVA || l.clone().add(0, -2, 0).getBlock().getType() == Material.FIRE
                 || l.clone().add(0, -2, 0).getBlock().getType() == Material.LAVA || l.clone().add(0, -3, 0).getBlock().getType() == Material.FIRE
                 || l.clone().add(0, -3, 0).getBlock().getType() == Material.LAVA || l.clone().add(0, -4, 0).getBlock().getType() == Material.FIRE
-                || l.clone().add(0, -4, 0).getBlock().getType() == Material.LAVA) {
-            return true;
-        }
-        return false;
+                || l.clone().add(0, -4, 0).getBlock().getType() == Material.LAVA;
     }
 
     @EventHandler
     public void onNPCDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
+        if (e.getEntity() instanceof Player p) {
             if (!p.hasMetadata("NPC"))
                 return;
             if (Hive.player_to_npc.containsKey(p.getName()))
@@ -2297,8 +2153,7 @@ public class MonsterMechanics implements Listener {
             e.setCancelled(true);
             e.setTarget(null);
         }
-        if (e.getEntity() instanceof LivingEntity) {
-            LivingEntity le = (LivingEntity) e.getEntity();
+        if (e.getEntity() instanceof LivingEntity le) {
             if (le.getType() == EntityType.ZOMBIE || le.getType() == EntityType.SKELETON || le.getType() == EntityType.SILVERFISH) {
                 ItemStack item_in_hand = le.getEquipment().getItemInHand();
                 if (item_in_hand == null) {
@@ -2316,20 +2171,16 @@ public class MonsterMechanics implements Listener {
             return false;
         }
         Material m = is.getType();
-        if (m == Material.WOOD_HOE || m == Material.STONE_HOE || m == Material.IRON_HOE || m == Material.DIAMOND_HOE || m == Material.GOLD_HOE) {
-            return true;
-        }
-        return false;
+        return m == Material.WOOD_HOE || m == Material.STONE_HOE || m == Material.IRON_HOE || m == Material.DIAMOND_HOE || m == Material.GOLD_HOE;
     }
 
     @EventHandler
     public void onFireballExplodeEvent(ProjectileHitEvent e) {
         if (e.getEntity() instanceof LargeFireball) {
-            LivingEntity shooter = (LivingEntity) ((Projectile) e.getEntity()).getShooter();
+            LivingEntity shooter = (LivingEntity) e.getEntity().getShooter();
             if (shooter instanceof Ghast) {
                 for (Entity ent : e.getEntity().getNearbyEntities(4, 4, 4)) {
-                    if (ent instanceof Player) {
-                        Player pl = (Player) ent;
+                    if (ent instanceof Player pl) {
                         double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
                         double dmg = max_hp * 0.15D;
                         pl.damage(dmg, shooter);
@@ -2348,7 +2199,7 @@ public class MonsterMechanics implements Listener {
         }
 
         if (e.getEntity() instanceof SmallFireball) {
-            LivingEntity shooter = (LivingEntity) ((Projectile) e.getEntity()).getShooter();
+            LivingEntity shooter = (LivingEntity) e.getEntity().getShooter();
             boolean ignite = false;
             if (shooter instanceof Blaze) {
                 ItemStack weapon = shooter.getEquipment().getItemInHand();
@@ -2386,9 +2237,8 @@ public class MonsterMechanics implements Listener {
                 }
 
                 for (Entity ent : e.getEntity().getNearbyEntities(4, 4, 4)) {
-                    if (ent instanceof Player) {
-                        Player pl = (Player) ent;
-                        if (ignite == true) {
+                    if (ent instanceof Player pl) {
+                        if (ignite) {
                             pl.setFireTicks(80);
                         }
                         pl.damage(dmg, shooter);
@@ -2425,7 +2275,7 @@ public class MonsterMechanics implements Listener {
         if (!(loaded_chunks.contains(cloc))) {
             loaded_chunks.add(cloc);
         }
-        List<Location> to_remove = new ArrayList<Location>();
+        List<Location> to_remove = new ArrayList<>();
         Location p_loc = p.getLocation();
         player_locations.put(p.getName(), p_loc);
 
@@ -2440,7 +2290,7 @@ public class MonsterMechanics implements Listener {
 
         Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
             public void run() {
-                if (loot_buff == true) {
+                if (loot_buff) {
                     int minutes_left = (int) (((loot_buff_timeout - System.currentTimeMillis()) / 1000.0D) / 60.0D);
                     if (p != null) {
                         p.sendMessage("");
@@ -2470,8 +2320,7 @@ public class MonsterMechanics implements Listener {
     @EventHandler
     public void onEntityImmunityAfterHit(EntityDamageByEntityEvent e) {
         // MC patch 1.8 added a 0.5 second (10 tick) mob immunity after each hit.  Cancel it here!
-        if(e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof Player)) {
-            LivingEntity ent = (LivingEntity) e.getEntity();
+        if(e.getEntity() instanceof LivingEntity ent && !(e.getEntity() instanceof Player)) {
             ent.setMaximumNoDamageTicks(0);
             ent.setNoDamageTicks(0);
             ent.setVelocity(new Vector(0, 0, 0));
@@ -2592,13 +2441,13 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (player_near == false && player_around == false) { // Chunk is likely unloaded / queued to unload, no one around.
+            if (!player_near && !player_around) { // Chunk is likely unloaded / queued to unload, no one around.
                 mob_spawn_check_delay.put(loc, System.currentTimeMillis());
                 // We won't check again for a few seconds to save CPU.
                 continue;
             }
 
-            if (player_near == false && player_around == true) {
+            if (!player_near && player_around) {
                 // Chunk is loaded, check again in a second.
                 continue;
             }
@@ -2613,7 +2462,7 @@ public class MonsterMechanics implements Listener {
     @SuppressWarnings("deprecation")
     public void MobSpawnEvent() {
         // @zombie:1-1,skeleton:1-2,skeleton:2-3@30#1-5$4%
-        List<Location> to_remove = new ArrayList<Location>();
+        List<Location> to_remove = new ArrayList<>();
 
         for (Map.Entry<Location, List<String>> entry : loaded_mobs.entrySet()) {
             Location loc = entry.getKey();
@@ -2683,11 +2532,11 @@ public class MonsterMechanics implements Listener {
 
             try {
                 String meta_data = "";
-                List<String> local_spawning_data = new ArrayList<String>(entry.getValue()); // All the mobs we need to check to spawn at this location.
+                List<String> local_spawning_data = new ArrayList<>(entry.getValue()); // All the mobs we need to check to spawn at this location.
                 String spawn_data = mob_spawns.get(loc);
 
                 // log.info(spawn_data);
-                String loc_range[] = spawn_data.substring(spawn_data.indexOf("#") + 1, spawn_data.lastIndexOf("$")).split("-");
+                String[] loc_range = spawn_data.substring(spawn_data.indexOf("#") + 1, spawn_data.lastIndexOf("$")).split("-");
                 int tier_level = 1;
                 if (spawn_data.endsWith("%")) {
                     try {
@@ -2704,7 +2553,7 @@ public class MonsterMechanics implements Listener {
 
                 long cur_time = System.currentTimeMillis();
 
-                List<String> new_data = new ArrayList<String>(local_spawning_data);
+                List<String> new_data = new ArrayList<>(local_spawning_data);
 
                 for (String s : local_spawning_data) { // S has the format of: mob_num:when_to_spawn(long)
                     long time_to_spawn = Long.parseLong(s.split(":")[1]);
@@ -2887,7 +2736,7 @@ public class MonsterMechanics implements Listener {
                     // continue;
                     // }
 
-                    ArrayList<Object> main_thread = new ArrayList<Object>();
+                    ArrayList<Object> main_thread = new ArrayList<>();
                     main_thread.add(loc);
                     main_thread.add(local_loc);
                     main_thread.add(et);
@@ -2901,12 +2750,12 @@ public class MonsterMechanics implements Listener {
 
                     // if(spawnTierMob(local_loc, et, tier, mob_num, loc, elite, meta_data) == true){
                     // If we succeed to spawn the mob, we need to register them to the spawned_mobs list.
-                    List<Integer> spawned_mob_nums = new ArrayList<Integer>();
+                    List<Integer> spawned_mob_nums = new ArrayList<>();
                     if (spawned_mobs.containsKey(loc)) {
                         spawned_mob_nums = spawned_mobs.get(loc);
-                        spawned_mob_nums.add(new Integer(mob_num));
+                        spawned_mob_nums.add(Integer.valueOf(mob_num));
                     } else if (!(spawned_mobs.containsKey(loc))) {
-                        spawned_mob_nums = new ArrayList<Integer>(Arrays.asList(mob_num));
+                        spawned_mob_nums = new ArrayList<>(List.of(mob_num));
                     }
 
                     spawned_mobs.put(loc, spawned_mob_nums);
@@ -3036,7 +2885,7 @@ public class MonsterMechanics implements Listener {
             cc = ChatColor.LIGHT_PURPLE;
         }
 
-        String return_string = cc + ChatColor.BOLD.toString() + "║" + ChatColor.RESET.toString() + cc.toString() + "";
+        String return_string = cc + ChatColor.BOLD.toString() + "║" + ChatColor.RESET + cc;
         if (elite || BossMechanics.boss_map.containsKey(ent)) {
             return_string += ChatColor.BOLD.toString();
         }
@@ -3058,7 +2907,7 @@ public class MonsterMechanics implements Listener {
             bar_count++;
         }
 
-        return_string = return_string + cc + ChatColor.BOLD.toString() + "║";
+        return_string = return_string + cc + ChatColor.BOLD + "║";
 
         // TODO: Generate activity bar status
         /*
@@ -3129,7 +2978,7 @@ public class MonsterMechanics implements Listener {
                     // This addresses mobs being 1 hp.
                     if (le != null && !le.isDead()) {
                         // This needs to be called so the mobs will be respawned and stuff.
-                        List<ItemStack> drops = new ArrayList<ItemStack>();
+                        List<ItemStack> drops = new ArrayList<>();
                         if (mob_loot.containsKey(le)) {
                             drops = mob_loot.get(le);
                         }
@@ -3404,14 +3253,14 @@ public class MonsterMechanics implements Listener {
             final Location mob_spawner_loc = mob_spawn_location.get(p);
 
             if (delay == 0 && InstanceMechanics.isInstance(p.getWorld().getName())) {
-                HashMap<Location, String> instance_mob_spawns_copy = new HashMap<Location, String>();
+                HashMap<Location, String> instance_mob_spawns_copy = new HashMap<>();
                 if (InstanceMechanics.instance_mob_spawns.containsKey(p.getWorld().getName())) {
                     instance_mob_spawns_copy = InstanceMechanics.instance_mob_spawns.get(p.getWorld().getName());
                 }
                 instance_mob_spawns_copy.put(mob_spawner_loc, spawn_data);
                 InstanceMechanics.instance_mob_spawns.put(p.getWorld().getName(), instance_mob_spawns_copy);
 
-                List<String> new_data = new ArrayList<String>();
+                List<String> new_data = new ArrayList<>();
                 for (String s : spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",")) {
                     if (s.equalsIgnoreCase("")) {
                         continue;
@@ -3424,7 +3273,7 @@ public class MonsterMechanics implements Listener {
             } else {
                 mob_spawns.put(mob_spawner_loc, spawn_data);
 
-                List<String> new_data = new ArrayList<String>();
+                List<String> new_data = new ArrayList<>();
                 for (String s : spawn_data.substring(spawn_data.indexOf("@") + 1, spawn_data.lastIndexOf("@")).split(",")) {
                     if (s.equalsIgnoreCase("")) {
                         continue;
@@ -3447,7 +3296,6 @@ public class MonsterMechanics implements Listener {
             p.sendMessage("");
             p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "MOB SPAWNER REGISTRATION COMPLETE.");
             p.sendMessage(ChatColor.GREEN + "The new mob spawn data has been synced with the spawning thread.");
-            return;
         }
 
     }
@@ -3469,7 +3317,7 @@ public class MonsterMechanics implements Listener {
                 Player p = e.getPlayer();
                 String mob_spawn_data = mob_spawns.get(loc);
                 if (InstanceMechanics.isInstance(p.getWorld().getName())) {
-                    HashMap<Location, String> instance_mob_spawns_copy = new HashMap<Location, String>();
+                    HashMap<Location, String> instance_mob_spawns_copy = new HashMap<>();
                     if (InstanceMechanics.instance_mob_spawns.containsKey(p.getWorld().getName())) {
                         instance_mob_spawns_copy = InstanceMechanics.instance_mob_spawns.get(p.getWorld().getName());
                     }
@@ -3598,16 +3446,14 @@ public class MonsterMechanics implements Listener {
 
     @EventHandler
     public void onPotionSplashEffect(PotionSplashEvent e) {
-        if (e.getEntity().getShooter() instanceof Witch) {
-            LivingEntity le = (LivingEntity) e.getEntity().getShooter();
+        if (e.getEntity().getShooter() instanceof Witch le) {
             if (mob_damage.containsKey(le)) {
                 // Custom mob, witch throwing potion, do damage.
                 List<Integer> dmg_range = mob_damage.get(le);
                 int dmg = new Random().nextInt((dmg_range.get(1) - dmg_range.get(0)) < 1 ? 0 : dmg_range.get(1) - dmg_range.get(0)) + dmg_range.get(0);
                 dmg = dmg * 2;
                 for (Entity ent : e.getAffectedEntities()) {
-                    if (ent instanceof Player) {
-                        Player pl = (Player) ent;
+                    if (ent instanceof Player pl) {
                         pl.damage(dmg, le);
                         pl.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 1));
                     }
@@ -3677,8 +3523,7 @@ public class MonsterMechanics implements Listener {
             }
         }
 
-        if (ent instanceof LivingEntity) {
-            LivingEntity le = (LivingEntity) ent;
+        if (ent instanceof LivingEntity le) {
             if (le.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 // No damage for boss mobs with invinsibility.
                 e.setCancelled(true);
@@ -3704,8 +3549,7 @@ public class MonsterMechanics implements Listener {
             return;
         }
 
-        if (attacker != null && attacker instanceof Player && ent instanceof Enderman) {
-            Player p_attacker = (Player) attacker;
+        if (attacker != null && attacker instanceof Player p_attacker && ent instanceof Enderman) {
             if (p_attacker.getLocation().distanceSquared(ent.getLocation()) <= 6) {
                 // Ragdoll em.
                 pushAwayPlayer(ent, p_attacker, 2F);
@@ -3723,7 +3567,7 @@ public class MonsterMechanics implements Listener {
                     // Took them less than 5 seconds to get glitched again...
                     // Disable this spawn?
                     no_pathing.add(ent);
-                    log.info("[MM] Disabling CLEANUP event for " + ent.toString() + " due to overzealous suffocation. (<500ms)");
+                    log.info("[MM] Disabling CLEANUP event for " + ent + " due to overzealous suffocation. (<500ms)");
                     return;
                 }
                 Location home_spawn = getMobsHomeSpawner(ent);
@@ -3744,7 +3588,7 @@ public class MonsterMechanics implements Listener {
          */
 
         if (BossMechanics.enraged_boss.contains(ent)) {
-            dmg = (int) ((double) dmg / 10.0D);
+            dmg = (int) (dmg / 10.0D);
             // 10% normal damage while enraged.
         }
 
@@ -3776,7 +3620,7 @@ public class MonsterMechanics implements Listener {
         double mhealth = mob_health.get(ent);
 
         if (attacker instanceof Player && mhealth == max_health && dmg >= max_health) {
-            AchievementMechanics.addAchievement(((Player) attacker).getName(), "One Hit K.O.");
+            AchievementMechanics.addAchievement(attacker.getName(), "One Hit K.O.");
         }
 
         // Rag'doll them maybe?
@@ -3791,7 +3635,7 @@ public class MonsterMechanics implements Listener {
         subtractMHealth(ent, (int) dmg);
 
         if (attacker instanceof Player && dmg >= 450) {
-            AchievementMechanics.addAchievement(((Player) attacker).getName(), "Serious Strength");
+            AchievementMechanics.addAchievement(attacker.getName(), "Serious Strength");
         }
 
         if (e instanceof EntityDamageByEntityEvent) {
@@ -3828,8 +3672,7 @@ public class MonsterMechanics implements Listener {
                 // 3. At 50%, jump on ghast
                 // 4. At 10%, rebuff to 50%, adds now = magma cubes
 
-                if (attacker instanceof Player) {
-                    Player p_attacker = (Player) attacker;
+                if (attacker instanceof Player p_attacker) {
                     if (p_attacker.getLocation().distanceSquared(ent.getLocation()) <= 16) {
                         // Ragdoll em.
                         pushAwayPlayer(ent, p_attacker, 2.5F);
@@ -3852,8 +3695,8 @@ public class MonsterMechanics implements Listener {
                         if (!BossMechanics.boss_event_log.get(ent).contains("ghast")) {
                             BossMechanics.boss_event_log.put(ent, "ghast");
 
-                            Ghast g = (Ghast) ((LivingEntity) spawnTierMob(new Location(ent.getWorld(), -54, 158, 646).add(0, 5, 0), EntityType.GHAST, 4, -1,
-                                    new Location(ent.getWorld(), -54, 158, 646).add(0, 5, 0), false, "", "Abysal Wraith", true, 4)); // (Ghast)ent.getWorld().spawnEntity(ent.getLocation().add(0,
+                            Ghast g = (Ghast) spawnTierMob(new Location(ent.getWorld(), -54, 158, 646).add(0, 5, 0), EntityType.GHAST, 4, -1,
+                                    new Location(ent.getWorld(), -54, 158, 646).add(0, 5, 0), false, "", "Abysal Wraith", true, 4); // (Ghast)ent.getWorld().spawnEntity(ent.getLocation().add(0,
                                                                                                                                      // 5, 0),
                                                                                                                                      // EntityType.GHAST);
                             g.setPassenger(ent);
@@ -3895,7 +3738,7 @@ public class MonsterMechanics implements Listener {
                             pl.playSound(pl.getLocation(), Sound.GHAST_DEATH, 2F, 0.85F);
                         }
 
-                        List<Entity> minion_map = new ArrayList<Entity>();
+                        List<Entity> minion_map = new ArrayList<>();
 
                         if (BossMechanics.minion_map.containsKey(ent)) {
                             minion_map = BossMechanics.minion_map.get(ent);
@@ -3916,12 +3759,8 @@ public class MonsterMechanics implements Listener {
                         // Summon minions!
                         Location loc = ent.getLocation();
                         int minion_type = new Random().nextInt(2); // 0, 1
-                        List<Entity> minion_map = new ArrayList<Entity>();
-                        boolean enraged = false;
-
-                        if (BossMechanics.boss_event_log.get(ent).contains("enrage")) {
-                            enraged = true;
-                        }
+                        List<Entity> minion_map = new ArrayList<>();
+                        boolean enraged = BossMechanics.boss_event_log.get(ent).contains("enrage");
 
                         if (BossMechanics.minion_map.containsKey(ent)) {
                             minion_map = BossMechanics.minion_map.get(ent);
@@ -4000,7 +3839,7 @@ public class MonsterMechanics implements Listener {
                     // Summon minions!
                     Location loc = ent.getLocation();
                     int minion_type = new Random().nextInt(3); // Always 0
-                    List<Entity> minion_map = new ArrayList<Entity>();
+                    List<Entity> minion_map = new ArrayList<>();
 
                     if (BossMechanics.minion_map.containsKey(ent)) {
                         minion_map = BossMechanics.minion_map.get(ent);
@@ -4189,7 +4028,7 @@ public class MonsterMechanics implements Listener {
                     // Transform him into an invinsible blaze?
                     Location loc = ent.getLocation();
                     int minion_type = new Random().nextInt(5);
-                    List<Entity> minion_map = new ArrayList<Entity>();
+                    List<Entity> minion_map = new ArrayList<>();
 
                     if (minion_type == 0) {
                         minion_map.add(spawnTierMob(loc, EntityType.ZOMBIE, 3, -1, loc, false, "", "", true, 3));
@@ -4256,10 +4095,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public boolean canTakeFireDamage(Entity e) {
-        if (isLavaNearby(e.getLocation())) {
-            return false;
-        }
-        return true;
+        return !isLavaNearby(e.getLocation());
     }
 
     @EventHandler
@@ -4327,7 +4163,7 @@ public class MonsterMechanics implements Listener {
             return;
         }
 
-        if (!(e.getEntity() instanceof Player)) {
+        if (!(e.getEntity() instanceof Player p)) {
             return;
         }
 
@@ -4335,12 +4171,10 @@ public class MonsterMechanics implements Listener {
             return;
         }
 
-        Player p = (Player) e.getEntity();
         Entity ent = null;
 
         if (e.getCause() == DamageCause.PROJECTILE) {
-            if (e.getDamager() instanceof Arrow) {
-                Arrow a = ((Arrow) e.getDamager());
+            if (e.getDamager() instanceof Arrow a) {
                 ent = (Entity) a.getShooter();
             }
         }
@@ -4395,7 +4229,7 @@ public class MonsterMechanics implements Listener {
             }
         }
 
-        if (is_elite == true) {
+        if (is_elite) {
             push_value += 0.35F;
         }
 
@@ -4404,7 +4238,7 @@ public class MonsterMechanics implements Listener {
 
         if ((p_loc.getY() - 0.50) <= m_loc.getY()) {
             int do_i_knock = new Random().nextInt(100);
-            if (is_elite == false) {
+            if (!is_elite) {
                 if (do_i_knock <= 30) {
                     pushAwayPlayer(ent, p, push_value);
                 }
@@ -4419,11 +4253,10 @@ public class MonsterMechanics implements Listener {
             return;
         }
 
-        if (!(e.getEntity() instanceof Player)) {
+        if (!(e.getEntity() instanceof Player p)) {
             return;
         }
 
-        Player p = (Player) e.getEntity();
         Entity ent = null;
         boolean bow = false;
         /*
@@ -4431,8 +4264,7 @@ public class MonsterMechanics implements Listener {
          */
 
         if (e.getCause() == DamageCause.PROJECTILE) {
-            if (e.getDamager() instanceof Arrow) {
-                Arrow a = ((Arrow) e.getDamager());
+            if (e.getDamager() instanceof Arrow a) {
                 ent = (Entity) a.getShooter();
                 bow = true;
             }
@@ -4576,7 +4408,7 @@ public class MonsterMechanics implements Listener {
         if (e.isCancelled())
             return;
         if (e.getTarget() instanceof Player) {
-            mob_target.put(e.getEntity(), ((Player) e.getTarget()).getName());
+            mob_target.put(e.getEntity(), e.getTarget().getName());
         }
     }
 
@@ -4627,8 +4459,7 @@ public class MonsterMechanics implements Listener {
         }
 
         if (!(mob_health.containsKey(ent))) {
-            if (ent instanceof LivingEntity) {
-                LivingEntity le = (LivingEntity) ent;
+            if (ent instanceof LivingEntity le) {
                 if (le.getEquipment().getArmorContents().length > 0) { // They have armor on, so something must have gone wrong.
                     // TODO: Calculate HP instead.
                     le.damage(le.getHealth()); // Just kill them.
@@ -4650,8 +4481,7 @@ public class MonsterMechanics implements Listener {
         Player p = null;
 
         if (e.getDamager() instanceof Projectile) {
-            if (e.getDamager() instanceof Arrow) {
-                Arrow a = ((Arrow) e.getDamager());
+            if (e.getDamager() instanceof Arrow a) {
                 a.setBounce(false);
                 if (a.getShooter() instanceof Player) {
                     p = (Player) a.getShooter();
@@ -4701,10 +4531,7 @@ public class MonsterMechanics implements Listener {
 
         // LivingEntity le = (LivingEntity)ent;
         ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
-        boolean is_elite = false;
-        if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
-            is_elite = true;
-        }
+        boolean is_elite = weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK);
 
         if (ent != null && is_elite && !(special_attack.containsKey(ent)) && (mob_health.get(ent) - e.getDamage()) > 0) {
             int do_i_whirlwind = new Random().nextInt(100);
@@ -4823,7 +4650,7 @@ public class MonsterMechanics implements Listener {
             }
         }
 
-        String mob_type = e.getType().name().substring(0, 1).toUpperCase() + e.getType().name().substring(1, e.getType().name().length()).toLowerCase();
+        String mob_type = e.getType().name().substring(0, 1).toUpperCase() + e.getType().name().substring(1).toLowerCase();
 
         if (e instanceof LivingEntity) {
             try {
@@ -4897,10 +4724,9 @@ public class MonsterMechanics implements Listener {
             return ChatColor.stripColor(e.getMetadata("mobname").get(0).asString());
         }
 
-        String mob_type = e.getType().name().substring(0, 1).toUpperCase() + e.getType().name().substring(1, e.getType().name().length()).toLowerCase();
+        String mob_type = e.getType().name().substring(0, 1).toUpperCase() + e.getType().name().substring(1).toLowerCase();
         try {
-            if (e instanceof LivingEntity) {
-                LivingEntity le = (LivingEntity) e;
+            if (e instanceof LivingEntity le) {
                 if (le.getEquipment().getHelmet() != null && le.getEquipment().getHelmet().getType() == Material.SKULL_ITEM) {
                     ItemStack h = le.getEquipment().getHelmet();
                     net.minecraft.server.v1_8_R1.ItemStack mItem = CraftItemStack.asNMSCopy(h);
@@ -5018,11 +4844,10 @@ public class MonsterMechanics implements Listener {
             return;
         }
 
-        if (!(e.getTarget() instanceof Player) || !(mob_tier.containsKey(e.getEntity()))) {
+        if (!(e.getTarget() instanceof Player p) || !(mob_tier.containsKey(e.getEntity()))) {
             e.setCancelled(true);
             return;
         }
-        final Player p = (Player) e.getTarget();
 
         if (RealmMechanics.player_god_mode.containsKey(p.getName()) && !(p.getName().equalsIgnoreCase("Vaquxine"))) {
             ignore_target_event.add(e.getEntity());
@@ -5063,7 +4888,6 @@ public class MonsterMechanics implements Listener {
     public void onMobSpawnEvent(CreatureSpawnEvent e) {
         if (e.getSpawnReason() != SpawnReason.CUSTOM) {
             e.setCancelled(true);
-            return;
         }
 
         /*
@@ -5096,6 +4920,10 @@ public class MonsterMechanics implements Listener {
         }
     }
 
+    /*
+    * Called when an entity dies, used for calculating what drops.
+    * See mobspawning for the gear creation
+    * */
     @SuppressWarnings("deprecation")
     @EventHandler(ignoreCancelled = false)
     public void onEntityDeathEvent(final EntityDeathEvent e) {
@@ -5103,8 +4931,7 @@ public class MonsterMechanics implements Listener {
         final String p_name = mob_target.get(ent);
         boolean never_unload_home = false;
 
-        if (ent instanceof Player) {
-            Player pl = (Player) ent;
+        if (ent instanceof Player pl) {
             if (pl.hasMetadata("NPC")) {
                 e.getDrops().clear();
                 return;
@@ -5116,34 +4943,6 @@ public class MonsterMechanics implements Listener {
             e.getDrops().clear();
             return;
         }
-
-        if (RecordMechanics.mob_kills.containsKey(p_name)) {
-            int lmob_kills = RecordMechanics.mob_kills.get(p_name);
-            lmob_kills = lmob_kills + 1;
-            if (lmob_kills >= 100) {
-                AchievementMechanics.addAchievement(p_name, "Monster Hunter I");
-                if (lmob_kills >= 300) {
-                    AchievementMechanics.addAchievement(p_name, "Monster Hunter II");
-                    if (lmob_kills >= 500) {
-                        AchievementMechanics.addAchievement(p_name, "Monster Hunter III");
-                        if (lmob_kills >= 1000) {
-                            AchievementMechanics.addAchievement(p_name, "Monster Hunter IV");
-                            if (lmob_kills >= 1500) {
-                                AchievementMechanics.addAchievement(p_name, "Monster Hunter V");
-                                if (lmob_kills >= 2000) {
-                                    AchievementMechanics.addAchievement(p_name, "Monster Hunter VI");
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-            RecordMechanics.mob_kills.put(p_name, lmob_kills);
-        }
-        /*
-         * if (!mob_health.containsKey(ent)) { e.getDrops().clear(); e.setDroppedExp(0); return; }
-         */
 
         if (ent.getPassenger() != null) {
             Entity r_ent = ent.getPassenger();
@@ -5157,47 +4956,8 @@ public class MonsterMechanics implements Listener {
             mount.remove();
         }
 
-        if (p_name != null && Bukkit.getPlayer(p_name) != null) {
-            String kill_list = "";
-            if (passive_hunter_achiev.containsKey(p_name)) {
-                kill_list = passive_hunter_achiev.get(p_name);
-            }
-            if (ent.getType() == EntityType.PIG) {
-                if (!(kill_list.contains(ent.getType().getName()))) {
-                    kill_list += ent.getType().getName() + ",";
-                }
-            }
-            if (ent.getType() == EntityType.BAT) {
-                if (!(kill_list.contains(ent.getType().getName()))) {
-                    kill_list += ent.getType().getName() + ",";
-                }
-                Player pl = Bukkit.getPlayer(p_name);
-                if (pl.getItemInHand().getType() == Material.BOW && ent.getLastDamageCause().getCause() == DamageCause.PROJECTILE) {
-                    AchievementMechanics.addAchievement(p_name, "Crack Shot");
-                }
-            }
-            if (ent.getType() == EntityType.COW) {
-                if (!(kill_list.contains(ent.getType().getName()))) {
-                    kill_list += ent.getType().getName() + ",";
-                }
-            }
-            if (ent.getType() == EntityType.CHICKEN) {
-                if (!(kill_list.contains(ent.getType().getName()))) {
-                    kill_list += ent.getType().getName() + ",";
-                }
-            }
-            if (ent.getType() == EntityType.MUSHROOM_COW) {
-                if (!(kill_list.contains(ent.getType().getName()))) {
-                    kill_list += ent.getType().getName() + ",";
-                }
-            }
-
-            if (kill_list.split(",").length >= 5) {
-                AchievementMechanics.addAchievement(p_name, "Passive Hunter");
-            }
-
-            passive_hunter_achiev.put(p_name, kill_list);
-        }
+        // Add to killcount and check if an achievements needs to be added
+        AchievementMechanics.addAchievement(p_name, ent);
 
         approaching_mage_list.remove(ent);
         mob_last_hurt.remove(ent);
@@ -5239,7 +4999,7 @@ public class MonsterMechanics implements Listener {
                     double gem_drop_chance = new Random().nextInt(100);
                     double scroll_drop_chance = 0;
                     // log.info(String.valueOf(gem_drop_chance));
-                    double gem_drop_amount = 0;
+                    int gem_drop_amount = 0;
                     double drop_multiplier = 1;
                     boolean is_elite = false;
                     // Elite = 1.5x money chance / item chance.
@@ -5248,7 +5008,7 @@ public class MonsterMechanics implements Listener {
                         is_elite = true;
                     }
 
-                    if (is_elite == true) {
+                    if (is_elite) {
                         drop_multiplier = 1.5;
                     }
 
@@ -5272,7 +5032,7 @@ public class MonsterMechanics implements Listener {
                         scroll_drop_chance = 2;
                         drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
                         if (gem_drop_chance <= ((50 * gold_drop_multiplier) * drop_multiplier)) {
-                            gem_drop_amount = (new Random().nextInt(3 - 1) + 1) * gold_drop_multiplier;
+                            gem_drop_amount = (int) ((new Random().nextInt(3 - 1) + 1) * gold_drop_multiplier);
                         }
                         if (scroll_drop_chance >= do_i_drop_scroll) {
                             // Drop a scroll. Which one?
@@ -5291,9 +5051,9 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.STONE_AXE || weapon.getType() == Material.STONE_SWORD || weapon.getType() == Material.STONE_SPADE
                             || weapon.getType() == Material.STONE_HOE || getItemTier(weapon) == 2) { // T2
                         scroll_drop_chance = 2;
-                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER2_DROPRATE);
                         if (gem_drop_chance <= ((40 * gold_drop_multiplier) * drop_multiplier)) {
-                            gem_drop_amount = (new Random().nextInt(12 - 2) + 2) * gold_drop_multiplier;
+                            gem_drop_amount = (int) ((new Random().nextInt(12 - 2) + 2) * gold_drop_multiplier);
                         }
                         if (scroll_drop_chance >= do_i_drop_scroll) {
                             // Drop a scroll. Which one?
@@ -5324,9 +5084,9 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.IRON_AXE || weapon.getType() == Material.IRON_SWORD || weapon.getType() == Material.IRON_SPADE
                             || weapon.getType() == Material.IRON_HOE || getItemTier(weapon) == 3) { // T3
                         scroll_drop_chance = 2;
-                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_DROPRATE);
                         if (gem_drop_chance <= ((30 * gold_drop_multiplier) * drop_multiplier)) {
-                            gem_drop_amount = (new Random().nextInt(30 - 10) + 10) * gold_drop_multiplier;
+                            gem_drop_amount = (int) ((new Random().nextInt(30 - 10) + 10) * gold_drop_multiplier);
                         }
                         if (scroll_drop_chance >= do_i_drop_scroll) {
                             // Drop a scroll. Which one?
@@ -5358,9 +5118,9 @@ public class MonsterMechanics implements Listener {
                             || weapon.getType() == Material.DIAMOND_SPADE || getItemTier(weapon) == 4) { // T4
                         scroll_drop_chance = 1;
 
-                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_DROPRATE);
                         if (gem_drop_chance <= ((20 * gold_drop_multiplier) * drop_multiplier)) {
-                            gem_drop_amount = (new Random().nextInt(50 - 20) + 20) * gold_drop_multiplier;
+                            gem_drop_amount = (int) ((new Random().nextInt(50 - 20) + 20) * gold_drop_multiplier);
                         }
                         if (scroll_drop_chance >= do_i_drop_scroll) {
                             // Drop a scroll. Which one?
@@ -5380,9 +5140,9 @@ public class MonsterMechanics implements Listener {
                     if (weapon.getType() == Material.GOLD_AXE || weapon.getType() == Material.GOLD_SWORD || weapon.getType() == Material.GOLD_HOE
                             || weapon.getType() == Material.GOLD_SPADE || getItemTier(weapon) == 5) { // T5
                         scroll_drop_chance = 1;
-                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DROPRATE);
+                        drop_chance = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_DROPRATE);
                         if (gem_drop_chance <= ((35 * gold_drop_multiplier) * drop_multiplier)) {
-                            gem_drop_amount = (new Random().nextInt(200 - 75) + 75) * gold_drop_multiplier;
+                            gem_drop_amount = (int) ((new Random().nextInt(200 - 75) + 75) * gold_drop_multiplier);
                         }
                         if (scroll_drop_chance >= do_i_drop_scroll) {
                             // Drop a scroll. Which one?
@@ -5405,7 +5165,7 @@ public class MonsterMechanics implements Listener {
                         scroll_drop_chance = 2;
                         if (scroll_drop_chance >= do_i_drop_scroll) {
                             // Drop a scroll. Which one?
-                            int scroll_type = new Random().nextInt(1); // 0
+                            int scroll_type = new Random().nextInt(2); // 0
                             if (scroll_type == 0) {
                                 ent.getWorld().dropItemNaturally(ent.getLocation(),
                                         CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Crestguard_keep_scroll)));
@@ -5413,36 +5173,36 @@ public class MonsterMechanics implements Listener {
                         }
                     }
 
-                    /*
-                     * String mob_type = getMobType(ent); if(mob_type.equalsIgnoreCase("naga")){ // GLOOMY scroll_drop_chance = 3; if(scroll_drop_chance >=
-                     * do_i_drop_scroll){ // Drop a scroll. Which one? int scroll_type = new Random().nextInt(1); // 0 if(scroll_type == 0){
-                     * ent.getWorld().dropItemNaturally(ent.getLocation(),
-                     * CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Swamp_safezone_scroll))); } } }
-                     * if(mob_type.equalsIgnoreCase("tripoli soldier") || mob_type.equalsIgnoreCase("lizardman")){ // TRIPOLI scroll_drop_chance = 2;
-                     * if(scroll_drop_chance >= do_i_drop_scroll){ // Drop a scroll. Which one? int scroll_type = new Random().nextInt(1); // 0 if(scroll_type
-                     * == 0){ ent.getWorld().dropItemNaturally(ent.getLocation(),
-                     * CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(TeleportationMechanics.Tripoli_scroll))); } } }
-                     */
+                    if (mob_type.contains("naga")) {
+                        scroll_drop_chance = 2;
+                        if (scroll_drop_chance >= do_i_drop_scroll) {
+                            // Drop a scroll. Which one?
+                            int scroll_type = new Random().nextInt(2); // 0
+                            if (scroll_type == 0) {
+                                ent.getWorld().dropItemNaturally(ent.getLocation(),
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Swamp_safezone_scroll)));
+                            }
+                        }
+                    }
+
+                    if (mob_type.contains("tipoli soldier") || mob_type.contains("lizardman")) {
+                        scroll_drop_chance = 2;
+                        if (scroll_drop_chance >= do_i_drop_scroll) {
+                            // Drop a scroll. Which one?
+                            int scroll_type = new Random().nextInt(2); // 0
+                            if (scroll_type == 0) {
+                                ent.getWorld().dropItemNaturally(ent.getLocation(),
+                                        CraftItemStack.asCraftCopy(TeleportationMechanics.makeUnstackable(Tripoli_scroll)));
+                            }
+                        }
+                    }
 
                     drop_chance = (drop_chance * item_drop_multiplier);
                     drop_chance = (drop_chance * drop_multiplier);
 
                     if (is_elite) {
-                        if (mob_tier == 1) {
-                            drop_chance = 100;
-                        }
-                        if (mob_tier == 2) {
-                            drop_chance = 50;
-                        }
-                        if (mob_tier == 3) {
-                            drop_chance = 10;
-                        }
-                        if (mob_tier == 4) {
-                            drop_chance = 2;
-                        }
-                        if (mob_tier == 5) {
-                            drop_chance = 1;
-                        }
+                        double elite_drop_rate_modifier = ConfigFile.getInstance().getConfigValue(ConfigKey.ELITE_DROPRATE_MODIFIER);
+                        drop_chance *= elite_drop_rate_modifier;
                     }
 
                     int do_i_drop_arrows = new Random().nextInt(100);
@@ -5499,73 +5259,150 @@ public class MonsterMechanics implements Listener {
                         }
                     }
 
+                    Date date = new Date();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+
+                    cal.set(Calendar.MONTH, Calendar.OCTOBER);
+                    cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+                    cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
+                    Date firstFridayOfOctober = cal.getTime();
+
+                    cal.set(Calendar.MONTH, Calendar.NOVEMBER);
+                    cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                    cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
+                    Date firstSundayOfNovember = cal.getTime();
+
+                    // It's between the first friday of oktober and the first sunday of november let's enable the halloween drops
+                    if (date.after(firstFridayOfOctober) && date.before(firstSundayOfNovember)) {
+                        // HALLOWEEN DROP CODE
+                        int do_i_drop_candy = new Random().nextInt(1000);
+                        int do_i_drop_mask = new Random().nextInt(10000);
+                        ItemStack candy = CraftItemStack.asCraftCopy(Halloween.halloween_candy);
+                        ItemStack mask = CraftItemStack.asCraftCopy(Halloween.halloween_mask);
+
+                        if (mob_tier == 1 && do_i_drop_candy == 0) {
+                            candy.setAmount(new Random().nextInt(4) + 2);
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);
+                        }
+
+                        if (mob_tier == 2 && do_i_drop_candy <= 5) {
+                            candy.setAmount(new Random().nextInt(4) + 2);
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);
+                        }
+
+                        if (mob_tier == 3 && do_i_drop_candy <= 10) {
+                            candy.setAmount(new Random().nextInt(4) + 2);
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);
+                        }
+
+                        if (mob_tier == 4 && do_i_drop_candy <= 20) {
+                            candy.setAmount(new Random().nextInt(4) + 2);
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);
+                        }
+
+                        if (mob_tier == 5 && do_i_drop_candy <= 30) {
+                            candy.setAmount(new Random().nextInt(4) + 2);
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);
+                        }
+
+                        if (mob_tier == 1 && do_i_drop_mask == 0) {
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
+                        }
+
+                        if (mob_tier == 2 && do_i_drop_mask <= 2) {
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
+                        }
+
+                        if (mob_tier == 3 && do_i_drop_mask <= 5) {
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
+                        }
+
+                        if (mob_tier == 4 && do_i_drop_mask <= 7) {
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
+                        }
+
+                        if (mob_tier == 5 && do_i_drop_mask <= 12) {
+                            ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
+                        }
+                    }
+
                     // EASTER EGG DROP CODE
-                    /*
-                     * int do_i_drop_easter = new Random().nextInt(2000); if (mob_tier <= 3) { if (do_i_drop_easter == 1) { // 0.05% chance Location loc =
-                     * ent.getLocation(); loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(ItemMechanics.easter_egg)); } } if (mob_tier > 3) {
-                     * // 4, 5 if (do_i_drop_easter <= 10) { // 0.5% chance Location loc = ent.getLocation(); loc.getWorld().dropItemNaturally(loc,
-                     * CraftItemStack.asCraftCopy(ItemMechanics.easter_egg)); } }
-                     */
-                    // HALLOWEEN DROP CODE
-                    /*
-                     * int do_i_drop_candy = new Random().nextInt(1000); int do_i_drop_mask = new Random().nextInt(10000); ItemStack candy =
-                     * CraftItemStack.asCraftCopy(Halloween.halloween_candy); ItemStack mask = CraftItemStack.asCraftCopy(Halloween.halloween_mask);
-                     * 
-                     * if(mob_tier == 1 && do_i_drop_candy == 0){ candy.setAmount(new Random().nextInt(4) + 2);
-                     * ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);}
-                     * 
-                     * if(mob_tier == 2 && do_i_drop_candy <= 5){ candy.setAmount(new Random().nextInt(4) + 2);
-                     * ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);}
-                     * 
-                     * if(mob_tier == 3 && do_i_drop_candy <= 10){ candy.setAmount(new Random().nextInt(4) + 2);
-                     * ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);}
-                     * 
-                     * if(mob_tier == 4 && do_i_drop_candy <= 20){ candy.setAmount(new Random().nextInt(4) + 2);
-                     * ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);}
-                     * 
-                     * if(mob_tier == 5 && do_i_drop_candy <= 30){ candy.setAmount(new Random().nextInt(4) + 2);
-                     * ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), candy);}
-                     * 
-                     * 
-                     * if(mob_tier == 1 && do_i_drop_mask == 0) ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
-                     * 
-                     * if(mob_tier == 2 && do_i_drop_mask <= 2) ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
-                     * 
-                     * if(mob_tier == 3 && do_i_drop_mask <= 5) ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
-                     * 
-                     * if(mob_tier == 4 && do_i_drop_mask <= 7) ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
-                     * 
-                     * if(mob_tier == 5 && do_i_drop_mask <= 12) ent.getLocation().getWorld().dropItemNaturally(ent.getLocation(), mask);
-                     */
+                    if (ConfigFile.getInstance().getConfigValue(ConfigKey.EASTER_EVENT)) {
+                        int do_i_drop_oop = new Random().nextInt(100);
+                        if (mob_tier == 2) {
+                            if (do_i_drop_oop <= 1) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.easter_egg));
+                            }
+                        }
+                        if (mob_tier == 3) {
+                            if (do_i_drop_oop <= 1) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.easter_egg));
+                            }
+                        }
+                        if (mob_tier == 4) {
+                            if (do_i_drop_oop <= 1) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.easter_egg));
+                            }
+                        }
+                        if (mob_tier == 5) {
+                            if (do_i_drop_oop <= 2) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.easter_egg));
+                            }
+                        }
+
+                        int do_i_drop_easter = new Random().nextInt(2000);
+                        if (mob_tier <= 3) {
+                            if (do_i_drop_easter == 1) { // 0.05% chance
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.easter_egg));
+                            }
+                        }
+                        if (mob_tier > 3) { // 4, 5
+                            if (do_i_drop_easter <= 10) { // 0.5% chance
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.easter_egg));
+                            }
+                        }
+
+                    }
+
 
                     // Orb of Peace DROP CODE
-                    /*
-                     * int do_i_drop_oop = new Random().nextInt(100); if(mob_tier == 2){ if(do_i_drop_oop <= 1){ Location loc = ent.getLocation();
-                     * loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace)); } } if(mob_tier == 3){ if(do_i_drop_oop <=
-                     * 1){ Location loc = ent.getLocation(); loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace)); } }
-                     * if(mob_tier == 4){ if(do_i_drop_oop <= 1){ Location loc = ent.getLocation(); loc.getWorld().dropItemNaturally(loc,
-                     * CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace)); } } if(mob_tier == 5){ if(do_i_drop_oop <= 2){ Location loc = ent.getLocation();
-                     * loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(ItemMechanics.orb_of_peace)); } }
-                     */
-
-                    if (mob_tier == 5 && !is_elite) { //
-                        int chance = new Random().nextInt(1000);
-                        if (chance == 500 || chance == 501) { // 0.2% chance of it equalling that.
-                            drop_chance = 100;
-                        } else {
-                            drop_chance = 0;
+                    if (ConfigFile.getInstance().getConfigValue(ConfigKey.ORB_OF_PEACE)) {
+                        int do_i_drop_oop = new Random().nextInt(100);
+                        if (mob_tier == 2) {
+                            if (do_i_drop_oop <= 1) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.orb_of_peace));
+                            }
                         }
-                    }
-                    if (mob_tier == 4 && !is_elite) {
-                        int chance = new Random().nextInt(1000);
-                        if (chance <= 5) { // 1% chance of it equalling that.
-                            drop_chance = 100;
-                        } else {
-                            drop_chance = 0;
+                        if (mob_tier == 3) {
+                            if (do_i_drop_oop <= 1) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.orb_of_peace));
+                            }
                         }
+                        if (mob_tier == 4) {
+                            if (do_i_drop_oop <= 1) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.orb_of_peace));
+                            }
+                        }
+                        if (mob_tier == 5) {
+                            if (do_i_drop_oop <= 2) {
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, CraftItemStack.asCraftCopy(Misc.orb_of_peace));
+                            }
+                        }
+
                     }
 
-                    if (loot_buff == true) {
+                    if (loot_buff) {
                         drop_chance *= 1.20;
                     }
 
@@ -5607,11 +5444,19 @@ public class MonsterMechanics implements Listener {
                         if (random_dur > i_gear.getType().getMaxDurability()) {
                             random_dur = i_gear.getType().getMaxDurability();
                         }
+
+                        // Set random durability to item
                         i_gear.setDurability((short) random_dur);
+
+                        log.info("Item to drop " + i_gear);
+
+                        // Add serial number
+                        i_gear = ItemTracker.addSerialNumber(i_gear, p);
 
                         ItemMeta im = i_gear.getItemMeta();
 
                         try {
+                            // TODO change to actually remove the enchantments
                             if (im.hasEnchants()) {
                                 for (Map.Entry<Enchantment, Integer> data : im.getEnchants().entrySet()) {
                                     i_gear.removeEnchantment(data.getKey());
@@ -5626,7 +5471,26 @@ public class MonsterMechanics implements Listener {
 
                         i_gear.setItemMeta(im);
                         Player target = Bukkit.getPlayer(mob_target.get(ent));
-                        if (LevelMechanics.getPlayerTier(target) + 1 >= getMobTier(ent)) {
+
+                        if (ConfigFile.getInstance().getConfigValue(ConfigKey.LEVEL_RESTRICTIONS)) {
+                            if (LevelMechanics.getPlayerTier(target) + 1 >= getMobTier(ent)) {
+                                if (i_gear.getType() != Material.AIR) {
+
+                                    if (Main.getPartyMechanics().isInParty(p)) {
+
+                                        Optional<Party> optionalParty = Main.getPartyMechanics().getParty(p);
+
+                                        if (optionalParty.isPresent()) {
+                                            Party party = optionalParty.get();
+                                            party.dropItemToParty(p, ent.getLocation(), i_gear, ent);
+                                        }
+
+                                    } else {
+                                        ent.getWorld().dropItemNaturally(ent.getLocation(), i_gear);
+                                    }
+                                }
+                            }
+                        } else {
                             if (i_gear.getType() != Material.AIR) {
 
                                 if (Main.getPartyMechanics().isInParty(p)) {
@@ -5635,7 +5499,7 @@ public class MonsterMechanics implements Listener {
 
                                     if (optionalParty.isPresent()) {
                                         Party party = optionalParty.get();
-                                        party.dropItemtoParty(p, ent.getLocation(), i_gear, ent);
+                                        party.dropItemToParty(p, ent.getLocation(), i_gear, ent);
                                     }
 
                                 } else {
@@ -5643,21 +5507,38 @@ public class MonsterMechanics implements Listener {
                                 }
                             }
                         }
+
                     }
 
                     if (gem_drop_amount > 0) {
-                        // net.minecraft.server.ItemStack gems = (((CraftItemStack)
-                        // ).getHandle());
-                        while (gem_drop_amount > 64) {
-                            ItemStack i = Money.makeGems((int) 64);
+
+                        if (Main.getPartyMechanics().isInParty(p)) {
+
+                            Optional<Party> optionalParty = Main.getPartyMechanics().getParty(p);
+
+                            Party party;
+
+                            if (optionalParty.isPresent()) {
+
+                                party = optionalParty.get();
+
+                                if (party.getLootType() != LootType.NONE) {
+                                    party.dropGemToParty(p, gem_drop_amount);
+                                }
+                            }
+
+                        } else {
+                            while (gem_drop_amount > 64) {
+                                ItemStack i = Money.makeGems(64);
+                                Location loc = ent.getLocation();
+                                loc.getWorld().dropItemNaturally(loc, i);
+                                gem_drop_amount = gem_drop_amount - 64;
+                            }
+
+                            ItemStack i = Money.makeGems(gem_drop_amount); // Drop the remainder.
                             Location loc = ent.getLocation();
                             loc.getWorld().dropItemNaturally(loc, i);
-                            gem_drop_amount = gem_drop_amount - 64;
                         }
-
-                        ItemStack i = Money.makeGems((int) gem_drop_amount); // Drop the remainder.
-                        Location loc = ent.getLocation();
-                        loc.getWorld().dropItemNaturally(loc, i);
                     }
                 }
             }
@@ -5666,7 +5547,7 @@ public class MonsterMechanics implements Listener {
             if (ent.getLocation().getWorld().getName().equalsIgnoreCase(main_world_name)) {
                 never_unload_home = true;
             }
-            if (loot != null && loot.size() > 0) {
+            if (loot != null && !loot.isEmpty()) {
                 for (ItemStack is : loot) {
                     if (is != null) {
                         if (InstanceMechanics.isInstance(ent.getWorld().getName())) {
@@ -5691,7 +5572,7 @@ public class MonsterMechanics implements Listener {
             int mob_num = getMobsUniqueNumber(ent);
             Location spawner_loc = getMobsHomeSpawner(ent);
 
-            if (never_unload_home == true) {
+            if (never_unload_home) {
                 Location chunk = spawner_loc.getChunk().getBlock(0, 0, 0).getLocation();
                 if (!(never_unload_chunks.contains(chunk))) {
                     never_unload_chunks.add(chunk);
@@ -5704,7 +5585,7 @@ public class MonsterMechanics implements Listener {
             if (spawned_mobs.containsKey(spawner_loc)) {
                 List<Integer> spawned_mob_nums = spawned_mobs.get(spawner_loc);
 
-                List<Entity> lspawned_mobs = new ArrayList<Entity>();
+                List<Entity> lspawned_mobs = new ArrayList<>();
                 if (local_spawned_mobs.containsKey(spawner_loc)) {
                     lspawned_mobs = local_spawned_mobs.get(spawner_loc);
                     lspawned_mobs.remove(ent);
@@ -5714,7 +5595,7 @@ public class MonsterMechanics implements Listener {
                     local_spawned_mobs.put(spawner_loc, lspawned_mobs);
                 }
 
-                spawned_mob_nums.remove(new Integer(mob_num));
+                spawned_mob_nums.remove(Integer.valueOf(mob_num));
                 spawned_mobs.put(spawner_loc, spawned_mob_nums);
 
                 addMobToRespawnList(ent);
@@ -5769,7 +5650,6 @@ public class MonsterMechanics implements Listener {
                 e.getEntity().remove();
                 System.out.print("ITEM WOULD HAVE DROPPED IN AN INSTANCE: " + e.getEntity().getItemStack().getType() + " DURA: "
                         + e.getEntity().getItemStack().getDurability() + " MAX DURA: " + e.getEntity().getItemStack().getType().getMaxDurability());
-                return;
             }
         }
     }
@@ -5835,38 +5715,6 @@ public class MonsterMechanics implements Listener {
         return 1;
     }
 
-    // TODO remove
-    /**
-     * Generates mob gear using the newest item generation engine added in patch 1.9.  Supports 
-     * both weapons and armor.
-     * @param type - The type of gear to generate, can be weapons or armor.
-     * @param tier - The tier from T1 - T5
-     * @return The item in a Bukkit ItemStack object
-     */
-    /*public static ItemStack generateMobGear(ItemType type, ItemTier tier) {
-        int armor_range_check = new Random().nextInt(100);
-        ItemRarity rarity = null;
-        
-        if (armor_range_check <= 80) {
-            rarity = ItemRarity.COMMON;
-        }
-        else if (armor_range_check < 95) {
-            rarity = ItemRarity.UNCOMMON;
-        }
-        else if (armor_range_check < 98) {
-            rarity = ItemRarity.RARE;
-        }
-        else if (armor_range_check == 99) {
-            rarity = ItemRarity.UNIQUE;
-        }
-        
-        if (rarity == null) {
-            rarity = ItemRarity.COMMON;
-        }
-        
-        return (new ItemGenerator()).setType(type).setTier(tier).setRarity(rarity).generateItem().getItem();
-    }*/
-
     /**
      * Generates mob gear using the newest item generation engine added in patch 1.9.  Supports
      * both weapons and armor.
@@ -5885,7 +5733,7 @@ public class MonsterMechanics implements Listener {
     }
 
     public static ItemStack spawnRandomWeapon(ItemTier tier, boolean no_bow, boolean no_weapon) {
-        if (no_weapon == true) {
+        if (no_weapon) {
             int wep_type = new Random().nextInt(2);
             if (wep_type == 0) {
                 return generateMobGear(ItemType.SWORD, tier);
@@ -5893,7 +5741,7 @@ public class MonsterMechanics implements Listener {
             if (wep_type == 1) {
                 return generateMobGear(ItemType.AXE, tier);
             }
-        } else if (no_bow == true && no_weapon == false) {
+        } else if (no_bow && !no_weapon) {
             int wep_type = new Random().nextInt(4);
             if (wep_type == 0) {
                 return generateMobGear(ItemType.SWORD, tier);
@@ -5907,7 +5755,7 @@ public class MonsterMechanics implements Listener {
             else if (wep_type == 3) {
                 return generateMobGear(ItemType.STAFF, tier);
             }
-        } else if (no_bow == false && no_weapon == false) {
+        } else if (!no_bow && !no_weapon) {
             int wep_type = new Random().nextInt(5);
             if (wep_type == 0) {
                 return generateMobGear(ItemType.SWORD, tier);
@@ -5984,7 +5832,7 @@ public class MonsterMechanics implements Listener {
         }
 
         ItemStack weapon = null, boots = null, legs = null, chest = null, helmet = null;
-        List<ItemStack> gear_list = new ArrayList<ItemStack>();
+        List<ItemStack> gear_list = new ArrayList<>();
 
         if (custom_name.contains("The Infernal Abyss")) {
             // TODO: Custom armor set.
@@ -6025,9 +5873,9 @@ public class MonsterMechanics implements Listener {
 
             LivingEntity le = (LivingEntity) e;
             le.setFireTicks(Integer.MAX_VALUE); // Always burninggggg.
-            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
             le.setCustomNameVisible(true);
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name));
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "fire_demon"));
         }
 
@@ -6071,9 +5919,9 @@ public class MonsterMechanics implements Listener {
             }
 
             LivingEntity le = (LivingEntity) e;
-            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
             le.setCustomNameVisible(true);
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name));
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "bandit_leader"));
         }
 
@@ -6112,9 +5960,9 @@ public class MonsterMechanics implements Listener {
             ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
 
             LivingEntity le = (LivingEntity) e;
-            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
             le.setCustomNameVisible(true);
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name));
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "tnt_bandit"));
         }
         if (custom_name.contains("Diner of Bones")) {
@@ -6137,9 +5985,9 @@ public class MonsterMechanics implements Listener {
             ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
 
             LivingEntity le = (LivingEntity) e;
-            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
             le.setCustomNameVisible(true);
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name));
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "wolf"));
             BossMechanics.boss_map.put(le, "aceron_wolf");
         }
@@ -6184,9 +6032,9 @@ public class MonsterMechanics implements Listener {
             ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
 
             LivingEntity le = (LivingEntity) e;
-            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
             le.setCustomNameVisible(true);
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name));
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "aceron"));
             // Atleast a 8 second cooldown on the first jump
             BossMechanics.last_jump.put(le, System.currentTimeMillis() + (1000 * 8));
@@ -6228,9 +6076,9 @@ public class MonsterMechanics implements Listener {
             ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
 
             LivingEntity le = (LivingEntity) e;
-            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
             le.setCustomNameVisible(true);
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name));
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "unholy_priest"));
         }
 
@@ -6252,12 +6100,12 @@ public class MonsterMechanics implements Listener {
             if (ItemMechanics.getArmorVal(i, false) == null) {
                 continue;
             }
-            List<Integer> armor_vals = new ArrayList<Integer>(ItemMechanics.getArmorVal(i, true));
+            List<Integer> armor_vals = new ArrayList<>(ItemMechanics.getArmorVal(i, true));
             int median = armor_vals.get(0) + (armor_vals.get(1) - armor_vals.get(0));
             total_armor += median;
         }
 
-        total_armor = (int) ((double) (total_armor * 2.0D));
+        total_armor = (int) (total_armor * 2.0D);
 
         double total_armor_dmg = 0;
 
@@ -6268,7 +6116,7 @@ public class MonsterMechanics implements Listener {
             if (ItemMechanics.getDmgVal(i, false) == null) {
                 continue;
             }
-            List<Integer> armor_vals = new ArrayList<Integer>(ItemMechanics.getDmgVal(i, true));
+            List<Integer> armor_vals = new ArrayList<>(ItemMechanics.getDmgVal(i, true));
             int median = armor_vals.get(0) + (armor_vals.get(1) - armor_vals.get(0));
             total_armor_dmg += median;
         }
@@ -6295,11 +6143,11 @@ public class MonsterMechanics implements Listener {
             max_dmg = 1;
         }
 
-        List<Integer> dmg_range = new ArrayList<Integer>();
-        min_dmg += ((double) min_dmg * (double) total_armor_dmg);
-        max_dmg += ((double) max_dmg * (double) total_armor_dmg);
-        min_dmg = ((double) min_dmg * dmg_mult);
-        max_dmg = ((double) max_dmg * dmg_mult);
+        List<Integer> dmg_range = new ArrayList<>();
+        min_dmg += (min_dmg * total_armor_dmg);
+        max_dmg += (max_dmg * total_armor_dmg);
+        min_dmg = (min_dmg * dmg_mult);
+        max_dmg = (max_dmg * dmg_mult);
         dmg_range.add((int) Math.round(min_dmg));
         dmg_range.add((int) Math.round(max_dmg));
 
@@ -6324,42 +6172,43 @@ public class MonsterMechanics implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    public static Entity spawnTierMob(Location l, EntityType et, int tier, int mob_num, Location mob_spawner_loc, boolean elite, String meta_data,
+    public static Entity spawnTierMob(Location location, EntityType entityType, int tier, int mob_num, Location mob_spawner_loc, boolean elite, String meta_data,
             String custom_name, boolean return_entity, int level) {
 
-        Entity e = null;
+        Entity entity = null;
         ItemTier itemTier = ItemTier.getTierFromInt(tier);
 
+        // If it's a boss mob spawn a boss mob instead.
         if (custom_name != null && custom_name.equalsIgnoreCase("Mad_Bandit_Pyromancer")) {
-            return spawnBossMob(l, et, "bandit", "Mad Bandit Pyromancer", 1);
+            return spawnBossMob(location, entityType, "bandit", "Mad Bandit Pyromancer", 1);
         }
         if (custom_name != null && custom_name.equalsIgnoreCase("Wicked_Gatekeeper")) {
-            return spawnBossMob(l, et, "goblin", "Wicked Gatekeeper", 4);
+            return spawnBossMob(location, entityType, "goblin", "Wicked Gatekeeper", 4);
         }
-        if (et == EntityType.PIG_ZOMBIE) {
-            et = EntityType.SKELETON;
+        if (entityType == EntityType.PIG_ZOMBIE) {
+            entityType = EntityType.SKELETON;
             meta_data = "";
         }
 
-        if (et == EntityType.SLIME) {
+        if (entityType == EntityType.SLIME) {
             int new_et = new Random().nextInt(3);
             if (new_et == 0) {
-                et = EntityType.PIG;
+                entityType = EntityType.PIG;
             }
             if (new_et == 1) {
-                et = EntityType.COW;
+                entityType = EntityType.COW;
             }
             if (new_et == 2) {
-                et = EntityType.CHICKEN;
+                entityType = EntityType.CHICKEN;
             }
             if (new_et == 3) {
-                et = EntityType.SHEEP;
+                entityType = EntityType.SHEEP;
             }
         }
 
-        if (et == EntityType.PIG || et == EntityType.COW || et == EntityType.CHICKEN || et == EntityType.SHEEP || et == EntityType.MUSHROOM_COW) {
-            e = l.getWorld().spawnEntity(l, et);
-            Animals a = (Animals) e;
+        if (entityType == EntityType.PIG || entityType == EntityType.COW || entityType == EntityType.CHICKEN || entityType == EntityType.SHEEP || entityType == EntityType.MUSHROOM_COW) {
+            entity = location.getWorld().spawnEntity(location, entityType);
+            Animals a = (Animals) entity;
             int age = new Random().nextInt(2);
             if (age == 0) {
                 a.setBaby();
@@ -6370,45 +6219,45 @@ public class MonsterMechanics implements Listener {
 
             a.setBreed(false);
 
-            mob_health.put(e, 1);
+            mob_health.put(entity, 1);
 
             if (mob_num > -1) {
-                mob_spawn_ownership.put(e, mob_spawner_loc.getX() + "," + mob_spawner_loc.getY() + "," + mob_spawner_loc.getZ() + ":" + mob_num);
+                mob_spawn_ownership.put(entity, mob_spawner_loc.getX() + "," + mob_spawner_loc.getY() + "," + mob_spawner_loc.getZ() + ":" + mob_num);
             }
 
-            LivingEntity le = (LivingEntity) e;
-            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, et.name().substring(0, 1).toUpperCase()
-                    + et.name().substring(1, et.name().length()).toLowerCase()));
-            return e;
+            LivingEntity le = (LivingEntity) entity;
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, entityType.name().substring(0, 1).toUpperCase()
+                    + entityType.name().substring(1).toLowerCase()));
+            return entity;
         }
 
-        if (et == EntityType.BAT) {
-            e = l.getWorld().spawnEntity(l, et);
-            mob_health.put(e, 1);
+        if (entityType == EntityType.BAT) {
+            entity = location.getWorld().spawnEntity(location, entityType);
+            mob_health.put(entity, 1);
 
             if (mob_num > -1) {
-                mob_spawn_ownership.put(e, mob_spawner_loc.getX() + "," + mob_spawner_loc.getY() + "," + mob_spawner_loc.getZ() + ":" + mob_num);
+                mob_spawn_ownership.put(entity, mob_spawner_loc.getX() + "," + mob_spawner_loc.getY() + "," + mob_spawner_loc.getZ() + ":" + mob_num);
             }
 
-            return e;
+            return entity;
         }
 
-        CopyOnWriteArrayList<ItemStack> gear_list = new CopyOnWriteArrayList<ItemStack>(Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR),
+        CopyOnWriteArrayList<ItemStack> gear_list = new CopyOnWriteArrayList<>(Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR),
                 new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
 
         int gear_check = new Random().nextInt(3) + 1; // 1, 2, 3, 4
         net.minecraft.server.v1_8_R1.ItemStack weapon = null;
         ItemStack is_weapon = null;
 
-        if (et == EntityType.WOLF || et == EntityType.IRON_GOLEM || et == EntityType.ENDERMAN || et == EntityType.BLAZE || et == EntityType.SILVERFISH
-                || et == EntityType.WITCH || et == EntityType.MAGMA_CUBE || et == EntityType.SPIDER || et == EntityType.CAVE_SPIDER) {
+        if (entityType == EntityType.WOLF || entityType == EntityType.IRON_GOLEM || entityType == EntityType.ENDERMAN || entityType == EntityType.BLAZE || entityType == EntityType.SILVERFISH
+                || entityType == EntityType.WITCH || entityType == EntityType.MAGMA_CUBE || entityType == EntityType.SPIDER || entityType == EntityType.CAVE_SPIDER) {
             is_weapon = spawnRandomWeapon(itemTier, false, true);
-        } else if (et == EntityType.PIG_ZOMBIE) {
+        } else if (entityType == EntityType.PIG_ZOMBIE) {
             is_weapon = spawnRandomWeapon(itemTier, true, false);
         } else {
             is_weapon = spawnRandomWeapon(itemTier, false, false);
         }
-        if (elite == true) {
+        if (elite) {
             is_weapon.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
         }
         weapon = CraftItemStack.asNMSCopy(is_weapon);
@@ -6416,10 +6265,11 @@ public class MonsterMechanics implements Listener {
         // ent.setEquipment(0, weapon);
         gear_list.set(0, is_weapon);
 
-        if (elite == true) {
+        if (elite) {
             gear_check = 4;
         }
 
+        // T3 will have 3 or 4 pieces of armour
         if (tier == 3) {
             int type = new Random().nextInt(2); // 0, 1
             if (type == 0) {
@@ -6429,6 +6279,8 @@ public class MonsterMechanics implements Listener {
                 gear_check = 4;
             }
         }
+
+        // T4 and T5 will always have all four armour pieces
         if (tier >= 4) {
             gear_check = 4;
         }
@@ -6441,7 +6293,7 @@ public class MonsterMechanics implements Listener {
             larmor_type = armor_type.nextInt(4) + 1; // 1, 2, 3, 4
             if (larmor_type == 1 && boots == null) {
                 boots = generateMobGear(ItemType.BOOTS, itemTier);
-                if (elite == true) {
+                if (elite) {
                     boots.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                 }
                 gear_list.set(1, boots);
@@ -6449,7 +6301,7 @@ public class MonsterMechanics implements Listener {
             }
             if (larmor_type == 2 && legs == null) {
                 legs = generateMobGear(ItemType.LEGGINGS, itemTier);
-                if (elite == true) {
+                if (elite) {
                     legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                 }
                 gear_list.set(2, legs);
@@ -6457,7 +6309,7 @@ public class MonsterMechanics implements Listener {
             }
             if (larmor_type == 3 && chest == null) {
                 chest = generateMobGear(ItemType.CHESTPLATE, itemTier);
-                if (elite == true) {
+                if (elite) {
                     chest.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                 }
                 gear_list.set(3, chest);
@@ -6465,7 +6317,7 @@ public class MonsterMechanics implements Listener {
             }
             if (larmor_type == 4 && helmet == null) {
                 helmet = generateMobGear(ItemType.HELMET, itemTier);
-                if (elite == true) {
+                if (elite) {
                     helmet.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                 }
                 gear_list.set(4, helmet);
@@ -6485,28 +6337,28 @@ public class MonsterMechanics implements Listener {
                 String mat_name = is.getType().name().toLowerCase();
                 if (mat_name.contains("helmet") && !ItemMechanics.getArmorData(is).equalsIgnoreCase("no")) {
                     helmet = is;
-                    if (elite == true) {
+                    if (elite) {
                         helmet.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                     }
                     gear_list.set(4, helmet);
                 }
                 if (mat_name.contains("chestplate") && !ItemMechanics.getArmorData(is).equalsIgnoreCase("no")) {
                     chest = is;
-                    if (elite == true) {
+                    if (elite) {
                         chest.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                     }
                     gear_list.set(4, chest);
                 }
                 if (mat_name.contains("leggings") && !ItemMechanics.getArmorData(is).equalsIgnoreCase("no")) {
                     legs = is;
-                    if (elite == true) {
+                    if (elite) {
                         legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                     }
                     gear_list.set(4, legs);
                 }
                 if (mat_name.contains("boots") && !ItemMechanics.getArmorData(is).equalsIgnoreCase("no")) {
                     boots = is;
-                    if (elite == true) {
+                    if (elite) {
                         boots.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                     }
                     gear_list.set(4, boots);
@@ -6514,7 +6366,7 @@ public class MonsterMechanics implements Listener {
 
                 if (!ItemMechanics.getDamageData(is).equalsIgnoreCase("no")) {
                     is_weapon = is;
-                    if (elite == true) {
+                    if (elite) {
                         is_weapon.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                     }
                     gear_list.set(0, is_weapon);
@@ -6564,7 +6416,7 @@ public class MonsterMechanics implements Listener {
 
                 if (chest == null) { // They don't normally have the torso.
                     chest = generateMobGear(ItemType.CHESTPLATE, itemTier);
-                    if (elite == true) {
+                    if (elite) {
                         chest.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
                     }
                     gear_list.set(3, chest);
@@ -6594,7 +6446,7 @@ public class MonsterMechanics implements Listener {
             if (ItemMechanics.getArmorVal(i, false) == null) {
                 continue;
             }
-            List<Integer> armor_vals = new ArrayList<Integer>(ItemMechanics.getArmorVal(i, true));
+            List<Integer> armor_vals = new ArrayList<>(ItemMechanics.getArmorVal(i, true));
             int median = armor_vals.get(0) + (armor_vals.get(1) - armor_vals.get(0));
             total_armor += median;
         }
@@ -6608,7 +6460,7 @@ public class MonsterMechanics implements Listener {
             if (ItemMechanics.getDmgVal(i, false) == null) {
                 continue;
             }
-            List<Integer> armor_vals = new ArrayList<Integer>(ItemMechanics.getDmgVal(i, true));
+            List<Integer> armor_vals = new ArrayList<>(ItemMechanics.getDmgVal(i, true));
             int median = armor_vals.get(0) + (armor_vals.get(1) - armor_vals.get(0));
             total_armor_dmg += median;
         }
@@ -6628,24 +6480,24 @@ public class MonsterMechanics implements Listener {
         double max_dmg = tdmg_range.get(1);
 
         if (tier == 1) {
-            if (elite == false) {
+            if (!elite) {
                 min_dmg = (min_dmg * 0.8);
                 max_dmg = (max_dmg * 0.8);
                 total_hp = (total_hp * 0.40);
             }
-            if (elite == true) {
+            if (elite) {
                 min_dmg = (min_dmg * 2.50);
                 max_dmg = (max_dmg * 2.50);
                 total_hp = (total_hp * 1.80);
             }
         }
         if (tier == 2) {
-            if (elite == false) {
+            if (!elite) {
                 min_dmg = (min_dmg * 0.9);
                 max_dmg = (max_dmg * 0.9);
                 total_hp = (total_hp * 0.9);
             }
-            if (elite == true) {
+            if (elite) {
                 min_dmg = (min_dmg * 2.50);
                 max_dmg = (max_dmg * 2.50);
                 total_hp = (total_hp * 2.50);
@@ -6653,36 +6505,36 @@ public class MonsterMechanics implements Listener {
 
         }
         if (tier == 3) {
-            if (elite == false) {
+            if (!elite) {
                 min_dmg = (min_dmg * 1.20);
                 max_dmg = (max_dmg * 1.20);
                 total_hp = (total_hp * 1.20);
             }
-            if (elite == true) {
+            if (elite) {
                 min_dmg = (min_dmg * 3.00);
                 max_dmg = (max_dmg * 3.00);
                 total_hp = (total_hp * 3.00);
             }
         }
         if (tier == 4) {
-            if (elite == false) {
+            if (!elite) {
                 min_dmg = (min_dmg * 1.4);
                 max_dmg = (max_dmg * 1.4);
                 total_hp = (total_hp * 1.4);
             }
-            if (elite == true) {
+            if (elite) {
                 min_dmg = (min_dmg * 5.00);
                 max_dmg = (max_dmg * 5.00);
                 total_hp = (total_hp * 5.00);
             }
         }
         if (tier == 5) {
-            if (elite == false) {
+            if (!elite) {
                 min_dmg = (min_dmg * 1.50);
                 max_dmg = (max_dmg * 1.50);
                 total_hp = (total_hp * 1.50);
             }
-            if (elite == true) {
+            if (elite) {
                 min_dmg = (min_dmg * 7.0);
                 max_dmg = (max_dmg * 7.0);
                 total_hp = (total_hp * 7.0);
@@ -6699,8 +6551,8 @@ public class MonsterMechanics implements Listener {
 
         if (custom_name.contains("Mayel")) {
             total_hp = total_hp * 1.50D;
-            min_dmg = ((double) min_dmg * 1.50D);
-            max_dmg = ((double) max_dmg * 1.50D);
+            min_dmg = (min_dmg * 1.50D);
+            max_dmg = (max_dmg * 1.50D);
         }
         int mob_l = 1;
         if (tier == 1) {
@@ -6724,40 +6576,40 @@ public class MonsterMechanics implements Listener {
         } else if (level == 4) {
             mob_l += new Random().nextInt(4) + 15;
         }
-        List<Integer> dmg_range = new ArrayList<Integer>();
-        min_dmg += ((double) min_dmg * (double) total_armor_dmg);
-        max_dmg += ((double) max_dmg * (double) total_armor_dmg);
+        List<Integer> dmg_range = new ArrayList<>();
+        min_dmg += (min_dmg * total_armor_dmg);
+        max_dmg += (max_dmg * total_armor_dmg);
         min_dmg += (int) ((mob_l * .01) * mob_l);
         max_dmg += (int) ((mob_l * .01) * mob_l);
         dmg_range.add((int) Math.round(min_dmg));
         dmg_range.add((int) Math.round(max_dmg));
         // Spawns the custom zombie if they have a bow
-        if (et == EntityType.ZOMBIE && is_weapon != null && is_weapon.getType() == Material.BOW) {
-            net.minecraft.server.v1_8_R1.World ws = ((CraftWorld) l.getWorld()).getHandle();
+        if (entityType == EntityType.ZOMBIE && is_weapon != null && is_weapon.getType() == Material.BOW) {
+            net.minecraft.server.v1_8_R1.World ws = ((CraftWorld) location.getWorld()).getHandle();
             ZombieArcher za = new ZombieArcher(ws);
-            za.teleportTo(l, true);
+            za.teleportTo(location, true);
             ws.addEntity(za);
-            e = za.getBukkitEntity();
-        } else if (et == EntityType.IRON_GOLEM) {
-            net.minecraft.server.v1_8_R1.World ws = ((CraftWorld) l.getWorld()).getHandle();
+            entity = za.getBukkitEntity();
+        } else if (entityType == EntityType.IRON_GOLEM) {
+            net.minecraft.server.v1_8_R1.World ws = ((CraftWorld) location.getWorld()).getHandle();
             Golem golem = new Golem(ws);
-            golem.setLocation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+            golem.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
             ws.addEntity(golem, SpawnReason.CUSTOM);
-            e = golem.getBukkitEntity();
-            ((LivingEntity) e).getEquipment().setItemInHand(is_weapon);
+            entity = golem.getBukkitEntity();
+            ((LivingEntity) entity).getEquipment().setItemInHand(is_weapon);
         } else {
-            e = l.getWorld().spawnEntity(l, et);
+            entity = location.getWorld().spawnEntity(location, entityType);
         }
-        LivingEntity le = (LivingEntity) e;
+        LivingEntity le = (LivingEntity) entity;
         le.setRemoveWhenFarAway(false);
-        EntityLiving ent = ((CraftLivingEntity) e).getHandle();
-        if (((meta_data.equalsIgnoreCase("wither") || (elite == true && (meta_data.equalsIgnoreCase("bandit") || meta_data.equalsIgnoreCase("monk")))) && e instanceof CraftSkeleton)) {
+        EntityLiving ent = ((CraftLivingEntity) entity).getHandle();
+        if (((meta_data.equalsIgnoreCase("wither") || (elite && (meta_data.equalsIgnoreCase("bandit") || meta_data.equalsIgnoreCase("monk")))) && entity instanceof CraftSkeleton)) {
             // Make it a wither skeleton.
-            ((CraftSkeleton) e).getHandle().setSkeletonType(1);
+            ((CraftSkeleton) entity).getHandle().setSkeletonType(1);
         }
 
         if (meta_data.equalsIgnoreCase("imp")) {
-            PigZombie pz = (PigZombie) e;
+            PigZombie pz = (PigZombie) entity;
             pz.setBaby(true);
         }
 
@@ -6887,8 +6739,8 @@ public class MonsterMechanics implements Listener {
          * if(new Random().nextInt(10) == 0){ ent.setEquipment(4, CraftItemStack.asNMSCopy(new ItemStack(Material.JACK_O_LANTERN, 1))); }
          */
 
-        if (e.getType() == EntityType.ZOMBIE) {
-            Zombie z = (Zombie) e;
+        if (entity.getType() == EntityType.ZOMBIE) {
+            Zombie z = (Zombie) entity;
             z.setBaby(false);
             // EntityZombie ez = (EntityZombie)ent;
             /*
@@ -6898,13 +6750,13 @@ public class MonsterMechanics implements Listener {
             // TODO Uhm?
         }
 
-        if (e.getType() == EntityType.WOLF) {
-            Wolf w = (Wolf) e;
+        if (entity.getType() == EntityType.WOLF) {
+            Wolf w = (Wolf) entity;
             w.setAngry(true);
         }
 
-        if (e.getType() == EntityType.MAGMA_CUBE) {
-            MagmaCube mc = (MagmaCube) e;
+        if (entity.getType() == EntityType.MAGMA_CUBE) {
+            MagmaCube mc = (MagmaCube) entity;
             mc.setSize(3);
         }
 
@@ -6916,24 +6768,24 @@ public class MonsterMechanics implements Listener {
         // e.setMetadata("drid", new FixedMetadataValue(this, 1));
         total_hp = total_hp + 1;
 
-        if (InstanceMechanics.isInstance(l.getWorld().getName())) {
+        if (InstanceMechanics.isInstance(location.getWorld().getName())) {
             // Instance monster modifiers!
             total_hp = (total_hp * 3.0D);
-            dmg_range.set(0, (int) ((double) (dmg_range.get(0) * 1.5D)));
-            dmg_range.set(1, (int) ((double) (dmg_range.get(1) * 1.5D)));
+            dmg_range.set(0, (int) (dmg_range.get(0) * 1.5D));
+            dmg_range.set(1, (int) (dmg_range.get(1) * 1.5D));
             total_armor = (int) (((double) total_armor * 1.5D));
         }
 
         total_hp += (int) ((mob_l * .1) * mob_l) + new Random().nextInt(mob_l) + mob_l;
-        mob_tier.put(e, tier);
-        mob_level.put(e, mob_l);
-        max_mob_health.put(e, (int) total_hp);
-        mob_health.put(e, (int) total_hp);
-        mob_damage.put(e, dmg_range);
-        mob_armor.put(e, total_armor);
+        mob_tier.put(entity, tier);
+        mob_level.put(entity, mob_l);
+        max_mob_health.put(entity, (int) total_hp);
+        mob_health.put(entity, (int) total_hp);
+        mob_damage.put(entity, dmg_range);
+        mob_armor.put(entity, total_armor);
 
-        mob_last_hurt.put(e, System.currentTimeMillis());
-        mob_last_hit.put(e, System.currentTimeMillis());
+        mob_last_hurt.put(entity, System.currentTimeMillis());
+        mob_last_hit.put(entity, System.currentTimeMillis());
 
         for (ItemStack i : gear_list) {
             if (i == null || i.getType() == Material.AIR || i.getType() == Material.SKULL_ITEM) {
@@ -6941,28 +6793,28 @@ public class MonsterMechanics implements Listener {
             }
         }
 
-        mob_loot.put(e, gear_list);
+        mob_loot.put(entity, gear_list);
 
         if (mob_num == -1) {
             // Do nothing, this mob is not tracked.
         }
 
         if (mob_num != -1) {
-            mob_spawn_ownership.put(e, mob_spawner_loc.getX() + "," + mob_spawner_loc.getY() + "," + mob_spawner_loc.getZ() + ":" + mob_num);
+            mob_spawn_ownership.put(entity, mob_spawner_loc.getX() + "," + mob_spawner_loc.getY() + "," + mob_spawner_loc.getZ() + ":" + mob_num);
             // log.info("[MonsterMechanics] Inserted ownership data for " + e.toString());
         }
 
-        List<Entity> spawned_mobs = new ArrayList<Entity>();
+        List<Entity> spawned_mobs = new ArrayList<>();
         if (local_spawned_mobs.containsKey(mob_spawner_loc)) {
             spawned_mobs = local_spawned_mobs.get(mob_spawner_loc);
-            spawned_mobs.add(e);
+            spawned_mobs.add(entity);
             local_spawned_mobs.put(mob_spawner_loc, spawned_mobs);
         } else if (!(local_spawned_mobs.containsKey(mob_spawner_loc))) {
-            spawned_mobs.add(e);
+            spawned_mobs.add(entity);
             local_spawned_mobs.put(mob_spawner_loc, spawned_mobs);
         }
 
-        e.teleport(l);
+        entity.teleport(location);
 
         String mob_name = "";
         if (meta_data != null && meta_data.length() > 1) {
@@ -6970,19 +6822,19 @@ public class MonsterMechanics implements Listener {
                 mob_name = meta_data.substring(0, 1).toUpperCase()
                         + meta_data.substring(1, meta_data.indexOf(" ")).toLowerCase()
                         + (meta_data.substring(meta_data.indexOf(" ") + 1, meta_data.indexOf(" ") + 2).toUpperCase() + meta_data.substring(
-                                meta_data.indexOf(" ") + 2, meta_data.length()));
+                                meta_data.indexOf(" ") + 2));
             } else {
-                mob_name = meta_data.substring(0, 1).toUpperCase() + meta_data.substring(1, meta_data.length()).toLowerCase();
+                mob_name = meta_data.substring(0, 1).toUpperCase() + meta_data.substring(1).toLowerCase();
             }
         }
-        if (et == EntityType.IRON_GOLEM) {
+        if (entityType == EntityType.IRON_GOLEM) {
             mob_name = "Golem";
         }
-        if (et == EntityType.SKELETON && meta_data.equalsIgnoreCase("wither")) {
+        if (entityType == EntityType.SKELETON && meta_data.equalsIgnoreCase("wither")) {
             mob_name = "Chaos Skeleton";
         }
         if (mob_name == "") { // No custom meta_data
-            String system_name = (et.getName().substring(0, 1).toUpperCase() + et.getName().substring(1, et.getName().length()).toLowerCase()).replaceAll("_",
+            String system_name = (entityType.getName().substring(0, 1).toUpperCase() + entityType.getName().substring(1).toLowerCase()).replaceAll("_",
                     " ");
             mob_name = system_name;
         }
@@ -7003,7 +6855,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0x669900);
             }
         }
-        if (et == EntityType.IRON_GOLEM) { // Ice
+        if (entityType == EntityType.IRON_GOLEM) { // Ice
             int do_i_elemental = 30;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7012,7 +6864,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0x33FFFF);
             }
         }
-        if (et == EntityType.MAGMA_CUBE) {
+        if (entityType == EntityType.MAGMA_CUBE) {
             int do_i_elemental = 15;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7021,7 +6873,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0xCC0033);
             }
         }
-        if (et == EntityType.BLAZE) {
+        if (entityType == EntityType.BLAZE) {
             int do_i_elemental = 15;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7030,7 +6882,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0xCC0033);
             }
         }
-        if (et == EntityType.WITCH) {
+        if (entityType == EntityType.WITCH) {
             int do_i_elemental = 15;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7039,7 +6891,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0x669900);
             }
         }
-        if (et == EntityType.SILVERFISH) {
+        if (entityType == EntityType.SILVERFISH) {
             int do_i_elemental = 15;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7048,7 +6900,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0x33FFFF);
             }
         }
-        if (et == EntityType.ENDERMAN) {
+        if (entityType == EntityType.ENDERMAN) {
             int do_i_elemental = 15;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7156,7 +7008,7 @@ public class MonsterMechanics implements Listener {
                 attachPotionEffect(le, 0xCC0033);
             }
         }
-        if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")) {
+        if (mob_name.equalsIgnoreCase("spider") || entityType == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")) {
             int do_i_elemental = 10;
             if (do_i_elemental >= elemental_chance) {
                 // Give them elemental damage!
@@ -7197,7 +7049,7 @@ public class MonsterMechanics implements Listener {
                 mob_name = "Firey Spirit";
             }
 
-            if (et == EntityType.IRON_GOLEM) {
+            if (entityType == EntityType.IRON_GOLEM) {
                 // Construct
                 mob_name = "Stone " + mob_name;
             }
@@ -7232,7 +7084,7 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
+            if (mob_name.equalsIgnoreCase("spider") || entityType == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
                     || mob_name.equalsIgnoreCase("silverfish")) {
                 // Spiders.
                 mob_name = "Harmless " + mob_name;
@@ -7265,7 +7117,7 @@ public class MonsterMechanics implements Listener {
                 mob_name = "Possessed Spirit";
             }
 
-            if (et == EntityType.MAGMA_CUBE) {
+            if (entityType == EntityType.MAGMA_CUBE) {
                 mob_name = "Magma Cube";
                 mob_name = "Bubbling " + mob_name;
             }
@@ -7274,7 +7126,7 @@ public class MonsterMechanics implements Listener {
                 mob_name = "Burning Apparition";
             }
 
-            if (et == EntityType.IRON_GOLEM) {
+            if (entityType == EntityType.IRON_GOLEM) {
                 // Construct
                 mob_name = "Ancient Stone " + mob_name;
             }
@@ -7307,7 +7159,7 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
+            if (mob_name.equalsIgnoreCase("spider") || entityType == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
                     || mob_name.equalsIgnoreCase("silverfish")) {
                 // Spiders.
                 mob_name = "Wild " + mob_name;
@@ -7336,12 +7188,12 @@ public class MonsterMechanics implements Listener {
                 mob_name = "Specter";
             }
 
-            if (et == EntityType.IRON_GOLEM) {
+            if (entityType == EntityType.IRON_GOLEM) {
                 // Construct
                 mob_name = "Ironclad " + mob_name;
             }
 
-            if (et == EntityType.MAGMA_CUBE) {
+            if (entityType == EntityType.MAGMA_CUBE) {
                 mob_name = "Magma Cube";
                 mob_name = "Unstable " + mob_name;
             }
@@ -7380,7 +7232,7 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
+            if (mob_name.equalsIgnoreCase("spider") || entityType == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
                     || mob_name.equalsIgnoreCase("silverfish")) {
                 // Spiders.
                 mob_name = "Fierce " + mob_name;
@@ -7401,7 +7253,7 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (et == EntityType.MAGMA_CUBE) {
+            if (entityType == EntityType.MAGMA_CUBE) {
                 mob_name = "Magma Cube";
                 mob_name = "Boiling " + mob_name;
             }
@@ -7418,7 +7270,7 @@ public class MonsterMechanics implements Listener {
                 mob_name = "Demonic Entity";
             }
 
-            if (et == EntityType.IRON_GOLEM) {
+            if (entityType == EntityType.IRON_GOLEM) {
                 // Construct
                 mob_name = "Enchanted Ironclad " + mob_name;
             }
@@ -7450,7 +7302,7 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
+            if (mob_name.equalsIgnoreCase("spider") || entityType == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
                     || mob_name.equalsIgnoreCase("silverfish")) {
                 // Spiders.
                 mob_name = "Dangerous " + mob_name;
@@ -7464,12 +7316,12 @@ public class MonsterMechanics implements Listener {
                 mob_name = "Infernal " + mob_name;
             }
 
-            if (et == EntityType.IRON_GOLEM) {
+            if (entityType == EntityType.IRON_GOLEM) {
                 // Construct
                 mob_name = "Legendary Chaotic " + mob_name;
             }
 
-            if (et == EntityType.MAGMA_CUBE) {
+            if (entityType == EntityType.MAGMA_CUBE) {
                 mob_name = "Magma Cube";
                 mob_name = "Unstoppable " + mob_name;
             }
@@ -7508,7 +7360,7 @@ public class MonsterMechanics implements Listener {
                 }
             }
 
-            if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
+            if (mob_name.equalsIgnoreCase("spider") || entityType == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")
                     || mob_name.equalsIgnoreCase("silverfish")) {
                 // Spiders.
                 mob_name = "Lethal " + mob_name;
@@ -7529,7 +7381,7 @@ public class MonsterMechanics implements Listener {
             } else {
                 try {
                     mob_name = mob_name.substring(0, mob_name.lastIndexOf(" ")) + " " + formal_elemental_type
-                            + mob_name.substring(mob_name.lastIndexOf(" "), mob_name.length());
+                            + mob_name.substring(mob_name.lastIndexOf(" "));
                 } catch (StringIndexOutOfBoundsException err) {
                     log.info("[MonsterMechanics] Error parsing mob name: " + mob_name);
                     mob_name = elemental_prefix + mob_name;
@@ -7585,7 +7437,7 @@ public class MonsterMechanics implements Listener {
         String mob_name_meta = tier_color + mob_name;
 
         if (elite) {
-            mob_name_meta = ChatColor.BLACK + "" + ChatColor.BOLD + "" + ChatColor.stripColor(mob_name);
+            mob_name_meta = ChatColor.BLACK + "" + ChatColor.BOLD + ChatColor.stripColor(mob_name);
         }
         mob_name_meta += ChatColor.LIGHT_PURPLE + " [" + getMobLevel(le) + "]";
         le.setCustomName(mob_name_meta);
@@ -7638,7 +7490,7 @@ public class MonsterMechanics implements Listener {
             }
         }
 
-        return e;
+        return entity;
     }
 
     public static int getMobLevel(Entity e) {
@@ -7649,12 +7501,9 @@ public class MonsterMechanics implements Listener {
     }
 
     public static boolean isHostile(EntityType e) {
-        if (e == EntityType.SKELETON || e == EntityType.ZOMBIE || e == EntityType.SPIDER || e == EntityType.CAVE_SPIDER || e == EntityType.BLAZE
+        return e == EntityType.SKELETON || e == EntityType.ZOMBIE || e == EntityType.SPIDER || e == EntityType.CAVE_SPIDER || e == EntityType.BLAZE
                 || e == EntityType.WITCH || e == EntityType.WOLF || e == EntityType.ENDERMAN || e == EntityType.IRON_GOLEM || e == EntityType.SILVERFISH
-                || e == EntityType.MAGMA_CUBE) {
-            return true;
-        }
-        return false;
+                || e == EntityType.MAGMA_CUBE;
     }
 
     /*

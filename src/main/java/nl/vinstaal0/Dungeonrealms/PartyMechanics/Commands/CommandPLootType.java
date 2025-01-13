@@ -104,7 +104,7 @@ public class CommandPLootType implements TabExecutor {
             return true;
         }
 
-        player.sendMessage(ChatColor.RED + "Invalid syntax, use /ploot loottype.");
+        player.sendMessage(ChatColor.RED + "Invalid syntax, use /ptype loottype.");
         player.sendMessage(ChatColor.RED + "Available loottypes are ");
         LootType[] arr = LootType.values();
 

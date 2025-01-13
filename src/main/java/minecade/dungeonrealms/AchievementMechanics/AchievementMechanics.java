@@ -1,33 +1,38 @@
 package minecade.dungeonrealms.AchievementMechanics;
 
-import java.util.Random;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.GuildMechanics.GuildMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
+import minecade.dungeonrealms.RecordMechanics.RecordMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Random;
+import java.util.logging.Logger;
+
+import static minecade.dungeonrealms.MonsterMechanics.MonsterMechanics.passive_hunter_achiev;
 
 public class AchievementMechanics implements Listener {
     static Logger log = Logger.getLogger("Minecraft");
@@ -404,6 +409,75 @@ public class AchievementMechanics implements Listener {
             addAchievement(p_name, "Mix and Match");
         }
 
+    }
+
+    public static void addAchievement(String p_name, Entity ent) {
+        if (RecordMechanics.mob_kills.containsKey(p_name)) {
+            int lmob_kills = RecordMechanics.mob_kills.get(p_name);
+            lmob_kills = lmob_kills + 1;
+            if (lmob_kills >= 100) {
+                addAchievement(p_name, "Monster Hunter I");
+                if (lmob_kills >= 300) {
+                    addAchievement(p_name, "Monster Hunter II");
+                    if (lmob_kills >= 500) {
+                        addAchievement(p_name, "Monster Hunter III");
+                        if (lmob_kills >= 1000) {
+                            addAchievement(p_name, "Monster Hunter IV");
+                            if (lmob_kills >= 1500) {
+                                addAchievement(p_name, "Monster Hunter V");
+                                if (lmob_kills >= 2000) {
+                                    addAchievement(p_name, "Monster Hunter VI");
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            RecordMechanics.mob_kills.put(p_name, lmob_kills);
+        }
+
+        if (p_name != null && Bukkit.getPlayer(p_name) != null) {
+            String kill_list = "";
+            if (passive_hunter_achiev.containsKey(p_name)) {
+                kill_list = passive_hunter_achiev.get(p_name);
+            }
+            if (ent.getType() == EntityType.PIG) {
+                if (!(kill_list.contains(ent.getType().getName()))) {
+                    kill_list += ent.getType().getName() + ",";
+                }
+            }
+            if (ent.getType() == EntityType.BAT) {
+                if (!(kill_list.contains(ent.getType().getName()))) {
+                    kill_list += ent.getType().getName() + ",";
+                }
+                Player pl = Bukkit.getPlayer(p_name);
+                if (pl.getItemInHand().getType() == Material.BOW && ent.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+                    AchievementMechanics.addAchievement(p_name, "Crack Shot");
+                }
+            }
+            if (ent.getType() == EntityType.COW) {
+                if (!(kill_list.contains(ent.getType().getName()))) {
+                    kill_list += ent.getType().getName() + ",";
+                }
+            }
+            if (ent.getType() == EntityType.CHICKEN) {
+                if (!(kill_list.contains(ent.getType().getName()))) {
+                    kill_list += ent.getType().getName() + ",";
+                }
+            }
+            if (ent.getType() == EntityType.MUSHROOM_COW) {
+                if (!(kill_list.contains(ent.getType().getName()))) {
+                    kill_list += ent.getType().getName() + ",";
+                }
+            }
+
+            if (kill_list.split(",").length >= 5) {
+                AchievementMechanics.addAchievement(p_name, "Passive Hunter");
+            }
+
+            passive_hunter_achiev.put(p_name, kill_list);
+        }
     }
 
 }

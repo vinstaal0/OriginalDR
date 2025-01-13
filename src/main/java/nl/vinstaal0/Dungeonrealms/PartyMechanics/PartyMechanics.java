@@ -62,7 +62,7 @@ public class PartyMechanics extends minecade.dungeonrealms.PartyMechanics.PartyM
         Main.plugin.getCommand("ptype").setTabCompleter(pLootType);
 
         if (Main.getPartyMechanics().getClass().isInstance(minecade.dungeonrealms.PartyMechanics.PartyMechanics.class)) {
-            log.warning("[PartyMechanics] Original partymechanics loaded by mistake!");
+            log.warning("[PartyMechanics] Original party mechanics loaded by mistake!");
         } else {
             log.info("[PartyMechanics] has been ENABLED.");
         }
@@ -90,9 +90,15 @@ public class PartyMechanics extends minecade.dungeonrealms.PartyMechanics.PartyM
                             objective.setDisplayName(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Party");
                         }
 
-                        List<Player> members = new ArrayList<>();
+                        ArrayList<Player> members = new ArrayList<>();
                         members.add(party.getOwner());
-                        members.addAll(party.getMembers());
+
+                        try {
+                            members.addAll(party.getMembers());
+                        } catch (NullPointerException ignore) {
+                            // Party is empty, only the owner exist.
+                        }
+
 
                         for (Player player : members) {
                             if (player != null) {
@@ -120,6 +126,10 @@ public class PartyMechanics extends minecade.dungeonrealms.PartyMechanics.PartyM
         invitations.put(receiver, getParty(sender).get());
         receiver.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + sender.getName() + ChatColor.GRAY + " has invited you to join their party. To accept, type " + ChatColor.LIGHT_PURPLE.toString() + "/paccept" + ChatColor.GRAY + " or to decline, type " + ChatColor.LIGHT_PURPLE.toString() + "/pdecline");
         sender.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.LIGHT_PURPLE.toString() + receiver.getName() + ChatColor.GRAY + " to join your party.");
+    }
+
+    public void addMember(Player player, Party party) {
+        party.addMember(player);
     }
 
     public void removeMember(Player player, boolean kicked) {
@@ -157,11 +167,10 @@ public class PartyMechanics extends minecade.dungeonrealms.PartyMechanics.PartyM
                 player.sendMessage(ChatColor.RED + "You have left the party.");
             }
 
-//            party.getOwner().sendMessage(ChatColor.LIGHT_PURPLE + "<" + ChatColor.BOLD + "P" + ChatColor.LIGHT_PURPLE + "> " + ChatColor.GRAY + player.getDisplayName() + " has " + ChatColor.LIGHT_PURPLE + ChatColor.UNDERLINE + "left" + ChatColor.GRAY + " the party.");
-
             party.sendMessageToParty(ChatColor.GRAY + player.getDisplayName() + " has " + ChatColor.LIGHT_PURPLE + ChatColor.UNDERLINE + "left" + ChatColor.GRAY + " the party.");
 
             player.setScoreboard(ScoreBoardHandler.getInstance().getMainBoard());
+
             // TODO fix when players are in a dungeon
         }
     }
