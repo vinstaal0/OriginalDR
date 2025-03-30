@@ -1,53 +1,7 @@
 package minecade.dungeonrealms.CommunityMechanics;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ChatMechanics.ChatMechanics;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandAdd;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandDebug;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandDelete;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandIgnore;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandRoll;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandRules;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandTips;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleChaos;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleFF;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleFilter;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleGlobal;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleGlobalChat;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleGuild;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleGuildChat;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleIndicator;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleParty;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleProfile;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandTogglePvP;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleStarterPack;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleTabChat;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleTells;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleTips;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggleTradeChat;
-import minecade.dungeonrealms.CommunityMechanics.commands.CommandToggles;
+import minecade.dungeonrealms.CommunityMechanics.commands.*;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.FatigueMechanics.FatigueMechanics;
 import minecade.dungeonrealms.GuildMechanics.GuildMechanics;
@@ -57,6 +11,7 @@ import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.KarmaMechanics.KarmaMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.ScoreboardMechanics.ScoreboardMechanics;
@@ -70,14 +25,9 @@ import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_8_R1.PacketPlayOutNamedEntitySpawn;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ConfigKey;
-import org.apache.commons.lang3.StringUtils;
-
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
@@ -91,16 +41,27 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("deprecation")
 public class CommunityMechanics implements Listener {
@@ -464,7 +425,7 @@ public class CommunityMechanics implements Listener {
 	* Only updates the first few pages of the character journal, the pages with realtime, non-SQL/socket based information.
 	*/
 	public static void updateCombatPage(Player p) {
-		List<String> new_pages = new ArrayList<String>();
+		List<String> new_pages = new ArrayList<>();
 		int slot = -1;
 		if (p.getInventory().contains(Material.WRITTEN_BOOK)) {
 			for (Entry<Integer, ? extends ItemStack> data : p.getInventory().all(Material.WRITTEN_BOOK).entrySet()) {
@@ -510,14 +471,7 @@ public class CommunityMechanics implements Listener {
 
 			DecimalFormat df = new DecimalFormat("#.##");
 
-			String money_space = "";
-			if (align_expire_message.length() > 0) {
-				money_space = new_line;
-			} else {
-				money_space = new_line;
-			}
-
-			String gold_find = "1.00";
+            String gold_find = "1.00";
 			if (ItemMechanics.gfind_data.containsKey(p.getName())) {
 				gold_find = (df.format((((double) ItemMechanics.gfind_data.get(p.getName())) / 100.0D) + 1.0D));
 				if (gold_find.equalsIgnoreCase("1")) {
@@ -543,7 +497,7 @@ public class CommunityMechanics implements Listener {
 						+ ChatColor.BLACK.toString() + "   " + df.format((((double) FatigueMechanics.energy_regen_data.get((p.getName()))) * 100.0D) + 90.0D)
 						+ "% " + ChatColor.BOLD.toString() + "Energy" + "\n" + ChatColor.BLACK.toString() + "   " + gold_find + "x "
 						+ ChatColor.BOLD.toString() + "Gem Find" + "\n" + ChatColor.BLACK.toString() + "   " + item_find + "x " + ChatColor.BOLD.toString()
-						+ "Item Find" + money_space + ChatColor.BLACK.toString() + "" + Hive.player_ecash.get(p.getName()) + " " + ChatColor.BOLD.toString()
+						+ "Item Find" + new_line + ChatColor.BLACK.toString() + "" + Hive.player_ecash.get(p.getName()) + " " + ChatColor.BOLD.toString()
 						+ "E-CASH";
 				page2_string = ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "  ** LEVEL/EXP **\n\n" + ChatColor.BLACK + ChatColor.BOLD
 						+ "       LEVEL\n\n" + "         " + ChatColor.BLACK + LevelMechanics.getPlayerLevel(p) + "\n\n" + ChatColor.BLACK + ChatColor.BOLD

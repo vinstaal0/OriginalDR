@@ -29,7 +29,6 @@ import minecade.dungeonrealms.managers.PlayerManager;
 import net.minecraft.server.v1_8_R1.*;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
-import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
@@ -181,14 +180,14 @@ public class ItemMechanics implements Listener {
         foodVendor.addItem(new ItemStack(Material.BREAD));
         foodVendor.addItem(new ItemStack(Material.CARROT));
 
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Crestguard_keep_scroll));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Dark_Oak_Tavern_scroll));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Deadpeaks_Mountain_Camp_scroll));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Tripoli_scroll));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Harrison_scroll));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Swamp_safezone_scroll));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Jagged_Rocks_Tavern));
-        tpBookVendor.addItem(ItemTracker.addSerialNumber(Cyrennica_scroll));
+        tpBookVendor.addItem(Crestguard_keep_scroll);
+        tpBookVendor.addItem(Dark_Oak_Tavern_scroll);
+        tpBookVendor.addItem(Deadpeaks_Mountain_Camp_scroll);
+        tpBookVendor.addItem(Tripoli_scroll);
+        tpBookVendor.addItem(Harrison_scroll);
+        tpBookVendor.addItem(Swamp_safezone_scroll);
+        tpBookVendor.addItem(Jagged_Rocks_Tavern);
+        tpBookVendor.addItem(Cyrennica_scroll);
 
         Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {

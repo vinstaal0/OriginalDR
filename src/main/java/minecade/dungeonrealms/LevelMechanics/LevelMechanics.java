@@ -1,28 +1,13 @@
 package minecade.dungeonrealms.LevelMechanics;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
 import me.vilsol.menuengine.engine.DynamicMenuModel;
 import me.vilsol.menuengine.engine.MenuItem;
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.ConfirmItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.DexterityItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.DexterityStatsItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.EmptySlot;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.IntellectItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.IntellectStatsItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.StatsGUI;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.StatsInfoItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.StrengthItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.StrengthStatsItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.VitalityItem;
-import minecade.dungeonrealms.LevelMechanics.StatsGUI.VitalityStatsItem;
+import minecade.dungeonrealms.LevelMechanics.StatsGUI.*;
 import minecade.dungeonrealms.LevelMechanics.commands.CommandAddXP;
 import minecade.dungeonrealms.LevelMechanics.commands.CommandNotice;
 import minecade.dungeonrealms.LevelMechanics.commands.CommandStats;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MonsterMechanics.Hologram;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
@@ -30,7 +15,6 @@ import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.jsonlib.JSONMessage;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.PlayerModel;
-
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,13 +28,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class LevelMechanics implements Listener {
 	
@@ -391,11 +375,12 @@ public class LevelMechanics implements Listener {
             }
             if (MonsterMechanics.getEntityDamageTracker(e.getEntity()) != null) {
                 Player actual_killer = MonsterMechanics.getEntityDamageTracker(e.getEntity()).getMostDamageDone();
-                if (actual_killer != null) {
-                    if (actual_killer != null && actual_killer.isOnline() && actual_killer != killer) {
+                if (actual_killer != null && actual_killer.isOnline() && actual_killer != killer) {
+                    if (!Main.getPartyMechanics().areInSameParty(actual_killer, killer)) {
+                        // Only send message if not in a party
                         killer.sendMessage(ChatColor.RED + actual_killer.getName() + " has dealt more damage to this mob then you. Thus they received the XP.");
-                        killer = actual_killer;
                     }
+                    killer = actual_killer;
                 }
             }
             PlayerLevel pl = getPlayerData(killer);

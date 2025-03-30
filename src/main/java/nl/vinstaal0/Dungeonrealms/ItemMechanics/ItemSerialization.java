@@ -4,7 +4,6 @@ import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
-import nl.vinstaal0.Dungeonrealms.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +16,9 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class ItemSerialization {
@@ -234,6 +235,7 @@ public class ItemSerialization {
         for (int i = 0; i < items.length; i++) {
 
             SerializableItemStack sItemStack;
+
             try {
                 sItemStack = (SerializableItemStack) dataInput.readObject();
 

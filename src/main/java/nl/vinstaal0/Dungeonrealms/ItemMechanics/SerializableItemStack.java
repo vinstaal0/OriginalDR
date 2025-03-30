@@ -39,7 +39,11 @@ public class SerializableItemStack implements Serializable {
 
         if (nmsStack != null) {
             NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-            compound.setInt("serial", serial);
+
+            // Only add if serial is not zero
+            if (serial != 0) {
+                compound.setInt("serial", serial);
+            }
 
             nmsStack.setTag(compound);
         }

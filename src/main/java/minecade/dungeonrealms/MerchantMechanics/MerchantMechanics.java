@@ -1,13 +1,5 @@
 package minecade.dungeonrealms.MerchantMechanics;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.DonationMechanics.DonationMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
@@ -19,6 +11,7 @@ import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MountMechanics.MountMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
@@ -27,7 +20,6 @@ import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TradeMechanics.TradeMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
-
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
@@ -53,6 +45,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.logging.Logger;
 
 public class MerchantMechanics implements Listener {
     static Logger log = Logger.getLogger("Minecraft");
@@ -123,15 +122,15 @@ public class MerchantMechanics implements Listener {
             ChatColor.GRAY.toString() + ChatColor.ITALIC + "Place this musicbox anywhere to play music for all!" + "," + ChatColor.GRAY
                     + "Permanent Untradeable");
     @SuppressWarnings("deprecation")
-    public static ItemStack musical_spirit = ItemMechanics.signNewCustomItem(Material.getMaterial(382), (short) 1,
+    public static ItemStack musical_spirit = ItemMechanics.signNewCustomItem(Material.SPECKLED_MELON, (short) 1,
             ChatColor.GOLD.toString() + "Musical Spirit", ChatColor.GRAY.toString() + ChatColor.ITALIC + "Adds a musical particle trail to your character."
                     + "," + ChatColor.GRAY + "Permanent Untradeable");
     @SuppressWarnings("deprecation")
-    public static ItemStack global_microphone = ItemMechanics.signNewCustomItem(Material.getMaterial(401), (short) 1, ChatColor.GOLD.toString()
+    public static ItemStack global_microphone = ItemMechanics.signNewCustomItem(Material.FIREWORK, (short) 1, ChatColor.GOLD.toString()
             + "Global Messenger", ChatColor.GOLD.toString() + "Uses: " + ChatColor.GRAY.toString() + "1" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC
             + "Sends a message to all players on " + ChatColor.UNDERLINE + "ALL SHARDS." + "," + ChatColor.GRAY + "Permanent Untradeable");
     @SuppressWarnings("deprecation")
-    public static ItemStack global_delay_buff = ItemMechanics.signNewCustomItem(Material.getMaterial(368), (short) 1, ChatColor.GOLD.toString()
+    public static ItemStack global_delay_buff = ItemMechanics.signNewCustomItem(Material.ENDER_PEARL, (short) 1, ChatColor.GOLD.toString()
             + "Global Chat Amplifier", ChatColor.GOLD + "Messages: " + ChatColor.GRAY + "500" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC
             + "50% Decreased Global Chat Delay for 500 messages." + "," + ChatColor.GRAY + "Permanent Untradeable");
     public static ItemStack increased_drops = ItemMechanics.signNewCustomItem(Material.DIAMOND, (short) 1, ChatColor.GOLD.toString() + "Global Loot Buff",
@@ -154,7 +153,7 @@ public class MerchantMechanics implements Listener {
                     + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "add a custom line of lore text." + "," + ChatColor.GRAY
                     + "Permanent Untradeable");
     @SuppressWarnings("deprecation")
-    public static ItemStack item_ownership_tag = ItemMechanics.signNewCustomItem(Material.getMaterial(421), (short) 3, ChatColor.GOLD.toString()
+    public static ItemStack item_ownership_tag = ItemMechanics.signNewCustomItem(Material.NAME_TAG, (short) 3, ChatColor.GOLD.toString()
             + "Item Name Tag", ChatColor.GOLD.toString() + "Uses: " + ChatColor.GRAY + "1" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC
             + "Apply to any weapon or armor piece" + "," + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "to give it a custom display name." + ","
             + ChatColor.GRAY + "Permanent Untradeable");
