@@ -5925,6 +5925,52 @@ public class MonsterMechanics implements Listener {
             le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "bandit_leader"));
         }
 
+        if (custom_name.contains("Cop'jak")) {
+            hp_mult = 6D;
+            dmg_mult = 1.3D;
+            chest = ItemGenerators.customGenerator("cop'jakplate");
+            legs = ItemGenerators.customGenerator("cop'jaklegs");
+            helmet = ItemGenerators.customGenerator("cop'jakhelm");
+            boots = ItemGenerators.customGenerator("cop'jakboot");
+            weapon = ItemGenerators.customGenerator("cop'jakaxe");
+
+            gear_list.add(weapon);
+            gear_list.add(boots);
+            gear_list.add(legs);
+            gear_list.add(chest);
+            gear_list.add(helmet);
+
+            weapon.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
+
+            if (boots != null) {
+                boots.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
+            }
+            if (helmet != null) {
+                helmet.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
+            }
+            if (chest != null) {
+                chest.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
+            }
+            if (legs != null) {
+                legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
+            }
+
+            ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
+            ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
+            ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
+            ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
+            if (helmet != null) {
+                // Will be null if we are using bandit head, silly.
+                ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
+            }
+
+            LivingEntity le = (LivingEntity) e;
+            le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name);
+            le.setCustomNameVisible(true);
+            le.setMetadata("mobname", new FixedMetadataValue(Main.plugin, ChatColor.GOLD.toString() + ChatColor.UNDERLINE + custom_name));
+            le.setMetadata("boss_type", new FixedMetadataValue(Main.plugin, "bandit_leader"));
+        }
+
         if (custom_name.contains("Mad Bandit Pyromancer")) {
             // TODO: Custom armor set.
             dmg_mult = 2.5D;
