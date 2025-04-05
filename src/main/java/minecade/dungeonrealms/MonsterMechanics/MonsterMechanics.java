@@ -4920,7 +4920,56 @@ public class MonsterMechanics implements Listener {
         }
     }
 
-    /*
+    /**
+    *
+    * The event handler for the knockback cancelling
+    */
+    @EventHandler( priority = EventPriority.HIGHEST)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+
+        // Check if the enntity that damages is a player
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+
+            if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
+                LivingEntity entity = (LivingEntity) event.getEntity();
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+
+                        Vector velocity = entity.getVelocity();
+                        boolean knockback = false;
+                        List<String> lore = player.getItemInHand().getItemMeta().getLore();
+
+                        for (String string : lore) {
+                            if (string.contains("KNOCKBACK")) {
+
+                                int knockback_change = Integer.parseInt(string.substring(string.indexOf(":") + 1, string.indexOf("%")).replaceAll(" ", ""));
+                                if (knockback_change >= new Random().nextInt(100)) {
+                                    knockback = true;
+                                }
+                            }
+                        }
+
+                        if (!knockback) {
+                            velocity.multiply(0.2); // Reduce velocity by 80%
+                        }
+
+                        entity.setVelocity(velocity);
+
+                        /* TODO cheeck if the player is fighting a mob way above their tier and then cancell ALL knockback. This should make it really hard to skip tiers*/
+                        // entity.setVelocity(new Vector(0, 0, 0));
+                    }
+                }.runTaskLater(Main.getPlugin(), 1L);
+
+            }
+
+        }
+
+    }
+
+    /**
     * Called when an entity dies, used for calculating what drops.
     * See mobspawning for the gear creation
     * */
