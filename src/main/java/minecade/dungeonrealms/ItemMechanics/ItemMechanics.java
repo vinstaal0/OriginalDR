@@ -3133,7 +3133,7 @@ public class ItemMechanics implements Listener {
 
             Boolean level_restrictions = ConfigFile.getInstance().getConfigValue(ConfigKey.LEVEL_RESTRICTIONS);
 
-            if (level_restrictions && LevelMechanics.getPlayerLevel(p.getName()) < 30) {
+            if (level_restrictions && (LevelMechanics.getPlayerLevel(p.getName()) < 30)) {
                 p.sendMessage(ChatColor.RED + "You need to be " + ChatColor.UNDERLINE + "atleast" + ChatColor.RED + " level 30 to use Orbs of Alteration.");
                 e.setCancelled(true);
                 return;
