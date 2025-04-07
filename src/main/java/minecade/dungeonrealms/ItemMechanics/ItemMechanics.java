@@ -27,6 +27,8 @@ import minecade.dungeonrealms.enums.ItemTier;
 import minecade.dungeonrealms.enums.ItemType;
 import minecade.dungeonrealms.managers.PlayerManager;
 import net.minecraft.server.v1_8_R1.*;
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.bukkit.*;
@@ -63,7 +65,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import javax.swing.text.Utilities;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -3129,7 +3130,10 @@ public class ItemMechanics implements Listener {
         }
 
         if (isOrbOfAlteration(cursor) && (isArmor(in_slot) || !getDamageData(in_slot).equalsIgnoreCase("no"))) {
-            if (LevelMechanics.getPlayerLevel(p.getName()) < 30) {
+
+            Boolean level_restrictions = ConfigFile.getInstance().getConfigValue(ConfigKey.LEVEL_RESTRICTIONS);
+
+            if (level_restrictions && LevelMechanics.getPlayerLevel(p.getName()) < 30) {
                 p.sendMessage(ChatColor.RED + "You need to be " + ChatColor.UNDERLINE + "atleast" + ChatColor.RED + " level 30 to use Orbs of Alteration.");
                 e.setCancelled(true);
                 return;
@@ -4537,8 +4541,6 @@ public class ItemMechanics implements Listener {
 
     /**
      * Gets entities inside a cone.
-     *
-     * @see Utilities#getPlayersInCone(List, Location, int, int, int)
      *
      * @param entities
      *            - {@code List<Entity>}, list of nearby entities
