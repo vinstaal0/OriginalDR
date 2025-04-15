@@ -3148,7 +3148,7 @@ public class ItemMechanics implements Listener {
              * e.setCancelled(true); return; }
              */
             if (last_orb_use.containsKey(p.getName())) {
-                if ((System.currentTimeMillis() - last_orb_use.get(p.getName())) < (1 * 500)) {
+                if ((System.currentTimeMillis() - last_orb_use.get(p.getName())) < (500)) {
                     e.setCancelled(true);
                     p.updateInventory();
                     return;

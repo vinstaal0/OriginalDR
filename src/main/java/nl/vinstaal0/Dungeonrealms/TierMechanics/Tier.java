@@ -1,4 +1,4 @@
-package nl.vinstaal0.Dungeonrealms;
+package nl.vinstaal0.Dungeonrealms.TierMechanics;
 
 public enum Tier {
 

@@ -1,6 +1,6 @@
 package nl.vinstaal0.Dungeonrealms.Monstermechanics;
 
-import nl.vinstaal0.Dungeonrealms.Tier;
+import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
 
 public class SpawnerData {
 

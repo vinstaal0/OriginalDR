@@ -1539,23 +1539,23 @@ public class ProfessionMechanics implements Listener {
 
     public int getOreEXP(Material m) {
         if (m == Material.COAL_ORE) {
-            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T1ORE);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_ORE);
             return (int) (base + new Random().nextInt(35));
         }
         if (m == Material.EMERALD_ORE) {
-            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T2ORE);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER2_ORE);
             return (int) (base + new Random().nextInt(35));
         }
         if (m == Material.IRON_ORE) {
-            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T3ORE);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_ORE);
             return (int) (base + new Random().nextInt(80));
         }
         if (m == Material.DIAMOND_ORE) {
-            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T4ORE);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_ORE);
             return (int) (base + new Random().nextInt(40));
         }
         if (m == Material.GOLD_ORE) {
-            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.T5ORE);
+            double base = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_ORE);
             return (int) (base + new Random().nextInt(55));
         }
         return 1;

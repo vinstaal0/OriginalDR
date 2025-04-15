@@ -4,7 +4,7 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import nl.vinstaal0.Dungeonrealms.Monstermechanics.Commands.CommandCreateSpawnerWand;
 import nl.vinstaal0.Dungeonrealms.Monstermechanics.Converstation.*;
-import nl.vinstaal0.Dungeonrealms.Tier;
+import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.conversations.*;

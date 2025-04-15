@@ -1,17 +1,5 @@
 package minecade.dungeonrealms.MountMechanics;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.EcashMechanics.EcashMechanics;
@@ -21,6 +9,7 @@ import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.KarmaMechanics.KarmaMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MountMechanics.commands.CommandMount;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
@@ -29,49 +18,27 @@ import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import net.minecraft.server.v1_8_R1.EntityHorse;
 import net.minecraft.server.v1_8_R1.GenericAttributes;
-
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftHorse;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Horse.Color;
 import org.bukkit.entity.Horse.Variant;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
@@ -79,6 +46,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 // .TODO: Code death mechanics for dropping items of mule
 // .TODO: Code upgrade mechanics
@@ -213,10 +187,15 @@ public class MountMechanics implements Listener {
 
         Main.plugin.getCommand("mount").setExecutor(new CommandMount());
 
-        TradeWindow.setItem(0, ShopMechanics.setPrice(t2_horse_mount, 3000));
-        TradeWindow.setItem(1, ShopMechanics.setPrice(t3_horse_armor, 7000));
-        TradeWindow.setItem(2, ShopMechanics.setPrice(t4_horse_armor, 15000));
-        TradeWindow.setItem(3, ShopMechanics.setPrice(t5_horse_armor, 30000));
+        double t2 = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER2_HORSE_price);
+        double t3 = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_HORSE_price);
+        double t4 = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_HORSE_price);
+        double t5 = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_HORSE_price);
+
+        TradeWindow.setItem(0, ShopMechanics.setPrice(t2_horse_mount, (int) t2));
+        TradeWindow.setItem(1, ShopMechanics.setPrice(t3_horse_mount, (int) t3));
+        TradeWindow.setItem(2, ShopMechanics.setPrice(t4_horse_mount, (int) t4));
+        TradeWindow.setItem(3, ShopMechanics.setPrice(t5_horse_mount, (int) t5));
 
         TradeWindow.setItem(9, ShopMechanics.setPrice(t1_mule, 4000));
 

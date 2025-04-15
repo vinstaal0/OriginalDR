@@ -1,30 +1,21 @@
 package minecade.dungeonrealms.RepairMechanics;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
-import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.EnchantMechanics.EnchantMechanics;
 import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
+import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.managers.PlayerManager;
 import net.minecraft.server.v1_8_R1.BlockPosition;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
@@ -48,6 +39,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class RepairMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
@@ -640,66 +637,27 @@ public class RepairMechanics implements Listener {
 		}
 		return false;
 	}
-	
+
 	public double getPercentRecoverOfScrap(int tier) {
+		System.out.println("T1 scrap " + ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_SCRAP));
+		switch (tier) {
+			case 1 : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_SCRAP);
+			case 2 : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER2_SCRAP);
+			case 3 : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_SCRAP);
+			case 4 : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_SCRAP);
+			case 5 : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_SCRAP);
+
+			default: return 0.0D;
+		}
+    }
+
+/*	public double getPercentRecoverOfScrap(int tier) {
 		if(tier == 1) { return 3.0D; }
 		if(tier == 2) { return 3.0D; }
 		if(tier == 3) { return 3.0D; }
 		if(tier == 4) { return 3.0D; }
 		if(tier == 5) { return 3.0D; }
 		return 0.0D;
-	}
-	
-	/*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void onHitEvent(EntityDamageEvent e) {
-		if(!(e.getEntity() instanceof Player)) return;
-		Player p = (Player) e.getEntity();
-		if(!playerArmor.containsKey(p)) playerArmor.put(p, new HashMap<ArmorPosition, ItemStack>());
-		HashMap<ArmorPosition, ItemStack> armor = playerArmor.get(p);
-		if(p.getInventory().getHelmet() != null && p.getInventory().getHelmet().getType() != Material.AIR) armor.put(ArmorPosition.HEAD, p.getInventory().getHelmet());
-		if(p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.AIR) armor.put(ArmorPosition.CHEST, p.getInventory().getChestplate());
-		if(p.getInventory().getLeggings() != null && p.getInventory().getLeggings().getType() != Material.AIR) armor.put(ArmorPosition.LEGS, p.getInventory().getLeggings());
-		if(p.getInventory().getBoots() != null && p.getInventory().getBoots().getType() != Material.AIR) armor.put(ArmorPosition.BOOTS, p.getInventory().getBoots());
-	}*/
-	//Calling this in another class now gg
-	/*long last_tell = System.currentTimeMillis();
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void onArmorDamageEvent(EntityDamageEvent e) {
-		if(!(e.getEntity() instanceof Player)) { return; }
-		Player p = (Player) e.getEntity();
-		if(!(p.getGameMode() == GameMode.SURVIVAL)) { 
-		    System.out.print("(EDE) Cancelled due to being in creative!!");
-		    return; 
-		    }
-		if(e.getDamage() <= 1) {
-		    if(System.currentTimeMillis() > last_tell){
-		    System.out.print("Damage was less then 1!");
-		    //10 second intervals
-		    last_tell = System.currentTimeMillis() + 10000;
-		    }
-		    return; 
-		 }
-		
-		if(p.getInventory().getBoots() != null && p.getInventory().getBoots().getType() != Material.AIR) {
-			ItemStack boots = p.getInventory().getBoots();
-			subtractCustomDurability(p, boots, 1, "armor");
-			log.info("BOOTS: " + getCustomDurability(boots, "armor"));
-		}
-		if(p.getInventory().getLeggings() != null && p.getInventory().getLeggings().getType() != Material.AIR) {
-			ItemStack Leggings = p.getInventory().getLeggings();
-			subtractCustomDurability(p, Leggings, 1, "armor");
-			log.info("LEGS: " + getCustomDurability(Leggings, "armor"));
-		}
-		if(p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.AIR) {
-			ItemStack Chestplate = p.getInventory().getChestplate();
-			subtractCustomDurability(p, Chestplate, 1, "armor");
-			log.info("CHEST: " + getCustomDurability(Chestplate, "armor"));
-		}
-		if(p.getInventory().getHelmet() != null && p.getInventory().getHelmet().getType() != Material.AIR) {
-			ItemStack Helmet = p.getInventory().getHelmet();
-			subtractCustomDurability(p, Helmet, 1, "armor");
-			log.info("HELMET: " + getCustomDurability(Helmet, "armor"));
-		}
 	}*/
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
