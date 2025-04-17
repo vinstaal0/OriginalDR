@@ -2,9 +2,9 @@ package nl.vinstaal0.Dungeonrealms.Commands;
 
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
+import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
-import nl.vinstaal0.Dungeonrealms.ItemMechanics.NBTUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -91,24 +91,14 @@ public class CompileTime implements CommandExecutor {
 //                    throw new RuntimeException(e);
 //                }
 
-            } else if (strings[0].equalsIgnoreCase("nbt")) {
+            } else if (strings[0].equalsIgnoreCase("level")) {
 
-                ItemStack item = player.getItemInHand();
+                ItemStack tool = player.getItemInHand();
 
-                try {
-
-                    int serial = NBTUtil.getCustomIntTag(item, "serial");
-
-                    player.sendMessage("[DUMP] " + serial);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    player.sendMessage("Error retrieving NBT data.");
-                }
-
-
+                ProfessionMechanics.addEXP(player, tool, 900, "pickaxe");
 
             }
+
 
         }
 

@@ -53,6 +53,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Profession.fishing_scroll;
+import static nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Profession.pickaxe_scroll;
+
 public class MerchantMechanics implements Listener {
     static Logger log = Logger.getLogger("Minecraft");
 
@@ -60,13 +63,7 @@ public class MerchantMechanics implements Listener {
 
     ItemStack divider = new ItemStack(Material.THIN_GLASS, 1);
 
-    public static ItemStack pickaxe_scroll = ItemMechanics.signNewCustomItem(Material.EMPTY_MAP, (short) 1,
-            ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Scroll:" + ChatColor.YELLOW.toString() + " Pickaxe Enchant",
-            ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Imbues a pickaxe with special attribute(s).");
 
-    public static ItemStack fishing_scroll = ItemMechanics.signNewCustomItem(Material.EMPTY_MAP, (short) 1,
-            ChatColor.WHITE.toString() + "" + ChatColor.BOLD.toString() + "Scroll:" + ChatColor.YELLOW.toString() + " Fishingrod Enchant",
-            ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Imbues a fishingrod with special attribute(s).");
 
     public static ItemStack orb_of_alteration = ItemMechanics.signNewCustomItem(Material.MAGMA_CREAM, (short) 0, ChatColor.LIGHT_PURPLE.toString()
             + "Orb of Alteration", ChatColor.GRAY.toString() + "Randomizes bonus stats of selected equipment");

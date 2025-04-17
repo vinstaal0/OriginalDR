@@ -1433,6 +1433,8 @@ public class ProfessionMechanics implements Listener {
                                         break;
                                     }
                                     stat = getRandomStatBuff(getItemTier(is) + 1, skill);
+
+                                    // TODO fix java.lang.StringIndexOutOfBoundsException: Range [0, -1) out of bounds for length 0
                                     raw_stat = stat.substring(0, stat.lastIndexOf(" "));
                                     guuci = true;
                                     break;
@@ -3392,6 +3394,7 @@ public class ProfessionMechanics implements Listener {
                 if (slow_mining.containsKey(pl.getName())) {
                     return; // Do nothing, it's handled.
                 }
+
                 pl.removePotionEffect(PotionEffectType.SLOW_DIGGING);
                 // removeMobEffect(pl, PotionEffectType.SLOW_DIGGING.getId());
 
@@ -3440,6 +3443,9 @@ public class ProfessionMechanics implements Listener {
                             slow_mining.put(pl.getName(), 1);
                         }
                     }
+                } else if (pickaxe_tier == 1 && ore_tier == 1) {
+                    // T1 ore and pick
+                    pl.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 0));
                 } else {
                     if (diff == 0) {
                         // Lvl 2 debuff
