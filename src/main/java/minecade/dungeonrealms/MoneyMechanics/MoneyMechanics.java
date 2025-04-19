@@ -1,23 +1,11 @@
 package minecade.dungeonrealms.MoneyMechanics;
 
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.MoneyMechanics.commands.CommandMNote;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
@@ -30,18 +18,14 @@ import minecade.dungeonrealms.enums.LogType;
 import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.LogModel;
-
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
@@ -53,21 +37,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.bukkit.Material.THIN_GLASS;
 
@@ -775,23 +762,26 @@ public class MoneyMechanics implements Listener {
 	}
 
 	public int getBankUpgradeCost(int new_tier) {
-		if(new_tier == 1) { return 200; }
-		if(new_tier == 2) { return 500; }
-		if(new_tier == 3) { return 1200; }
-		if(new_tier == 4) { return 3000; }
-		if(new_tier == 5) { return 7000; }
-		if(new_tier >= 6) { return 15000; } // All tiers above 6 cost 15,000.
-		if(new_tier == 7) { return 18000; }
-		if(new_tier == 8) { return 20000; }
-		if(new_tier == 9) { return 22000; }
-		if(new_tier == 10) { return 24000; }
-		if(new_tier == 11) { return 26000; }
-		if(new_tier == 12) { return 28000; }
-		if(new_tier == 13) { return 30000; }
-		if(new_tier == 14) { return 32000; }
-		if(new_tier == 15) { return 34000; }
-		if(new_tier == 16) { return 36000; }
-		if(new_tier == 17) { return 40000; }
+
+		double discount = ConfigFile.getInstance().getConfigValue(ConfigKey.BANK_UPGRADE_DISCOUNT);
+
+		if(new_tier == 1) { return (int) (200 * discount); }
+		if(new_tier == 2) { return (int) (500 * discount); }
+		if(new_tier == 3) { return (int) (1200 * discount); }
+		if(new_tier == 4) { return (int) (3000 * discount); }
+		if(new_tier == 5) { return (int) (7000 * discount); }
+		if(new_tier == 6) { return (int) (15000 * discount); } // All tiers above 6 cost 15,000.
+		if(new_tier == 7) { return (int) (18000 * discount); }
+		if(new_tier == 8) { return (int) (20000 * discount); }
+		if(new_tier == 9) { return (int) (22000 * discount); }
+		if(new_tier == 10) { return (int) (24000 * discount); }
+		if(new_tier == 11) { return (int) (26000 * discount); }
+		if(new_tier == 12) { return (int) (28000 * discount); }
+		if(new_tier == 13) { return (int) (30000 * discount); }
+		if(new_tier == 14) { return (int) (32000 * discount); }
+		if(new_tier == 15) { return (int) (34000 * discount); }
+		if(new_tier == 16) { return (int) (36000 * discount); }
+		if(new_tier == 17) { return (int) (40000 * discount); }
 		return 0;
 	}
 

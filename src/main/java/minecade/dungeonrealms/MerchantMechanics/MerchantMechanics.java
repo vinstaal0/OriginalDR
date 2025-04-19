@@ -20,6 +20,8 @@ import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TradeMechanics.TradeMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Arrow;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
@@ -648,7 +650,7 @@ public class MerchantMechanics implements Listener {
                 merchant_offer.add(pouch);
             }
 
-            int payout = t2_ore * 1;
+            int payout = t2_ore;
             while (payout > 64) {
                 payout -= 64;
                 ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T2_scrap);
@@ -676,7 +678,8 @@ public class MerchantMechanics implements Listener {
                 merchant_offer.add(pouch);
             }
 
-            int payout = t3_ore / 2;
+            double t3_ore_value = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_ORE_VALUE);
+            int payout = t3_ore / (int) t3_ore_value;
             while (payout > 64) {
                 payout -= 64;
                 ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T3_scrap);
@@ -704,7 +707,8 @@ public class MerchantMechanics implements Listener {
                 merchant_offer.add(pouch);
             }
 
-            int payout = t4_ore / 2;
+            double t4_ore_value = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_ORE_VALUE);
+            int payout = t4_ore / (int) t4_ore_value;
             while (payout > 64) {
                 payout -= 64;
                 ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T4_scrap);
@@ -737,7 +741,8 @@ public class MerchantMechanics implements Listener {
                 merchant_offer.add(pouch);
             }
 
-            int payout = t5_ore / 2;
+            double t5_ore_value = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_ORE_VALUE);
+            int payout = t5_ore / (int) t5_ore_value;
             while (payout > 64) {
                 payout -= 64;
                 ItemStack scrap = CraftItemStack.asCraftCopy(Scrap.T5_scrap);
@@ -806,6 +811,12 @@ public class MerchantMechanics implements Listener {
             merchant_offer.add(scrap);
         }
         if (t3_scraps > 0) {
+
+            while (t3_scraps >= 120) {
+                t3_scraps -= 120;
+                ItemStack orb = CraftItemStack.asCraftCopy(orb_of_alteration);
+                merchant_offer.add(orb);
+            }
 
             while (t3_scraps >= 110) {
                 t3_scraps -= 110;

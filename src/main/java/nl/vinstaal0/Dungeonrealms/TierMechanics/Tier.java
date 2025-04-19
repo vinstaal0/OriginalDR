@@ -1,17 +1,22 @@
 package nl.vinstaal0.Dungeonrealms.TierMechanics;
 
+
+import org.bukkit.ChatColor;
+
 public enum Tier {
 
-    ONE(1),
-    TWO(2),
-    TREE(3),
-    FOUR(4),
-    FIVE(5);
+    ONE(1, ChatColor.WHITE),
+    TWO(2, ChatColor.GREEN),
+    TREE(3, ChatColor.AQUA),
+    FOUR(4, ChatColor.LIGHT_PURPLE),
+    FIVE(5, ChatColor.YELLOW);
 
     private final int toInt;
+    private final ChatColor color;
 
-    Tier(int toInt) {
+    Tier(int toInt, ChatColor color) {
         this.toInt = toInt;
+        this.color = color;
     }
 
     public static Tier getTier(String string) throws IllegalArgumentException {
@@ -51,6 +56,12 @@ public enum Tier {
     public int toInt() {
 
         return toInt;
+
+    }
+
+    public ChatColor getColour() {
+
+        return color;
 
     }
 }

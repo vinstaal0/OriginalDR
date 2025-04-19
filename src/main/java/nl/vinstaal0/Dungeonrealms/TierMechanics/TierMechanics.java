@@ -67,4 +67,5 @@ public class TierMechanics {
         return tier_attacker >= (tier_defender - modifier);
 
     }
+
 }

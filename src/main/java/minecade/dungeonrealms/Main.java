@@ -1,13 +1,5 @@
 package minecade.dungeonrealms;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import me.vilsol.betanpc.BetaNPC;
 import me.vilsol.foodvendor.FoodVendor;
 import me.vilsol.itemgenerator.ItemGenerator;
@@ -36,14 +28,12 @@ import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.MountMechanics.MountMechanics;
-//import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.RecordMechanics.RecordMechanics;
-import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.RestrictionMechanics.RestrictionMechanics;
 import minecade.dungeonrealms.ScoreboardMechanics.ScoreboardMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
@@ -57,19 +47,26 @@ import minecade.dungeonrealms.config.Config;
 import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.enums.CC;
 import minecade.dungeonrealms.holograms.Hologram;
-
 import nl.vinstaal0.Dungeonrealms.AreaTeleport;
 import nl.vinstaal0.Dungeonrealms.Commands.CompileTime;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.Monstermechanics.SpawnerMechanics;
-import nl.vinstaal0.Dungeonrealms.Utils;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics;
+import nl.vinstaal0.Dungeonrealms.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -159,6 +156,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new LevelMechanics(), this);
         getServer().getPluginManager().registerEvents(new LogListener(), this);
         getServer().getPluginManager().registerEvents(new Utils(), this);
+        getServer().getPluginManager().registerEvents(new RepairMechanics(), this);
 
         getCommand("isunomadyet").setExecutor(new CommandIsUnoMadYet());
         getCommand("setlevel").setExecutor(new CommandSetLevel());
