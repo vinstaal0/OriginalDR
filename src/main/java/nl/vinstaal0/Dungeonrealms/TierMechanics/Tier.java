@@ -7,7 +7,7 @@ public enum Tier {
 
     ONE(1, ChatColor.WHITE),
     TWO(2, ChatColor.GREEN),
-    TREE(3, ChatColor.AQUA),
+    THREE(3, ChatColor.AQUA),
     FOUR(4, ChatColor.LIGHT_PURPLE),
     FIVE(5, ChatColor.YELLOW);
 
@@ -26,7 +26,7 @@ public enum Tier {
             case "2" :
                 return TWO;
             case "3" :
-                return TREE;
+                return THREE;
             case "4" :
                 return FOUR;
             case "5" :
@@ -43,7 +43,7 @@ public enum Tier {
             case 2 :
                 return TWO;
             case 3 :
-                return TREE;
+                return THREE;
             case 4 :
                 return FOUR;
             case 5 :

@@ -417,7 +417,7 @@ public class SpawnerMechanics implements Listener {
 
                 else if (selectedOption.equalsIgnoreCase("tier 3")) {
                     creator.sendMessage("Tier 3 selected");
-                    spawnerData.setTier(Tier.TREE);
+                    spawnerData.setTier(Tier.THREE);
                     spawner.addSpawnerData(spawnerData);
                 }
 

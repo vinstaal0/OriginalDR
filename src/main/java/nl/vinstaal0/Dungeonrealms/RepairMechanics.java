@@ -1,11 +1,9 @@
 package nl.vinstaal0.Dungeonrealms;
 
-import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
-import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
-import nl.vinstaal0.Dungeonrealms.TierMechanics.TierMechanics;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -99,6 +97,18 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
         return -1;
     }
 
+    public static int getMaxDurability(Tier tier) {
+        switch (tier) {
+            case ONE : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DURABILITY);
+            case TWO : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER2_DURABILITY);
+            case THREE : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_DURABILITY);
+            case FOUR : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_DURABILITY);
+            case FIVE : return ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_DURABILITY);
+
+            default: return 1500;
+        }
+    }
+
     public static ItemStack updateDurability(ItemStack item, int newDurability) {
         int maxDurability = getMaxDurability(item);
         if (maxDurability == -1) {
@@ -108,40 +118,6 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
         return addCustomDurability(item, newDurability, maxDurability);
     }
 
-    // TODO Replace all methods from the original repairmechanics class with my own one before I can even properly test it. Check the compiltetime command
-    /*
-    *
-    * Used to update from legacy durability to the new durability
-    *
-    * */
-    @Deprecated
-    public static void subtractCustomDurability(final Player player, final ItemStack item, double amount_to_subtract, String item_type, boolean ignoreSafe) {
-
-        if(!ItemMechanics.isArmor(item) && ItemMechanics.getDamageData(item).equalsIgnoreCase("no") && !ProfessionMechanics.isSkillItem(item)) {
-            return; // Not a weapon or armour or a profession tool so no durability reduction needed.
-        }
-
-        double currentDurability = minecade.dungeonrealms.RepairMechanics.RepairMechanics.getCustomDurability(item, item_type);
-
-        double percent = getPercentForDurabilityValue(item, item_type);
-
-        Tier tier = TierMechanics.getTier(item);
-        double maxDurability = 1500.0; // Old max value, use as default
-
-        switch (tier) { //Check what the max durability needs to be
-            case ONE : maxDurability = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER1_DURABILITY);
-            case TWO : maxDurability = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER2_DURABILITY);
-            case TREE : maxDurability = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER3_DURABILITY);
-            case FOUR : maxDurability = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER4_DURABILITY);
-            case FIVE : maxDurability = ConfigFile.getInstance().getConfigValue(ConfigKey.TIER5_DURABILITY);
-        }
-
-        double updatedCurrentDurability = Math.round(percent * maxDurability);
-
-        updateDurability(item, (int) updatedCurrentDurability);
-
-    }
-
     public static double getDurabilityPercent(ItemStack item) {
         int currentDurability = getCurrentDurability(item);
         int maxDurability = getMaxDurability(item);
@@ -149,7 +125,7 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
         return (double) currentDurability / maxDurability;
     }
 
-    /*@EventHandler
+    @EventHandler
     public void onItemDamage(PlayerItemDamageEvent event) {
         ItemStack item = event.getItem();
         int currentDurability = getCurrentDurability(item);
@@ -171,6 +147,6 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
             // Update the durability
             event.getPlayer().getInventory().setItemInHand(updateDurability(item, newDurability));
         }
-    }*/
+    }
 
 }
