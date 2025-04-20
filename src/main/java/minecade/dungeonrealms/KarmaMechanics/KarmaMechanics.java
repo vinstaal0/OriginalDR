@@ -1,33 +1,19 @@
 package minecade.dungeonrealms.KarmaMechanics;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MountMechanics.MountMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RecordMechanics.RecordMechanics;
 import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -41,6 +27,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class KarmaMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
@@ -451,18 +442,29 @@ public class KarmaMechanics implements Listener {
 					e.getDrops().remove(boots);
 					p.getInventory().setBoots(new ItemStack(Material.AIR));
 					//e.getDrops().remove(boots);
-					if((RepairMechanics.getCustomDurability(boots, "armor") - durability_to_take) > 0.1D) {
+					/*if((RepairMechanics.getCustomDurability(boots, "armor") - durability_to_take) > 0.1D) {
 						RepairMechanics.subtractCustomDurability(p, boots, durability_to_take, "armor");
 						saved_gear.add(boots);
+					}*/
+
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(boots) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, boots, (int) durability_to_take);
+						saved_gear.add(boots);
 					}
+
 				}
 				if(!neutral_legs && p.getInventory().getLeggings() != null && p.getInventory().getLeggings().getType() != Material.AIR) {
 					ItemStack leggings = p.getInventory().getLeggings();
 					e.getDrops().remove(leggings);
 					p.getInventory().setLeggings(new ItemStack(Material.AIR));
 					//e.getDrops().remove(leggings);
-					if((RepairMechanics.getCustomDurability(leggings, "armor") - durability_to_take) > 0.1D) {
+					/*if((RepairMechanics.getCustomDurability(leggings, "armor") - durability_to_take) > 0.1D) {
 						RepairMechanics.subtractCustomDurability(p, leggings, durability_to_take, "armor");
+						saved_gear.add(leggings);
+					}*/
+
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(leggings) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, leggings, (int) durability_to_take);
 						saved_gear.add(leggings);
 					}
 				}
@@ -471,8 +473,13 @@ public class KarmaMechanics implements Listener {
 					e.getDrops().remove(chestplate);
 					p.getInventory().setChestplate(new ItemStack(Material.AIR));
 					//e.getDrops().remove(chestplate);
-					if((RepairMechanics.getCustomDurability(chestplate, "armor") - durability_to_take) > 0.1D) {
+					/*if((RepairMechanics.getCustomDurability(chestplate, "armor") - durability_to_take) > 0.1D) {
 						RepairMechanics.subtractCustomDurability(p, chestplate, durability_to_take, "armor");
+						saved_gear.add(chestplate);
+					}*/
+
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(chestplate) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, chestplate, (int) durability_to_take);
 						saved_gear.add(chestplate);
 					}
 				}
@@ -481,8 +488,13 @@ public class KarmaMechanics implements Listener {
 					e.getDrops().remove(helmet);
 					p.getInventory().setHelmet(new ItemStack(Material.AIR));
 					//e.getDrops().remove(helmet);
-					if((RepairMechanics.getCustomDurability(helmet, "armor") - durability_to_take) > 0.1D) {
+					/*if((RepairMechanics.getCustomDurability(helmet, "armor") - durability_to_take) > 0.1D) {
 						RepairMechanics.subtractCustomDurability(p, helmet, durability_to_take, "armor");
+						saved_gear.add(helmet);
+					}*/
+
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(helmet) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, helmet, (int) durability_to_take);
 						saved_gear.add(helmet);
 					}
 				}
@@ -492,8 +504,13 @@ public class KarmaMechanics implements Listener {
 				for(ItemStack is : drop_copy) {
 					if(ProfessionMechanics.isSkillItem(is)) {
 						e.getDrops().remove(is);
-						if((RepairMechanics.getCustomDurability(is, "wep") - w_durability_to_take) > 0.1D) {
+						/*if((RepairMechanics.getCustomDurability(is, "wep") - w_durability_to_take) > 0.1D) {
 							RepairMechanics.subtractCustomDurability(p, is, w_durability_to_take, "wep");
+							saved_gear.add(is);
+						}*/
+
+						if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(is) - w_durability_to_take > 0.1D)) {
+							nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, is, (int) w_durability_to_take);
 							saved_gear.add(is);
 						}
 					}
@@ -502,8 +519,13 @@ public class KarmaMechanics implements Listener {
 				ItemStack weapon_slot = p.getInventory().getItem(0);
 				if(!neutral_weapon && !ItemMechanics.getDamageData(weapon_slot).equalsIgnoreCase("no")) {
 					e.getDrops().remove(weapon_slot);
-					if((RepairMechanics.getCustomDurability(weapon_slot, "wep") - w_durability_to_take) > 0.1D) {
+					/*if((RepairMechanics.getCustomDurability(weapon_slot, "wep") - w_durability_to_take) > 0.1D) {
 						RepairMechanics.subtractCustomDurability(p, weapon_slot, w_durability_to_take, "wep");
+						saved_gear.add(weapon_slot);
+					}*/
+
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(weapon_slot) - w_durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, weapon_slot, (int) w_durability_to_take);
 						saved_gear.add(weapon_slot);
 					}
 				}

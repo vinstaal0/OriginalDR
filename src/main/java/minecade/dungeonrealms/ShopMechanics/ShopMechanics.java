@@ -1,24 +1,5 @@
 package minecade.dungeonrealms.ShopMechanics;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
-import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.ChatMechanics.ChatMechanics;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
@@ -30,42 +11,31 @@ import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.KarmaMechanics.KarmaMechanics;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
 import minecade.dungeonrealms.LootMechanics.LootMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.MountMechanics.MountMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
-import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.ShopMechanics.commands.CommandClearsShops;
 import minecade.dungeonrealms.ShopMechanics.commands.CommandShop;
 import minecade.dungeonrealms.TradeMechanics.TradeMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
+import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.enums.LogType;
 import minecade.dungeonrealms.holograms.Hologram;
 import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.models.LogModel;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_8_R1.BlockPosition;
-import net.minecraft.server.v1_8_R1.EntityPlayer;
-import net.minecraft.server.v1_8_R1.EntityTracker;
-import net.minecraft.server.v1_8_R1.EntityTrackerEntry;
-import net.minecraft.server.v1_8_R1.Packet;
-import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
-import net.minecraft.server.v1_8_R1.WorldServer;
-
+import net.minecraft.server.v1_8_R1.*;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
@@ -87,17 +57,24 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("deprecation")
 public class ShopMechanics implements Listener {
@@ -1784,7 +1761,8 @@ public class ShopMechanics implements Listener {
 						item_type = "armor";
 					}
 
-					if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(i_added, item_type) < 50) {
+//					if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(i_added, item_type) < 50) {
+					if(!item_type.equalsIgnoreCase("") && nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(i_added) < 50) {
 						p.sendMessage(ChatColor.YELLOW + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.YELLOW + " sell items with " + ChatColor.BOLD + "<50%" + ChatColor.YELLOW + " durability in your player-owned shop.");
 						p.sendMessage(ChatColor.GRAY + "Either repair the item or use the player-to-player trade menu.");
 						e.setCancelled(true);
@@ -1850,7 +1828,8 @@ public class ShopMechanics implements Listener {
 							item_type = "armor";
 						}
 
-						if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(to_stock, item_type) < 50) {
+//						if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(to_stock, item_type) < 50) {
+						if(!item_type.equalsIgnoreCase("") && nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(to_stock) < 50) {
 							p.sendMessage(ChatColor.YELLOW + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.YELLOW + " sell items with " + ChatColor.BOLD + "<50%" + ChatColor.YELLOW + " durability in your player-owned shop.");
 							p.sendMessage(ChatColor.GRAY + "Either repair the item or use the player-to-player trade menu.");
 							e.setCancelled(true);
@@ -1895,7 +1874,8 @@ public class ShopMechanics implements Listener {
 								item_type = "armor";
 							}
 
-							if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(cur_item, item_type) < 50) {
+//							if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(cur_item, item_type) < 50) {
+							if(!item_type.equalsIgnoreCase("") && nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(cur_item) < 50) {
 								p.sendMessage(ChatColor.YELLOW + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.YELLOW + " sell items with " + ChatColor.BOLD + "<50%" + ChatColor.YELLOW + " durability in your player-owned shop.");
 								p.sendMessage(ChatColor.GRAY + "Either repair the item or use the player-to-player trade menu.");
 								e.setCancelled(true);

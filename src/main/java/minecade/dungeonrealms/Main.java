@@ -156,7 +156,6 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new LevelMechanics(), this);
         getServer().getPluginManager().registerEvents(new LogListener(), this);
         getServer().getPluginManager().registerEvents(new Utils(), this);
-        getServer().getPluginManager().registerEvents(new RepairMechanics(), this);
 
         getCommand("isunomadyet").setExecutor(new CommandIsUnoMadYet());
         getCommand("setlevel").setExecutor(new CommandSetLevel());

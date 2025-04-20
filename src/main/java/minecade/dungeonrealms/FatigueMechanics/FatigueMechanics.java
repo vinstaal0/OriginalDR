@@ -1,31 +1,16 @@
 package minecade.dungeonrealms.FatigueMechanics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Logger;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.FatigueMechanics.commands.CommandFat;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
-import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -37,24 +22,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 public class FatigueMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
@@ -615,8 +600,10 @@ public class FatigueMechanics implements Listener {
 					if(DuelMechanics.isDamageDisabled(p.getLocation())) { return; } // No durabillity loss in safe zones.
 					if(DuelMechanics.duel_map.containsKey(p.getName())) { return; }
 					
-					RepairMechanics.subtractCustomDurability(p, in_hand, 1, "wep");
+//					RepairMechanics.subtractCustomDurability(p, in_hand, 1, "wep");
 					//log.info(String.valueOf(getCustomDurability(in_hand, "wep")));
+
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, in_hand, 1);
 				}
 				
 			}

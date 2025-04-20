@@ -15,6 +15,8 @@ import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutWorldEvent;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ConfigKey;
+import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
+import nl.vinstaal0.Dungeonrealms.TierMechanics.TierMechanics;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
@@ -29,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -156,7 +159,8 @@ public class RepairMechanics implements Listener {
 	public void onDisable() {
 		log.info("[RepairMechanics] has been disabled.");
 	}
-	
+
+	@Deprecated
 	public static double getPercentForDurabilityValue(ItemStack i, String item_type) {
 		double max_dur = i.getType().getMaxDurability();
 		double cur_dur = i.getType().getMaxDurability() - i.getDurability();
@@ -173,7 +177,8 @@ public class RepairMechanics implements Listener {
 		}
 		return 0;
 	}
-	
+
+	@Deprecated
 	public static double getDurabilityValueForPercent(ItemStack i, double hits_left, String item_type) { // hits_left is out of 1,000.
 		double hits_left_percent = 0;
 		if(item_type.equalsIgnoreCase("wep")) {
@@ -194,7 +199,8 @@ public class RepairMechanics implements Listener {
 		}
 		return (double) Math.round(dur_percent);
 	}
-	
+
+	@Deprecated
 	public static void setDurabilityValueForPercent(ItemStack i, double new_percent, String item_type) {
 		// new_percent must be between 0 and 100. (1-99)
 		if(!ItemMechanics.isArmor(i) && ItemMechanics.getDamageData(i).equalsIgnoreCase("no") && !ProfessionMechanics.isSkillItem(i)) { return; // Not a weapon / armor.
@@ -207,7 +213,8 @@ public class RepairMechanics implements Listener {
 		//log.info("AAA - " + new_dur);
 		i.setDurability((short) new_dur);
 	}
-	
+
+	@Deprecated
 	public static double getCustomDurability(ItemStack i, String item_type) {
 		try {
 			
@@ -221,6 +228,7 @@ public class RepairMechanics implements Listener {
 			if(item_type.equalsIgnoreCase("wep")) {
 				dur_percent = getPercentForDurabilityValue(i, item_type);
 				setCustomDurability(i, (double) (dur_percent * 15), item_type, true); // dur_percent = 5%, X 10 = 50 hits.
+
 				dur_percent = dur_percent * 15;
 			}
 			if(item_type.equalsIgnoreCase("armor")) {
@@ -248,7 +256,8 @@ public class RepairMechanics implements Listener {
 			return dur_percent;
 		}
 	}
-	
+
+	@Deprecated
 	public static void subtractCustomDurability(final Player p, final ItemStack i, double amount, String item_type, boolean ignoreSafe) {
 		double cur_dur = getCustomDurability(i, item_type);
 		double new_dur = (cur_dur - amount);
@@ -337,7 +346,8 @@ public class RepairMechanics implements Listener {
 			setCustomDurability(i, (double) new_dur, item_type, true);
 		}
 	}
-	
+
+	@Deprecated
 	public static void subtractCustomDurability(final Player p, final ItemStack i, double amount, String item_type) {
 		
 		if(DuelMechanics.isDamageDisabled(p.getLocation()) && (!(ProfessionMechanics.isSkillItem(i)))) {
@@ -470,7 +480,7 @@ public class RepairMechanics implements Listener {
 		}
 	}
 
-	
+	@Deprecated
 	public static void setCustomDurability(ItemStack i, double new_dur, String item_type, boolean update_bar) { // Custom Durability = hits left.
 		try {
 			
@@ -491,14 +501,18 @@ public class RepairMechanics implements Listener {
 			log.info("[RepairMechanics] Item durability could not be set, culprit: " + i.toString());
 		}
 	}
-	
-	public int getRepairCost(ItemStack i) {
+
+	/**
+	 * @param item the item which is being repaired
+	 * @return the cost the repair the item in gems
+	 * */
+	public int getRepairCost(ItemStack item) {
 		double repair_cost = 0;
-		int item_tier = ItemMechanics.getItemTier(i);
-		String dmg_range = ItemMechanics.getDamageRange(i);
-		String armor_range = ItemMechanics.getArmorData(i);
+		int item_tier = ItemMechanics.getItemTier(item);
+		String dmg_range = ItemMechanics.getDamageRange(item);
+		String armor_range = ItemMechanics.getArmorData(item);
 		
-		if(armor_range.equalsIgnoreCase("no") && dmg_range.equalsIgnoreCase("no") && !(ProfessionMechanics.isSkillItem(i))) { return 0; // Not a custom item.
+		if(armor_range.equalsIgnoreCase("no") && dmg_range.equalsIgnoreCase("no") && !(ProfessionMechanics.isSkillItem(item))) { return 0; // Not a custom item.
 		}
 		if(item_tier == 0) { return 0; // Not a custom item.
 		}
@@ -508,14 +522,16 @@ public class RepairMechanics implements Listener {
 		if(dmg_range.equalsIgnoreCase("no") && !(armor_range.equalsIgnoreCase("no"))) { // It's a piece of armor.	
 			double avg_armor = Integer.parseInt(armor_range.split("-")[0].replaceAll(" ", "").replace("!", "")) + Integer.parseInt(armor_range.split("-")[1].substring(0, armor_range.split("-")[1].indexOf(":")).replaceAll(" ", "").replace("!", ""));
 			avg_armor = avg_armor / 2; // Get the average of the two added values.
-			double percent_durability_left = getPercentForDurabilityValue(i, "armor");
+			double percent_durability_left = getPercentForDurabilityValue(item, "armor");
+			System.out.println("Procent " + percent_durability_left + " my " + nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(item));
+//			double percent_durability_left = (nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(item) / 100);
 			if(percent_durability_left > 99) {
 				percent_durability_left = 99;
 			}
 			double armor_cost = avg_armor * 1; // This is the cost PER PERCENT
 			
 			double global_multiplier = 0.30 - 0.06; // Additional 0.06 less
-			double multiplier = 1;
+			double multiplier;
 			double missing_percent = 100 - percent_durability_left;
 			double total_armor_cost = missing_percent * armor_cost;
 			
@@ -544,16 +560,17 @@ public class RepairMechanics implements Listener {
 		}
 		
 		if(armor_range.equalsIgnoreCase("no") && !(dmg_range.equalsIgnoreCase("no"))) { // It's a weapon.
-			double avg_dmg = (Integer.parseInt((dmg_range.split("-")[0])) + Integer.parseInt(dmg_range.split("-")[1])) / 2; // Average DMG
+			double avg_dmg = (double) (Integer.parseInt((dmg_range.split("-")[0])) + Integer.parseInt(dmg_range.split("-")[1])) / 2; // Average DMG
 			double dmg_cost = avg_dmg * 0.1; // This is the cost PER PERCENT
 			
-			double percent_durability_left = getPercentForDurabilityValue(i, "wep");
+//			double percent_durability_left = getPercentForDurabilityValue(item, "wep");
+			double percent_durability_left = (nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(item) * 100);
 			if(percent_durability_left > 99) {
 				percent_durability_left = 99;
 			}
 			
 			double global_multiplier = 0.25 - 0.05;
-			double multiplier = 1.0; // 100%
+			double multiplier; // 100%
 			double missing_percent = 100 - percent_durability_left;
 			double total_dmg_cost = missing_percent * dmg_cost;
 			
@@ -581,17 +598,18 @@ public class RepairMechanics implements Listener {
 			repair_cost = repair_cost * global_multiplier;
 		}
 		
-		if(ProfessionMechanics.isSkillItem(i)) {
-			if(ProfessionMechanics.getItemLevel(i) == 100) { return 0; // Cannot repair LVL 100.
+		if(ProfessionMechanics.isSkillItem(item)) {
+			if(ProfessionMechanics.getItemLevel(item) == 100) { return 0; // Cannot repair LVL 100.
 			}
-			double dmg_cost = Math.pow(ProfessionMechanics.getItemLevel(i), 2) / 100D; // This is the cost PER PERCENT
-			double percent_durability_left = getPercentForDurabilityValue(i, "wep");
+			double dmg_cost = Math.pow(ProfessionMechanics.getItemLevel(item), 2) / 100D; // This is the cost PER PERCENT
+//			double percent_durability_left = getPercentForDurabilityValue(item, "wep");
+			double percent_durability_left = (nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(item) * 100);
 			if(percent_durability_left > 99) {
 				percent_durability_left = 99;
 			}
 			
 			double global_multiplier = 0.8;
-			double multiplier = 1.0; // 100%
+			double multiplier; // 100%
 			double missing_percent = 100 - percent_durability_left;
 			double total_dmg_cost = missing_percent * dmg_cost;
 			
@@ -650,15 +668,6 @@ public class RepairMechanics implements Listener {
 			default: return 0.0D;
 		}
     }
-
-/*	public double getPercentRecoverOfScrap(int tier) {
-		if(tier == 1) { return 3.0D; }
-		if(tier == 2) { return 3.0D; }
-		if(tier == 3) { return 3.0D; }
-		if(tier == 4) { return 3.0D; }
-		if(tier == 5) { return 3.0D; }
-		return 0.0D;
-	}*/
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamge(EntityDamageEvent e) {
@@ -692,7 +701,20 @@ public class RepairMechanics implements Listener {
 		if(!e.getInventory().getName().equalsIgnoreCase("container.crafting")) { return; }
 		if(e.getInventory().getViewers().size() > 1) { return; }
 		if(e.getSlotType() == SlotType.ARMOR) { return; }
-		
+
+		InventoryAction action = e.getAction();
+		if (!action.equals(InventoryAction.SWAP_WITH_CURSOR)) { return; } // check if the item is being clicked on another item
+
+		// Check if they have custom durability, if not add custom durability using the legacy code
+		if (!nl.vinstaal0.Dungeonrealms.RepairMechanics.hasCustomDurability(in_slot)) {
+			int currentDurability = (int) nl.vinstaal0.Dungeonrealms.RepairMechanics.getLegacyCustomDurability(in_slot);
+			int maxDurability = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(TierMechanics.getTier(in_slot));
+			nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(in_slot, currentDurability, maxDurability);
+		}
+
+		nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(in_slot, nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(in_slot),
+				nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(TierMechanics.getTier(in_slot)));
+
 		Player p = (Player) e.getWhoClicked();
 		if(isArmorScrap(cursor) && (ItemMechanics.isArmor(in_slot) || !ItemMechanics.getDamageData(in_slot).equalsIgnoreCase("no") || ProfessionMechanics.isSkillItem(in_slot))) {
 			if(ProfessionMechanics.isSkillItem(in_slot) && ProfessionMechanics.getItemLevel(in_slot) == 100) { return; // Cannot repair LVL 100 pickaxes.
@@ -731,29 +753,39 @@ public class RepairMechanics implements Listener {
 			}
 			
 			// Now we give durability back to the item it's being applied on.
-			double percent_remaining = 100.0D;
-			percent_remaining = getPercentForDurabilityValue(in_slot, item_type);
-			
+			double percent_remaining = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(in_slot);
+//			percent_remaining = getPercentForDurabilityValue(in_slot, item_type);
+
+			// If the item is almost repaired, just fully repair the item.
 			if(percent_remaining + percent_to_recover >= 99.0D) {
-				if(item_type.equalsIgnoreCase("wep")) {
+
+				Tier tier = TierMechanics.getTier(in_slot);
+				nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(in_slot, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(tier), nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(tier));
+
+				/*if(item_type.equalsIgnoreCase("wep")) {
 					setCustomDurability(in_slot, hits_per_weapon, "wep", true);
 				}
 				if(item_type.equalsIgnoreCase("armor")) {
 					setCustomDurability(in_slot, blocks_per_armor, "armor", true);
-				}
+				}*/
 				p.updateInventory();
-			}
-			
-			else if(percent_remaining + percent_to_recover < 99.0D) {
+			} else if(percent_remaining + percent_to_recover < 99.0D) {
 				//setDurabilityValueForPercent(in_slot, percent_remaining + percent_to_recover, item_type);
 				double percent_to_add = (percent_to_recover / 100.D);
-				double current_dur = getCustomDurability(in_slot, item_type);
-				if(item_type.equalsIgnoreCase("wep")) {
-					setCustomDurability(in_slot, current_dur + (hits_per_weapon * percent_to_add), "wep", true);
-				}
-				if(item_type.equalsIgnoreCase("armor")) {
-					setCustomDurability(in_slot, current_dur + (blocks_per_armor * percent_to_add), "armor", true);
-				}
+				double current_dur = nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(in_slot);
+				double durabilityToAdd = percent_to_add * nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(in_slot);
+
+//				if(item_type.equalsIgnoreCase("wep")) {
+//					setCustomDurability(in_slot, current_dur + (hits_per_weapon * percent_to_add), "wep", true);
+//				}
+//				if(item_type.equalsIgnoreCase("armor")) {
+//					setCustomDurability(in_slot, current_dur + (blocks_per_armor * percent_to_add), "armor", true);
+//				}
+
+				p.sendMessage("Scrap repair percent to add " + percent_to_add + " current dur " + current_dur + " durabilityToAdd " + durabilityToAdd);
+				nl.vinstaal0.Dungeonrealms.RepairMechanics.addCustomDurability(p, in_slot, (int) durabilityToAdd);
+//				nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(in_slot, (int) (current_dur + durabilityToAdd), nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(in_slot));
+
 				p.updateInventory();
 			}
 			
@@ -789,7 +821,8 @@ public class RepairMechanics implements Listener {
 			
 			if(PlayerManager.getPlayerModel(p).getToggleList() != null){
 				if(PlayerManager.getPlayerModel(p).getToggleList().contains("debug")){
-					double new_percent = getPercentForDurabilityValue(in_slot, item_type);
+//					double new_percent = getPercentForDurabilityValue(in_slot, item_type);
+					double new_percent = Math.round(nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(in_slot) * 100);
 					p.sendMessage(ChatColor.GREEN + "                  " + ChatColor.BOLD + "+" + ChatColor.GREEN + percent_to_recover + "% DURABILITY" + ChatColor.BOLD + " -> " + ChatColor.GREEN + new_percent + "% TOTAL");
 				}
 			}
@@ -835,6 +868,7 @@ public class RepairMechanics implements Listener {
 				im.remove();
 				item_repair_map.remove(p);
 				p.getInventory().setItem(p.getInventory().firstEmpty(), i);
+				nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(i, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(i), nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(i));
 				p.updateInventory();
 				return;
 			}
@@ -844,6 +878,10 @@ public class RepairMechanics implements Listener {
 			anvil_map.remove(p);
 			
 			p.playSound(p.getLocation(), Sound.ANVIL_USE, 1F, 1F);
+
+			nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(i, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(TierMechanics.getTier(i)),
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(TierMechanics.getTier(i)));
+
 			repair_state.put(p, 0);
 			return;
 		}
@@ -894,7 +932,8 @@ public class RepairMechanics implements Listener {
 		Player p = (Player) e.getEntity();
 		//Arrow a = (Arrow)e.getProjectile();
 		
-		subtractCustomDurability(p, e.getBow(), 1, "wep");
+//		subtractCustomDurability(p, e.getBow(), 1, "wep");
+		nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, e.getBow(), 1);
 	}
 
 	@SuppressWarnings("deprecation")

@@ -1,14 +1,10 @@
 package minecade.dungeonrealms.ItemMechanics;
 
-import java.util.Random;
-
-import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.EnchantMechanics.EnchantMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
-import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,6 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class Halloween implements Listener {
 	
@@ -44,7 +42,9 @@ public class Halloween implements Listener {
 			Player pl = (Player) e.getWhoClicked();
 			ItemStack armor = e.getCurrentItem();
 			
-			double dur_percent = RepairMechanics.getPercentForDurabilityValue(armor, "armor");
+//			double dur_percent = RepairMechanics.getPercentForDurabilityValue(armor, "armor");
+			double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(armor);
+
 //			ItemMechanics.log.info("dur_percent=" + dur_percent); right click is used for stat allocation.  too much spam
 			
 			if(armor.getType() == Material.JACK_O_LANTERN && ItemMechanics.isArmor(armor)) {
@@ -69,8 +69,14 @@ public class Halloween implements Listener {
 				}
 				
 				armor.setDurability((short) 0);
-				RepairMechanics.setCustomDurability(armor, RepairMechanics.blocks_per_armor, "armor", true);
-				RepairMechanics.subtractCustomDurability(pl, armor, (1500.0D - (1500.0D * (dur_percent / 100.0D))), "armor", true);
+//				RepairMechanics.setCustomDurability(armor, RepairMechanics.blocks_per_armor, "armor", true);
+//				RepairMechanics.subtractCustomDurability(pl, armor, (1500.0D - (1500.0D * (dur_percent / 100.0D))), "armor", true);
+
+				nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor),
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor));
+
+				int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor);
+				nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
 				
 				e.setCurrentItem(armor);
 				e.setCursor(halloween_mask);
@@ -97,7 +103,8 @@ public class Halloween implements Listener {
 						}
 						
 						ItemStack n_armor = e.getCurrentItem();
-						double dur_percent = RepairMechanics.getPercentForDurabilityValue(n_armor, "armor");
+//						double dur_percent = RepairMechanics.getPercentForDurabilityValue(n_armor, "armor");
+						double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(n_armor);
 						
 						n_armor.setType(Material.JACK_O_LANTERN);
 						
@@ -113,8 +120,15 @@ public class Halloween implements Listener {
 						}
 						
 						n_armor.setDurability((short) 1500);
-						RepairMechanics.setCustomDurability(n_armor, RepairMechanics.blocks_per_armor, "armor", true);
-						RepairMechanics.subtractCustomDurability(pl, n_armor, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+//						RepairMechanics.setCustomDurability(n_armor, RepairMechanics.blocks_per_armor, "armor", true);
+//						RepairMechanics.subtractCustomDurability(pl, n_armor, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(n_armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor),
+								nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor));
+
+						int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor);
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, n_armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
+
 						e.setCurrentItem(n_armor);
 						
 						pl.playSound(pl.getLocation(), Sound.GHAST_MOAN, 1F, 1F);

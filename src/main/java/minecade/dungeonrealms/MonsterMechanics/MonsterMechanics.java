@@ -23,7 +23,6 @@ import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
-import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.TeleportationMechanics.TeleportationMechanics;
 import minecade.dungeonrealms.enums.*;
 import net.minecraft.server.v1_8_R1.*;
@@ -34,6 +33,8 @@ import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.LootType;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.Party;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics;
+import nl.vinstaal0.Dungeonrealms.TierMechanics.TierMechanics;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -4508,13 +4509,16 @@ public class MonsterMechanics implements Listener {
                      * if(dif == 1){ RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4, "wep"); }
                      */
                     if (dif == 2) {
-                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4, "wep"); // 5
+//                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4, "wep"); // 5
+                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4);
                     }
                     if (dif == 3) {
-                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6, "wep"); // 10
+//                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6, "wep"); // 10
+                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6);
                     }
                     if (dif == 4) {
-                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8, "wep"); // 10
+//                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8, "wep"); // 10
+                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8);
                     }
                 }
             }
@@ -5504,7 +5508,7 @@ public class MonsterMechanics implements Listener {
 
                         ItemMeta im = i_gear.getItemMeta();
 
-                        try {
+                        /*try {
                             // TODO change to actually remove the enchantments
                             if (im.hasEnchants()) {
                                 for (Map.Entry<Enchantment, Integer> data : im.getEnchants().entrySet()) {
@@ -5516,6 +5520,19 @@ public class MonsterMechanics implements Listener {
                             i_gear.removeEnchantment(EnchantMechanics.getCustomEnchant());
                         } catch (NullPointerException npe) {
                             npe.printStackTrace();
+                        }*/
+
+                        try {
+                            if (i_gear != null) {
+                                // Remove all enchantments from i_gear
+                                for (Enchantment enchantment : i_gear.getEnchantments().keySet()) {
+                                    i_gear.removeEnchantment(enchantment);
+                                }
+                            }
+                        } catch (NullPointerException npe) {
+                            npe.printStackTrace();
+                            // Consider logging the error instead of just printing the stack trace
+                            // Logger.getLogger(LOGGERCLASS.class.getName()).log(Level.SEVERE, null, npe);
                         }
 
                         i_gear.setItemMeta(im);
@@ -5541,6 +5558,8 @@ public class MonsterMechanics implements Listener {
                             }
                         } else {
                             if (i_gear.getType() != Material.AIR) {
+
+                                RepairMechanics.updateCustomDurability(i_gear, RepairMechanics.getCurrentDurability(i_gear), RepairMechanics.getMaxDurability(TierMechanics.getTier(i_gear)));
 
                                 if (Main.getPartyMechanics().isInParty(p)) {
 

@@ -1,48 +1,16 @@
 package minecade.dungeonrealms.GuildMechanics;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import minecade.dungeonrealms.Main;
-import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.ChatMechanics.ChatMechanics;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandG;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGAccept;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGBanner;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGBio;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGDecline;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGDemote;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGInvite;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGKick;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGMotd;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGPromote;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGQuit;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGSetRank;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGuild;
-import minecade.dungeonrealms.GuildMechanics.commands.CommandGuildSetLeader;
+import minecade.dungeonrealms.GuildMechanics.commands.*;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.KarmaMechanics.KarmaMechanics;
+import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
-import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
+import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.database.ConnectionPool;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
@@ -58,17 +26,28 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 //import org.mcsg.double0negative.tabapi.TabAPI;
 
 @SuppressWarnings("deprecation")
@@ -1035,7 +1014,8 @@ public class GuildMechanics implements Listener {
 					// Ok, now we need to change the piece of armor to leather and set the dye color.
 
 					ItemStack o_armor = e.getCurrentItem();
-					double dur_percent = RepairMechanics.getPercentForDurabilityValue(o_armor, "armor");
+//					double dur_percent = RepairMechanics.getPercentForDurabilityValue(o_armor, "armor");
+					double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(o_armor);
 
 					if(dur_percent <= 10) {
 						pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " dye such a damaged piece of armor -- repair it first.");
@@ -1071,10 +1051,17 @@ public class GuildMechanics implements Listener {
 					}
 
 					n_armor.setDurability((short) 0);
-					RepairMechanics.setCustomDurability(n_armor, RepairMechanics.blocks_per_armor, "armor", true);
+//					RepairMechanics.setCustomDurability(n_armor, RepairMechanics.blocks_per_armor, "armor", true);
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(n_armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor),
+							nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor));
 
 					n_armor = RealmMechanics.makeUntradeable(n_armor);
-					RepairMechanics.subtractCustomDurability(pl, n_armor, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+//					RepairMechanics.subtractCustomDurability(pl, n_armor, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+
+					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor);
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, n_armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
+
+
 					e.setCurrentItem(n_armor);
 
 					pl.updateInventory();
@@ -1087,7 +1074,9 @@ public class GuildMechanics implements Listener {
 			if(ItemMechanics.isArmor(e.getCurrentItem())) {
 				ItemStack armor = e.getCurrentItem();
 
-				double dur_percent = RepairMechanics.getPercentForDurabilityValue(armor, "armor");
+//				double dur_percent = RepairMechanics.getPercentForDurabilityValue(armor, "armor");
+				double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(armor);
+
 				//log.info("dur_percent=" + dur_percent);
 				if(isColoredArmor(armor)) {
 					// Remove the DYE.
@@ -1166,9 +1155,15 @@ public class GuildMechanics implements Listener {
 
 					armor = makeTradeable(armor);
 					armor.setDurability((short) 0);
-					RepairMechanics.setCustomDurability(armor, RepairMechanics.blocks_per_armor, "armor", true);
+//					RepairMechanics.setCustomDurability(armor, RepairMechanics.blocks_per_armor, "armor", true);
 
-					RepairMechanics.subtractCustomDurability(pl, armor, (1500.0D - (1500.0D * (dur_percent / 100.0D))), "armor", true);
+//					RepairMechanics.subtractCustomDurability(pl, armor, (1500.0D - (1500.0D * (dur_percent / 100.0D))), "armor", true);
+
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor),
+							nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor));
+
+					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor);
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
 
 					//RepairMechanics.setDurabilityValueForPercent(armor, dur_percent, "armor");
 					if(armor.getType().name().toLowerCase().contains("leather")) {
@@ -2835,7 +2830,8 @@ public class GuildMechanics implements Listener {
 					is.setItemMeta(lam);
 				}
 
-				double dur_percent = RepairMechanics.getPercentForDurabilityValue(is, "armor");
+//				double dur_percent = RepairMechanics.getPercentForDurabilityValue(is, "armor");
+				double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(is);
 
 				if(is.getType() == Material.LEATHER_HELMET) {
 					if(tier == 2) {
@@ -2899,7 +2895,10 @@ public class GuildMechanics implements Listener {
 
 				if(is.getDurability() != (short) 0) {
 					is.setDurability((short) 0);
-					RepairMechanics.subtractCustomDurability(pl, is, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+//					RepairMechanics.subtractCustomDurability(pl, is, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+
+					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(is);
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, is, (int) (maxDura - (maxDura * (dur_percent / 100))));
 				}
 				makeTradeable(is);
 			}
@@ -2930,7 +2929,8 @@ public class GuildMechanics implements Listener {
 					is.setItemMeta(lam);
 				}
 
-				double dur_percent = RepairMechanics.getPercentForDurabilityValue(is, "armor");
+//				double dur_percent = RepairMechanics.getPercentForDurabilityValue(is, "armor");
+				double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(is);
 
 				if(is.getType() == Material.LEATHER_HELMET) {
 					if(tier == 2) {
@@ -2994,7 +2994,10 @@ public class GuildMechanics implements Listener {
 
 				if(is.getDurability() != (short) 0) {
 					is.setDurability((short) 0);
-					RepairMechanics.subtractCustomDurability(pl, is, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+//					RepairMechanics.subtractCustomDurability(pl, is, (1500 - (1500 * (dur_percent / 100))), "armor", true);
+
+					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(is);
+					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, is, (int) (maxDura - (maxDura * (dur_percent / 100))));
 				}
 				makeTradeable(is);
 			}

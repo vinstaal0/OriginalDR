@@ -3,6 +3,7 @@ package nl.vinstaal0.Dungeonrealms.Commands;
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import nl.vinstaal0.Dungeonrealms.RepairMechanics;
+import nl.vinstaal0.Dungeonrealms.TierMechanics.TierMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -52,7 +53,7 @@ public class CompileTime implements CommandExecutor {
                 Random r = new Random();
                 int newDura = r.nextInt(1490-10) + 10;
 
-                ItemStack returnStack = RepairMechanics.updateDurability(player.getItemInHand(), newDura);
+                ItemStack returnStack = RepairMechanics.updateCustomDurability(player.getItemInHand(), newDura, RepairMechanics.getMaxDurability(TierMechanics.getTier(player.getItemInHand())));
 
 //                player.getInventory().addItem(returnStack);
 
