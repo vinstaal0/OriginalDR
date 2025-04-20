@@ -2,8 +2,6 @@ package nl.vinstaal0.Dungeonrealms;
 
 import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
 import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -125,7 +123,7 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
         return (double) currentDurability / maxDurability;
     }
 
-    @EventHandler
+/*    @EventHandler
     public void onItemDamage(PlayerItemDamageEvent event) {
         ItemStack item = event.getItem();
         int currentDurability = getCurrentDurability(item);
@@ -147,6 +145,6 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
             // Update the durability
             event.getPlayer().getInventory().setItemInHand(updateDurability(item, newDurability));
         }
-    }
+    }*/
 
 }
