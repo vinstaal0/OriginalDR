@@ -1,5 +1,7 @@
 package nl.vinstaal0.Dungeonrealms;
 
+import minecade.dungeonrealms.Main;
+import nl.vinstaal0.Dungeonrealms.Commands.CleanupItem;
 import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +12,14 @@ import java.util.List;
 
 public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.RepairMechanics {
 
-    private static final String DURABILITY_LORE = ChatColor.GRAY + "Durability: ";
+    public static final String DURABILITY_LORE = ChatColor.GRAY + "Durability: ";
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+
+        Main.getPlugin().getCommand("cleanupitem").setExecutor(new CleanupItem());
+    }
 
     /**
      * @param item the itemstack that needs to have custom currability

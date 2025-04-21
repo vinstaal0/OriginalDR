@@ -421,6 +421,7 @@ public class CommunityMechanics implements Listener {
 		}
 	}
 
+	// TODO causes extra pages to be added
 	/*
 	* Only updates the first few pages of the character journal, the pages with realtime, non-SQL/socket based information.
 	*/
@@ -488,9 +489,9 @@ public class CommunityMechanics implements Listener {
 
 				page1_string = ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "  Your Character" + "   " + "\n"
 						+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Alignment: " + pretty_align + align_expire_message + "\n"
-						+ ChatColor.BLACK.toString() + align_descrip + new_line + ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p.getName())
-						+ " / " + HealthMechanics.health_data.get(p.getName()) + "" + ChatColor.BOLD.toString() + " HP" + "\n" + ChatColor.BLACK.toString()
-						+ "   " + ItemMechanics.armor_data.get(p.getName()).get(0) + " - " + ItemMechanics.armor_data.get(p.getName()).get(1) + "% "
+						+ ChatColor.BLACK.toString() + align_descrip + new_line + ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p.getName()) + " / "
+						+ HealthMechanics.health_data.get(p.getName()) + "" + ChatColor.BOLD.toString() + " HP" + "\n"
+						+ ChatColor.BLACK.toString() + "   " + ItemMechanics.armor_data.get(p.getName()).get(0) + " - " + ItemMechanics.armor_data.get(p.getName()).get(1) + "% "
 						+ ChatColor.BOLD.toString() + "Armor" + "\n" + ChatColor.BLACK.toString() + "   " + ItemMechanics.dmg_data.get(p.getName()).get(0)
 						+ " - " + ItemMechanics.dmg_data.get(p.getName()).get(1) + "% " + ChatColor.BOLD.toString() + "DPS" + "\n" + ChatColor.BLACK.toString()
 						+ "   " + (HealthMechanics.health_regen_data.get((p.getName())) + 5) + " " + ChatColor.BOLD.toString() + "HP/s" + "\n"
@@ -550,16 +551,37 @@ public class CommunityMechanics implements Listener {
 						+ ChatColor.LIGHT_PURPLE.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p.getName(), 4)
 						+ "\n" + ChatColor.GOLD.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p.getName(), 5);
 
-				new_pages.add(page1_string);
-				new_pages.add(page2_string);
-				new_pages.add(page3_string);
-				new_pages.add(page4_string);
-				new_pages.add(page5_string);
-				new_pages.add(page6_string);
-				for (String s : pages) {
+//				new_pages.add(page1_string);
+//				new_pages.add(page2_string);
+//				new_pages.add(page3_string);
+//				new_pages.add(page4_string);
+//				new_pages.add(page5_string);
+//				new_pages.add(page6_string);
+
+				// TODO remove
+				/*for (String s : pages) {
 					if (!s.contains("Your Character") && !s.startsWith(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "+ ")
 							&& !(s.contains("Monsters that deal")) && !(s.contains("Portal Key Shards")) && !s.contains("LEVEL/EXP")) {
 						new_pages.add(s);
+					}
+				}*/
+
+				// Replace the first six pages with the new pages
+				for (int i = 0; i < pages.size(); i++) {
+					if (i == 0) {
+						new_pages.add(page1_string);
+					} else if (i == 1) {
+						new_pages.add(page2_string);
+					} else if (i == 2) {
+						new_pages.add(page3_string);
+					} else if (i == 3) {
+						new_pages.add(page4_string);
+					} else if (i == 4) {
+						new_pages.add(page5_string);
+					} else if (i == 5) {
+						new_pages.add(page6_string);
+					} else {
+						new_pages.add(pages.get(i));
 					}
 				}
 

@@ -18,7 +18,7 @@ public class ConfigFile {
     private final File configFile;
     private final Yaml yaml;
 
-    public static String version = "25.04.25";
+    public static String version = "25.04.27";
 
     private ConfigFile() {
         configFile = new File("./plugins/" + Main.plugin.getName() + "/config.yml");

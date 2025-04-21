@@ -585,3 +585,6 @@ commands:
   compiletime:
     description: gets the time of compiling
     usage: /<command>
+  cleanupitem:
+    description: gets the time of compiling
+    usage: /<command>
