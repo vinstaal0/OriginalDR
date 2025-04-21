@@ -1,5 +1,7 @@
 package nl.vinstaal0.Dungeonrealms;
 
+import minecade.dungeonrealms.Main;
+import nl.vinstaal0.Dungeonrealms.Commands.CleanupItem;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
@@ -20,9 +22,20 @@ import java.util.logging.Logger;
 
 public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.RepairMechanics implements Listener {
 
+    public static final String DURABILITY_LORE = ChatColor.GRAY + "Durability: ";
+
     private static final Logger log = Logger.getLogger("Minecraft");
     public static final String DURABILITY_LORE = ChatColor.GRAY + "Durability: ";
     private static HashMap<String, Long> warned_durability = new HashMap<String, Long>();
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+
+        Main.getPlugin().getCommand("cleanupitem").setExecutor(new CleanupItem());
+    }
+
+
     /**
      * @param item the itemstack that needs to have custom currability
      * @param currentDurability the current durability out of the maxDurability ex. 1000 / 1500
