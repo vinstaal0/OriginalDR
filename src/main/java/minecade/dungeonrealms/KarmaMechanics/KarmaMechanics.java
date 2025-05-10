@@ -447,8 +447,8 @@ public class KarmaMechanics implements Listener {
 						saved_gear.add(boots);
 					}*/
 
-					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(boots) - durability_to_take > 0.1D)) {
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, boots, (int) durability_to_take);
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(boots) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(p, boots, (int) durability_to_take);
 						saved_gear.add(boots);
 					}
 
@@ -463,8 +463,8 @@ public class KarmaMechanics implements Listener {
 						saved_gear.add(leggings);
 					}*/
 
-					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(leggings) - durability_to_take > 0.1D)) {
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, leggings, (int) durability_to_take);
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(leggings) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(p, leggings, (int) durability_to_take);
 						saved_gear.add(leggings);
 					}
 				}
@@ -478,8 +478,8 @@ public class KarmaMechanics implements Listener {
 						saved_gear.add(chestplate);
 					}*/
 
-					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(chestplate) - durability_to_take > 0.1D)) {
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, chestplate, (int) durability_to_take);
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(chestplate) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(p, chestplate, (int) durability_to_take);
 						saved_gear.add(chestplate);
 					}
 				}
@@ -493,8 +493,8 @@ public class KarmaMechanics implements Listener {
 						saved_gear.add(helmet);
 					}*/
 
-					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(helmet) - durability_to_take > 0.1D)) {
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, helmet, (int) durability_to_take);
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(helmet) - durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(p, helmet, (int) durability_to_take);
 						saved_gear.add(helmet);
 					}
 				}
@@ -509,8 +509,8 @@ public class KarmaMechanics implements Listener {
 							saved_gear.add(is);
 						}*/
 
-						if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(is) - w_durability_to_take > 0.1D)) {
-							nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, is, (int) w_durability_to_take);
+						if((nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(is) - w_durability_to_take > 0.1D)) {
+							nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(p, is, (int) w_durability_to_take);
 							saved_gear.add(is);
 						}
 					}
@@ -524,8 +524,8 @@ public class KarmaMechanics implements Listener {
 						saved_gear.add(weapon_slot);
 					}*/
 
-					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(weapon_slot) - w_durability_to_take > 0.1D)) {
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, weapon_slot, (int) w_durability_to_take);
+					if((nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(weapon_slot) - w_durability_to_take > 0.1D)) {
+						nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(p, weapon_slot, (int) w_durability_to_take);
 						saved_gear.add(weapon_slot);
 					}
 				}

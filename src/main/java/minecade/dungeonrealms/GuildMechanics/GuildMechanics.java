@@ -11,6 +11,7 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.database.ConnectionPool;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
@@ -1015,7 +1016,7 @@ public class GuildMechanics implements Listener {
 
 					ItemStack o_armor = e.getCurrentItem();
 //					double dur_percent = RepairMechanics.getPercentForDurabilityValue(o_armor, "armor");
-					double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(o_armor);
+					double dur_percent = RepairMechanics.getDurabilityPercent(o_armor);
 
 					if(dur_percent <= 10) {
 						pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " dye such a damaged piece of armor -- repair it first.");
@@ -1052,14 +1053,14 @@ public class GuildMechanics implements Listener {
 
 					n_armor.setDurability((short) 0);
 //					RepairMechanics.setCustomDurability(n_armor, RepairMechanics.blocks_per_armor, "armor", true);
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(n_armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor),
-							nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor));
+					RepairMechanics.updateCustomDurability(n_armor, RepairMechanics.getMaxDurability(n_armor),
+							RepairMechanics.getMaxDurability(n_armor));
 
 					n_armor = RealmMechanics.makeUntradeable(n_armor);
 //					RepairMechanics.subtractCustomDurability(pl, n_armor, (1500 - (1500 * (dur_percent / 100))), "armor", true);
 
-					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor);
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, n_armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
+					int maxDura = RepairMechanics.getMaxDurability(n_armor);
+					RepairMechanics.subtractCustomDurability(pl, n_armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
 
 
 					e.setCurrentItem(n_armor);
@@ -1075,7 +1076,7 @@ public class GuildMechanics implements Listener {
 				ItemStack armor = e.getCurrentItem();
 
 //				double dur_percent = RepairMechanics.getPercentForDurabilityValue(armor, "armor");
-				double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(armor);
+				double dur_percent = RepairMechanics.getDurabilityPercent(armor);
 
 				//log.info("dur_percent=" + dur_percent);
 				if(isColoredArmor(armor)) {
@@ -1159,11 +1160,11 @@ public class GuildMechanics implements Listener {
 
 //					RepairMechanics.subtractCustomDurability(pl, armor, (1500.0D - (1500.0D * (dur_percent / 100.0D))), "armor", true);
 
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor),
-							nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor));
+					RepairMechanics.updateCustomDurability(armor, RepairMechanics.getMaxDurability(armor),
+							RepairMechanics.getMaxDurability(armor));
 
-					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor);
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
+					int maxDura = RepairMechanics.getMaxDurability(armor);
+					RepairMechanics.subtractCustomDurability(pl, armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
 
 					//RepairMechanics.setDurabilityValueForPercent(armor, dur_percent, "armor");
 					if(armor.getType().name().toLowerCase().contains("leather")) {
@@ -2831,7 +2832,7 @@ public class GuildMechanics implements Listener {
 				}
 
 //				double dur_percent = RepairMechanics.getPercentForDurabilityValue(is, "armor");
-				double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(is);
+				double dur_percent = RepairMechanics.getDurabilityPercent(is);
 
 				if(is.getType() == Material.LEATHER_HELMET) {
 					if(tier == 2) {
@@ -2897,8 +2898,8 @@ public class GuildMechanics implements Listener {
 					is.setDurability((short) 0);
 //					RepairMechanics.subtractCustomDurability(pl, is, (1500 - (1500 * (dur_percent / 100))), "armor", true);
 
-					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(is);
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, is, (int) (maxDura - (maxDura * (dur_percent / 100))));
+					int maxDura = RepairMechanics.getMaxDurability(is);
+					RepairMechanics.subtractCustomDurability(pl, is, (int) (maxDura - (maxDura * (dur_percent / 100))));
 				}
 				makeTradeable(is);
 			}
@@ -2930,7 +2931,7 @@ public class GuildMechanics implements Listener {
 				}
 
 //				double dur_percent = RepairMechanics.getPercentForDurabilityValue(is, "armor");
-				double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(is);
+				double dur_percent = RepairMechanics.getDurabilityPercent(is);
 
 				if(is.getType() == Material.LEATHER_HELMET) {
 					if(tier == 2) {
@@ -2996,8 +2997,8 @@ public class GuildMechanics implements Listener {
 					is.setDurability((short) 0);
 //					RepairMechanics.subtractCustomDurability(pl, is, (1500 - (1500 * (dur_percent / 100))), "armor", true);
 
-					int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(is);
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, is, (int) (maxDura - (maxDura * (dur_percent / 100))));
+					int maxDura = RepairMechanics.getMaxDurability(is);
+					RepairMechanics.subtractCustomDurability(pl, is, (int) (maxDura - (maxDura * (dur_percent / 100))));
 				}
 				makeTradeable(is);
 			}

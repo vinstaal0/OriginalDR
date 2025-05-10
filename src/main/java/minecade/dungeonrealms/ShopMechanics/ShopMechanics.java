@@ -32,6 +32,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.minecraft.server.v1_8_R1.*;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.InventoryType;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -1762,7 +1763,7 @@ public class ShopMechanics implements Listener {
 					}
 
 //					if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(i_added, item_type) < 50) {
-					if(!item_type.equalsIgnoreCase("") && nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(i_added) < 50) {
+					if(!item_type.equalsIgnoreCase("") && RepairMechanics.getDurabilityPercent(i_added) < 50) {
 						p.sendMessage(ChatColor.YELLOW + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.YELLOW + " sell items with " + ChatColor.BOLD + "<50%" + ChatColor.YELLOW + " durability in your player-owned shop.");
 						p.sendMessage(ChatColor.GRAY + "Either repair the item or use the player-to-player trade menu.");
 						e.setCancelled(true);
@@ -1829,7 +1830,7 @@ public class ShopMechanics implements Listener {
 						}
 
 //						if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(to_stock, item_type) < 50) {
-						if(!item_type.equalsIgnoreCase("") && nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(to_stock) < 50) {
+						if(!item_type.equalsIgnoreCase("") && RepairMechanics.getDurabilityPercent(to_stock) < 50) {
 							p.sendMessage(ChatColor.YELLOW + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.YELLOW + " sell items with " + ChatColor.BOLD + "<50%" + ChatColor.YELLOW + " durability in your player-owned shop.");
 							p.sendMessage(ChatColor.GRAY + "Either repair the item or use the player-to-player trade menu.");
 							e.setCancelled(true);
@@ -1875,7 +1876,7 @@ public class ShopMechanics implements Listener {
 							}
 
 //							if(!item_type.equalsIgnoreCase("") && RepairMechanics.getPercentForDurabilityValue(cur_item, item_type) < 50) {
-							if(!item_type.equalsIgnoreCase("") && nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(cur_item) < 50) {
+							if(!item_type.equalsIgnoreCase("") && RepairMechanics.getDurabilityPercent(cur_item) < 50) {
 								p.sendMessage(ChatColor.YELLOW + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.YELLOW + " sell items with " + ChatColor.BOLD + "<50%" + ChatColor.YELLOW + " durability in your player-owned shop.");
 								p.sendMessage(ChatColor.GRAY + "Either repair the item or use the player-to-player trade menu.");
 								e.setCancelled(true);

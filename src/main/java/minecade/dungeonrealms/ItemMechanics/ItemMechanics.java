@@ -30,6 +30,7 @@ import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Misc;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
@@ -3660,25 +3661,25 @@ public class ItemMechanics implements Listener {
             if (p.getInventory().getBoots() != null && p.getInventory().getBoots().getType() != Material.AIR) {
                 ItemStack boots = p.getInventory().getBoots();
 //                RepairMechanics.subtractCustomDurability(p, boots, 1, "armor");
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, boots, 1);
+                RepairMechanics.subtractCustomDurability(p, boots, 1);
                 // log.info("BOOTS: " + getCustomDurability(boots, "armor"));
             }
             if (p.getInventory().getLeggings() != null && p.getInventory().getLeggings().getType() != Material.AIR) {
                 ItemStack leggings = p.getInventory().getLeggings();
 //                RepairMechanics.subtractCustomDurability(p, Leggings, 1, "armor");
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, leggings, 1);
+                RepairMechanics.subtractCustomDurability(p, leggings, 1);
                 // log.info("LEGS: " + getCustomDurability(Leggings, "armor"));
             }
             if (p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.AIR) {
                 ItemStack chestplate = p.getInventory().getChestplate();
 //                RepairMechanics.subtractCustomDurability(p, c, 1, "armor");
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, chestplate, 1);
+                RepairMechanics.subtractCustomDurability(p, chestplate, 1);
                 // log.info("CHEST: " + getCustomDurability(Chestplate, "armor"));
             }
             if (p.getInventory().getHelmet() != null && p.getInventory().getHelmet().getType() != Material.AIR) {
                 ItemStack helmet = p.getInventory().getHelmet();
 //                RepairMechanics.subtractCustomDurability(p, Helmet, 1, "armor");
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, helmet, 1);
+                RepairMechanics.subtractCustomDurability(p, helmet, 1);
                 // log.info("HELMET: " + getCustomDurability(Helmet, "armor"));
             }
         }
@@ -6314,7 +6315,7 @@ public class ItemMechanics implements Listener {
                 return;
             }
 //            RepairMechanics.subtractCustomDurability(pl, wep, 1, "wep");
-            nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, wep, 1);
+            RepairMechanics.subtractCustomDurability(pl, wep, 1);
 
             // Whatever projectile is used, we'll store data in a hashmap, use a repeating task to process it, then when it hits a player run a .damage event
             // with the player as the responsible party.

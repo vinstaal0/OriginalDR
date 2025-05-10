@@ -4,7 +4,7 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.database.ConnectionPool;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemSerialization;
-import nl.vinstaal0.Dungeonrealms.RepairMechanics;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import nl.vinstaal0.Dungeonrealms.TierMechanics.TierMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -5,6 +5,7 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -43,7 +44,7 @@ public class Halloween implements Listener {
 			ItemStack armor = e.getCurrentItem();
 			
 //			double dur_percent = RepairMechanics.getPercentForDurabilityValue(armor, "armor");
-			double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(armor);
+			double dur_percent = RepairMechanics.getDurabilityPercent(armor);
 
 //			ItemMechanics.log.info("dur_percent=" + dur_percent); right click is used for stat allocation.  too much spam
 			
@@ -72,11 +73,11 @@ public class Halloween implements Listener {
 //				RepairMechanics.setCustomDurability(armor, RepairMechanics.blocks_per_armor, "armor", true);
 //				RepairMechanics.subtractCustomDurability(pl, armor, (1500.0D - (1500.0D * (dur_percent / 100.0D))), "armor", true);
 
-				nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor),
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor));
+				RepairMechanics.updateCustomDurability(armor, RepairMechanics.getMaxDurability(armor),
+						RepairMechanics.getMaxDurability(armor));
 
-				int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(armor);
-				nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
+				int maxDura = RepairMechanics.getMaxDurability(armor);
+				RepairMechanics.subtractCustomDurability(pl, armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
 				
 				e.setCurrentItem(armor);
 				e.setCursor(halloween_mask);
@@ -104,7 +105,7 @@ public class Halloween implements Listener {
 						
 						ItemStack n_armor = e.getCurrentItem();
 //						double dur_percent = RepairMechanics.getPercentForDurabilityValue(n_armor, "armor");
-						double dur_percent = nl.vinstaal0.Dungeonrealms.RepairMechanics.getDurabilityPercent(n_armor);
+						double dur_percent = RepairMechanics.getDurabilityPercent(n_armor);
 						
 						n_armor.setType(Material.JACK_O_LANTERN);
 						
@@ -123,11 +124,11 @@ public class Halloween implements Listener {
 //						RepairMechanics.setCustomDurability(n_armor, RepairMechanics.blocks_per_armor, "armor", true);
 //						RepairMechanics.subtractCustomDurability(pl, n_armor, (1500 - (1500 * (dur_percent / 100))), "armor", true);
 
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(n_armor, nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor),
-								nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor));
+						RepairMechanics.updateCustomDurability(n_armor, RepairMechanics.getMaxDurability(n_armor),
+								RepairMechanics.getMaxDurability(n_armor));
 
-						int maxDura = nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(n_armor);
-						nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, n_armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
+						int maxDura = RepairMechanics.getMaxDurability(n_armor);
+						RepairMechanics.subtractCustomDurability(pl, n_armor, (int) (maxDura - (maxDura * (dur_percent / 100))));
 
 						e.setCurrentItem(n_armor);
 						

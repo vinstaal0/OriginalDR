@@ -52,7 +52,7 @@ import nl.vinstaal0.Dungeonrealms.Commands.CompileTime;
 import nl.vinstaal0.Dungeonrealms.ConfigFile;
 import nl.vinstaal0.Dungeonrealms.Monstermechanics.SpawnerMechanics;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.PartyMechanics;
-import nl.vinstaal0.Dungeonrealms.RepairMechanics;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import nl.vinstaal0.Dungeonrealms.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

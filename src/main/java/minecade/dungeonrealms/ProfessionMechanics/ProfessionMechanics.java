@@ -1466,7 +1466,7 @@ public class ProfessionMechanics implements Listener {
 
         List<String> new_lore = new ArrayList<String>();
         for (String s : is.getItemMeta().getLore()) {
-            if (s.contains("/") && !s.contains(nl.vinstaal0.Dungeonrealms.RepairMechanics.DURABILITY_LORE)) {
+            if (s.contains("/") && !s.contains(nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.DURABILITY_LORE)) {
                 s = ChatColor.GRAY.toString() + cur_exp + " / " + needed_exp;
             }
             if (s.contains("EXP:")) {
@@ -1490,9 +1490,9 @@ public class ProfessionMechanics implements Listener {
 
         // Sets the same durability level als when the add XP happend
 //        RepairMechanics.setCustomDurability(is, RepairMechanics.getCustomDurability(orig_is, "wep"), "wep", true);
-        nl.vinstaal0.Dungeonrealms.RepairMechanics.updateCustomDurability(is,
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.getCurrentDurability(orig_is),
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.getMaxDurability(orig_is));
+        nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.updateCustomDurability(is,
+                nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getCurrentDurability(orig_is),
+                nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.getMaxDurability(orig_is));
 
         item_exp.put(is, cur_exp);
     }
@@ -2932,11 +2932,11 @@ public class ProfessionMechanics implements Listener {
 
         if (e.getState() == State.FAILED_ATTEMPT || e.getState() == State.CAUGHT_ENTITY) {
 //            RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1, "wep");
-            nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1);
+            nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1);
 
         } else if (e.getState() == State.CAUGHT_FISH) {
 //            RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2, "wep");
-            nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2);
+            nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2);
         }
 
         if (e.getState() == State.CAUGHT_FISH) {
@@ -3591,7 +3591,7 @@ public class ProfessionMechanics implements Listener {
                         e.setCancelled(true);
 
 //                        RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2, "wep");
-                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2);
+                        nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2);
                         if (pl.getItemInHand().getType() == Material.AIR) {
                             pl.setItemInHand(new ItemStack(Material.AIR, 1));
                             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
@@ -3623,7 +3623,7 @@ public class ProfessionMechanics implements Listener {
                 addEXP(pl, is, getOreEXP(m), "mining");
 
 //                RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1, "wep");
-                nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1);
+                nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1);
 
 
                 if (pl.getItemInHand().getType() == Material.AIR) {

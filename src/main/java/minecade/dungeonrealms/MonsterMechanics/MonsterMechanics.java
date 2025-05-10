@@ -33,7 +33,7 @@ import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemStacks.Money;
 import nl.vinstaal0.Dungeonrealms.ItemMechanics.ItemTracker;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.LootType;
 import nl.vinstaal0.Dungeonrealms.PartyMechanics.Party;
-import nl.vinstaal0.Dungeonrealms.RepairMechanics;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import nl.vinstaal0.Dungeonrealms.TierMechanics.TierMechanics;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Chunk;
@@ -4510,15 +4510,15 @@ public class MonsterMechanics implements Listener {
                      */
                     if (dif == 2) {
 //                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4, "wep"); // 5
-                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4);
+                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4);
                     }
                     if (dif == 3) {
 //                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6, "wep"); // 10
-                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6);
+                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6);
                     }
                     if (dif == 4) {
 //                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8, "wep"); // 10
-                        nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8);
+                        RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8);
                     }
                 }
             }

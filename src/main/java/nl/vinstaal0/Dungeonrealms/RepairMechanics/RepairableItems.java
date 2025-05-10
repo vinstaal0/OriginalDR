@@ -1,4 +1,4 @@
-package nl.vinstaal0.Dungeonrealms.Repair;
+package nl.vinstaal0.Dungeonrealms.RepairMechanics;
 
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import org.bukkit.Material;

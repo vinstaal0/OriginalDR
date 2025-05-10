@@ -10,6 +10,7 @@ import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
+import nl.vinstaal0.Dungeonrealms.RepairMechanics.RepairMechanics;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
@@ -603,7 +604,7 @@ public class FatigueMechanics implements Listener {
 //					RepairMechanics.subtractCustomDurability(p, in_hand, 1, "wep");
 					//log.info(String.valueOf(getCustomDurability(in_hand, "wep")));
 
-					nl.vinstaal0.Dungeonrealms.RepairMechanics.subtractCustomDurability(p, in_hand, 1);
+					RepairMechanics.subtractCustomDurability(p, in_hand, 1);
 				}
 				
 			}

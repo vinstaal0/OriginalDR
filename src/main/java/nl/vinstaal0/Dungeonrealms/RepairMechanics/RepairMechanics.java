@@ -1,10 +1,12 @@
-package nl.vinstaal0.Dungeonrealms;
+package nl.vinstaal0.Dungeonrealms.RepairMechanics;
 
 import minecade.dungeonrealms.Main;
 import nl.vinstaal0.Dungeonrealms.Commands.CleanupItem;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
+import nl.vinstaal0.Dungeonrealms.ConfigFile;
+import nl.vinstaal0.Dungeonrealms.ConfigKey;
 import nl.vinstaal0.Dungeonrealms.TierMechanics.Tier;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,8 +23,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.RepairMechanics implements Listener {
-
-    public static final String DURABILITY_LORE = ChatColor.GRAY + "Durability: ";
 
     private static final Logger log = Logger.getLogger("Minecraft");
     public static final String DURABILITY_LORE = ChatColor.GRAY + "Durability: ";
@@ -92,43 +92,37 @@ public class RepairMechanics extends minecade.dungeonrealms.RepairMechanics.Repa
     public static ItemStack subtractCustomDurability(Player player, ItemStack item, int durability) {
         int current = getCurrentDurability(item);
         int max = getMaxDurability(item);
-        int new_dur = current - durability;
 
-        // TODO add logic for item breaking
+        // IF armor degrade durability 3 times as quickly
+        if (ItemMechanics.isArmor(item)) {
+            durability *= 3;
+        }
 
         if(DuelMechanics.isDamageDisabled(player.getLocation()) && (!(ProfessionMechanics.isSkillItem(item)))) {
             durability = 0;
         }
 
+        int new_dur = current - durability;
+        int percent_remaining = new_dur / max;
+
+        // TODO add logic for item breaking
+
         if((!warned_durability.containsKey(item)) || ((System.currentTimeMillis() - warned_durability.get(item)) > 60 * 1000)) {
 
-            if(ItemMechanics.isArmor(item) && new_dur <= 150 && new_dur >= 140) {
+            if(percent_remaining <= 10 && percent_remaining >= 9) {
                 // 10%
                 player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
                 player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *10% DURABILITY " + ChatColor.RED + "LEFT ON " + item.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
                 warned_durability.put(item.getItemMeta().getDisplayName(), System.currentTimeMillis());
             }
 
-            if(ItemMechanics.isArmor(item) && new_dur <= 30 && new_dur >= 20) {
+            if(percent_remaining <= 3 && percent_remaining >= 2) {
                 // 2%
                 player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
                 player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *2% DURABILITY " + ChatColor.RED + "LEFT ON " + item.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
                 warned_durability.put(item.getItemMeta().getDisplayName(), System.currentTimeMillis());
             }
 
-            if(ItemMechanics.isWeapon(item) && new_dur <= 100 && new_dur >= 90) {
-                // 10%
-                player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
-                player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *10% DURABILITY " + ChatColor.RED + "LEFT ON " + item.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
-                warned_durability.put(item.getItemMeta().getDisplayName(), System.currentTimeMillis());
-            }
-
-            if(ItemMechanics.isWeapon(item) && new_dur <= 20 && new_dur >= 10) {
-                // 2%
-                player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
-                player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *2% DURABILITY " + ChatColor.RED + "LEFT ON " + item.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
-                warned_durability.put(item.getItemMeta().getDisplayName(), System.currentTimeMillis());
-            }
 
         }
 
